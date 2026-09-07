@@ -61,12 +61,6 @@ class AuthController extends Controller
 
             str_contains(
                 $email,
-                'barangay'
-            )
-                => 'barangay',
-
-            str_contains(
-                $email,
                 'staff'
             )
                 => 'staff',
@@ -105,6 +99,9 @@ class AuthController extends Controller
 
         return redirect()
             ->route($dashboardRoute);
+
+        // return redirect()
+        //     ->route('login');
     }
 
     /**
@@ -112,12 +109,12 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        session()->forget([
-            'logged_in',
-            'role',
-            'user_name',
-        ]);
+        $request = request();
 
+        $role = $request->session()->get('role');
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()
             ->route('login')

@@ -2,8 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\SubmitRequestController;
+use App\Http\Controllers\TrackRequestController;
 use App\Http\Controllers\Admin\StaffController;
+use App\Http\Controllers\Admin\OfficeController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +17,19 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home'])
     ->name('home');
+
+Route::get('/track-request', [TrackRequestController::class, 'trackRequest'])
+    ->name('track.request');
+
+Route::post('/track-request', [TrackRequestController::class, 'trackSubmit'])
+    ->name('track.submit');
+
+Route::get('/submit-request', [SubmitRequestController::class, 'showSubmitRequestForm'])
+    ->name('submit.request');
+
+Route::post('/submit-request', [SubmitRequestController::class, 'submitStore'])
+    ->name('submit.store');
+
 
 
 /*
@@ -136,8 +153,11 @@ Route::middleware('session.auth')->group(function () {
             Route::get('/barangays', [PageController::class, 'barangays'])
                 ->name('barangays');
 
-            Route::get('/departments', [PageController::class, 'departments'])
-                ->name('departments');
+            Route::get('/offices', [PageController::class, 'offices'])
+                ->name('offices');
+            Route::get('/office/office_divisions',
+                [OfficeController::class, 'officeDivisions'])
+            ->name('offices.office_divisions');
 
             Route::get('/services', [PageController::class, 'services'])
                 ->name('services');

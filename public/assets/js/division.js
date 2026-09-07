@@ -1,14 +1,3 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const barangayInput = document.getElementById('barangay');
-    const errorMsg = document.getElementById('barangay-error');
-
-    if (barangayInput && errorMsg) {
-        barangayInput.addEventListener('input', function () {
-            errorMsg.classList.add('hidden');
-        });
-    }
-});
-
 document.addEventListener('click', function (event) {
 
     // Open modal
@@ -41,34 +30,45 @@ document.addEventListener('click', function (event) {
 
 });
 
-function showConfirmBarangayName() {
-    const barangayInput = document.getElementById('barangay');
-    const errorMsg = document.getElementById('barangay-error');
-    const confirmName = document.getElementById('confirm-barangay-name');
+document.addEventListener('DOMContentLoaded', function () {
+    const officeInput = document.getElementById('division');
+    const errorMsg = document.getElementById('division-error');
 
-    if (!barangayInput.value.trim()) {
+    if (officeInput && errorMsg) {
+        officeInput.addEventListener('input', function () {
+            errorMsg.classList.add('hidden');
+        });
+    }
+});
+
+function showConfirmDivisionName() {
+    const officeInput = document.getElementById('division');
+    const errorMsg = document.getElementById('division-error');
+    const confirmName = document.getElementById('confirm-division-name');
+
+    if (!officeInput.value.trim()) {
         errorMsg.classList.remove('hidden');
         return;
     }
 
     errorMsg.classList.add('hidden');
-    confirmName.textContent = barangayInput.value;
+    confirmName.textContent = officeInput.value;
 
     // Close add modal and open confirmation
-    const addModal = document.getElementById('add-barangay');
+    const addModal = document.getElementById('add-division');
     addModal.classList.add('hidden');
     addModal.classList.remove('flex');
 
-    const confirmModal = document.getElementById('add-barangay-confirmation');
+    const confirmModal = document.getElementById('add-division-confirmation');
     confirmModal.classList.remove('hidden');
     confirmModal.classList.add('flex');
 }
 
-function confirmAddBarangay() {
+function confirmAddDivision() {
     // =========================
     // CLOSE CONFIRMATION
     // =========================
-    const confirmModal = document.getElementById('add-barangay-confirmation');
+    const confirmModal = document.getElementById('add-division-confirmation');
 
     confirmModal.classList.add('hidden');
     confirmModal.classList.remove('flex');
@@ -77,7 +77,7 @@ function confirmAddBarangay() {
     // =========================
     // SHOW LOADING
     // =========================
-    const loadingModal = document.getElementById('add-barangay-loading');
+    const loadingModal = document.getElementById('add-division-loading');
 
     loadingModal.classList.remove('hidden');
     loadingModal.classList.add('flex');
@@ -107,7 +107,7 @@ function confirmAddBarangay() {
             generatingModal.classList.remove('flex');
 
 
-            const successModal = document.getElementById('add-barangay-success');
+            const successModal = document.getElementById('add-division-success');
 
             successModal.classList.remove('hidden');
             successModal.classList.add('flex');

@@ -14,7 +14,6 @@
 
 <div class="space-y-6">
             
-        {{-- Search & Filters --}}
         <x-card>
 
             <div class="flex grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -58,9 +57,11 @@
                     <x-button
                         color="d-blue"
                         type="button"
+                        class="h-9 w-full lg:inline-flex sm:w-auto text-xs"
                     >
                         Search
                     </x-button>
+                    
 
                     {{-- Status --}}
                     <x-dropdown
@@ -68,10 +69,9 @@
                         placeholder="All Statuses"
                         :options="[
                             'active' => 'Active',
-                            'disabled' => 'Disabled',
                             'de-activated' => 'De-activated',
                         ]"
-                        class="w-full h-8 sm:ml-4 sm:w-[10rem]"
+                        class="w-full h-9 sm:ml-4 sm:w-[10rem]"
                     />
 
                 </div>
@@ -96,9 +96,6 @@
                         Archives
                     </x-button>
                 </div>
-
-                
-
             </div>
 
         </x-card>
@@ -307,6 +304,7 @@
         id="account-staff-modal"
         title="New Staff"
         icon="ti ti-user-plus"
+        width="max-w-sm"
     >
         <form action="{{ route('admin.staff') }}">
 
@@ -510,6 +508,17 @@
                     />
                 </div>
 
+                {{-- Password --}}
+                <div class="w-full max-w-50">
+                    <x-input_white
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        label="Password"
+                        :editable="false"
+                    />
+                </div>
+
                     {{-- Buttons --}}
                 <div class="flex w-full items-center justify-end gap-3 mt-5">
 
@@ -547,7 +556,8 @@
         id="archive-confirmation-modal"
         title="Archive Staff"
         icon="ti ti-archive"
-        class="max-w-sm"
+        width="max-w-sm"
+
     >
         <div class="w-fit mx-auto space-y-5">
 

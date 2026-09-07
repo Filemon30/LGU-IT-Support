@@ -8,7 +8,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
             <x-card class="lg:col-span-2 h-full">
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 h-full">
+                <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 h-full">
 
                     <x-overview_card
                         icon="ti ti-ticket"
@@ -47,7 +47,7 @@
 
                     <x-overview_card
                         icon="ti ti-rosette-discount-check"
-                        label="Resolved Tickets"
+                        label="Closed Tickets"
                         total="0"
                         color="d-blue"
                     />

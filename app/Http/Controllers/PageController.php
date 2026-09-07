@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 class PageController extends Controller
 {
     /**
@@ -147,11 +149,11 @@ class PageController extends Controller
     }
 
     /**
-     * Departments services.
+     * Admin Offices.
      */
-    public function departments()
+    public function offices()
     {
-        return $this->ajaxView('admin.departments.index');
+        return $this->ajaxView('admin.offices.index');
     }
 
     /**

@@ -10,8 +10,12 @@
 
     @vite([
         'resources/css/app.css',
-        'resources/js/app.js'
+        'resources/js/app.js',
+        'public/assets/css/landing.css',
+        'public/assets/css/login.css'
     ])
+
+    <script src="{{ asset('assets/js/auth.js') }}"></script>
 </head>
 <body class="min-h-screen">
 
@@ -44,8 +48,8 @@
 
         <h1 class="text-xl font-bold text-center text-white mt-2"> Welcome Back!</h1>
         <p class="text-center text-xs text-gray-400 mt-2"> Sign in with your credentials to access the <br> IT support portal. </p>
-
-        <form id="login-form" class="w-full sm:w-80 mt-10 space-y-4" method="POST" action="{{ route('login') }}">
+        
+        <form id="login-form" class="w-full sm:w-80 mt-10 space-y-4" method="POST" action="{{ route('login.store') }}">
             @csrf
 
             <x-input
@@ -78,12 +82,14 @@
                 :error="$errors->has('password') ? $errors->first('password') : null"
             />
 
-            <a
-                href="#"
-                class="flex justify-end items-center text-xs text-[#2c51ec] hover:text-[#3d63ff] hover:underline mt-2 transition-colors"
-            >
-                Forgot Password?
-            </a>
+            <div class="flex justify-end mt-2">
+                <a
+                    onclick="openModal('contact-admin')"
+                    class="inline text-xs text-[#2c51ec] hover:text-[#3d63ff] hover:underline transition-colors cursor-pointer"
+                >
+                    Forgot Password?
+                </a>
+            </div>
 
             
 
@@ -95,121 +101,36 @@
                 <i class="ti ti-login"></i>
             </button>
 
-            <p class="text-center text-xs text-gray-400 mt-2"> Are you from City Departments? </p>
+            <p class="text-center text-xs text-gray-400 mt-2"> Are you from City Offices or Barangay? </p>
 
-            <button
-                type="button"
-                class="submit-button w-full mt-3 flex items-center justify-center gap-2 rounded-xl text-sm font-semibold text-white"
-            >
-                Submit Request
-                <i class="ti ti-send"></i>
-            </button>
+            <a href="{{ route('submit.request') }}" class="cta-button h-10 w-full flex items-center justify-center gap-2 rounded-xl text-xs font-semibold text-white">
+                    <span class="text-sm"> Submit Request</span>
+                    <i class="text-sm ti ti-send"></i>
+            </a>
 
         </form>
-
     </main>
 
-    <script>
-        // ========================================
-        // PASSWORD SHOW / HIDE
-        // ========================================
 
-        document.querySelectorAll('.password-field').forEach(function (wrapper) {
+    <x-modal_form
+        id="contact-admin"
+        title="Forgot password"
+        icon="ti ti-alert-triangle"
+        width="max-w-xs"
+    >
 
-            var input = wrapper.querySelector('input');
-            var toggle = wrapper.querySelector('.input-icon-right');
+        <div class="flex flex-col items-center justify-center text-center gap-2">
 
-            if (!input || !toggle) return;
+            <div class="flex items-center justify-center w-16 h-16 rounded-full bg-orange-500/10 border border-orange-500/20">
+                <i class="ti ti-alert-triangle text-3xl text-orange-400"></i>
+            </div>
 
-            toggle.addEventListener('click', function () {
+            <p class="text-xs text-gray-600 leading-relaxed">
+                Please contact your administrator.
+            </p>
 
-                var hidden = input.type === 'password';
+        </div>
 
-                input.type = hidden ? 'text' : 'password';
-
-                toggle.querySelector('i').className =
-                    hidden
-                        ? 'ti ti-eye'
-                        : 'ti ti-eye-off';
-            });
-        });
-
-
-        // ========================================
-        // LOGIN VALIDATION
-        // ========================================
-
-        var loginForm = document.getElementById('login-form');
-
-        if (loginForm) {
-
-            loginForm.addEventListener('submit', function (event) {
-
-                var isValid = true;
-
-                loginForm.querySelectorAll('.floating-input').forEach(function (wrapper) {
-
-                    var input = wrapper.querySelector('input');
-                    var errorText = wrapper.querySelector('.error-text');
-
-                    if (!input) return;
-
-                    var empty = !input.value.trim();
-
-                    // Add red error state when empty
-                    wrapper.classList.toggle('input-error', empty);
-
-                    if (empty) {
-
-                        isValid = false;
-
-                        if (errorText) {
-                            errorText.textContent = 'Must not be empty.';
-                        }
-
-                    } else {
-
-                        if (errorText) {
-                            errorText.textContent = '';
-                        }
-                    }
-                });
-
-
-                // Block submission if any input is empty
-                if (!isValid) {
-                    event.preventDefault();
-                }
-            });
-
-
-            // ========================================
-            // CLEAR ERROR WHEN USER TYPES
-            // ========================================
-
-            loginForm.querySelectorAll('.floating-input input').forEach(function (input) {
-
-                input.addEventListener('input', function () {
-
-                    var wrapper = input.closest('.floating-input');
-
-                    if (!wrapper) return;
-
-                    var errorText = wrapper.querySelector('.error-text');
-
-                    if (input.value.trim()) {
-
-                        // Remove red border and icon
-                        wrapper.classList.remove('input-error');
-
-                        // Remove error message
-                        if (errorText) {
-                            errorText.textContent = '';
-                        }
-                    }
-                });
-            });
-        }
-</script>
+    </x-modal_form>
 </body>
 </html>

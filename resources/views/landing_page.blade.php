@@ -11,6 +11,8 @@
         'resources/css/app.css', 
         'resources/js/app.js'
     ])
+
+    <script src="{{ asset('assets/js/landing.js') }}"></script>
 </head>
 <body>
     <x-header
@@ -19,12 +21,12 @@
         logo="{{ asset('assets/images/biringan.png') }}"
         background="rgba(9, 22, 40, 0.3)"
         textColor="#ffffff"
+        :showHamburger="true"
     >
         <a href="#home" class="nav-link">Home</a>
         <a href="#services" class="nav-link">Services</a>
         <a href="#features" class="nav-link">Features</a>
         <a href="#how-it-works" class="nav-link">How it works</a>
-        <a href="#" class="nav-link">Submit Request</a>
     </x-header>
 
     <main class="landing-page">
@@ -33,14 +35,20 @@
             <div class="hero-badge">CITY OF BIRINGAN IT SUPPORT</div>
             <h1>IT SUPPORT FOR CITY OFFICES AND BARANGAYS</h1>
             <p>
-                Get reliable technical assistance for hardware, software, network and other IT-related concerns
+                Providing reliable technical assistance for hardware, software, network, and other IT-related concerns for City Offices and Barangays.
             </p>
 
             <div class="cta-row">
-                <button type="button" class="cta-button">
-                    <span> Track Request</span>
+                <a href="{{ route('track.request') }}" class="cta-button">
+                    <span> Track Ticket</span>
                     <i class="ti ti-search"></i>
-                </button>
+                </a>
+
+                <a href="{{ route('submit.request') }}" class="cta-button submit">
+                    <span> Submit Ticket </span>
+                    <i class="ti ti-send"></i>
+                </a>
+
                 <a href="{{ route('login') }}" class="cta-button secondary">
                     <span> Login </span>
                     <i class="ti ti-login"></i>
@@ -49,18 +57,18 @@
 
             <div class="feature-list">
                 <span class="feature-item">
-                    <i class="ti ti-circle-check"></i>
-                    <span>Fast issue Reporting</span>
+                    <i class="text-xs ti ti-circle-check"></i>
+                    <span class="text-xs">Fast issue Reporting</span>
                 </span>
 
                 <span class="feature-item">
-                    <i class="ti ti-circle-check"></i>
-                    <span>Real-Time Ticket Tracking</span>
+                    <i class="text-xs ti ti-circle-check"></i>
+                    <span class="text-xs">Real-Time Ticket Tracking</span>
                 </span>
 
                 <span class="feature-item">
-                    <i class="ti ti-circle-check"></i>
-                    <span>Organized Support History</span>
+                    <i class="text-xs ti ti-circle-check"></i>
+                    <span class="text-xs">Organized Support History</span>
                 </span>
             </div>
 
@@ -140,7 +148,7 @@
                 <x-feature_card
                     title="Ticket Tracking"
                     description="Offices and Barangays can monitor their ticket status from
-                                Open → In progress → Resolved → Closed."
+                                Pending → In progress → Resolved → Closed."
                     icon="ti ti-git-merge"
                 />
 
@@ -177,7 +185,7 @@
                 <div class="timeline-content">
                     <h3>Submit a Ticket</h3>
                     <p class="font-bold text-white">Tell us what's wrong.</p>
-                    <p class="text-xs">Describe your IT problem, select the appropriate category and priority, and provide any necessary details or attachments.</p>
+                    <p class="text-xs">Describe your IT problem, select the appropriate category and issue, and provide any necessary details.</p>
                 </div>
             </div>
 
@@ -218,193 +226,65 @@
     
     </section>
 
-    <div class="animated-divider"></div>
 
-    
-    <p class="text-center mx-auto font-sm p-5">© 2026 City of Biringan — IT Support. All Rights Reserved</p>
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <img src="{{ asset('assets/images/biringan.png') }}" alt="City of Biringan" class="footer-logo">
+                    <div>
+                        <span class="footer-title">IT SUPPORT</span>
+                        <span class="footer-subtitle">City of Biringan</span>
+                    </div>
+                </div>
+                <p class="footer-desc">
+                    Providing reliable technical assistance for hardware, software, network, and other IT-related concerns for City Offices and Barangays.
+                </p>
+            </div>
 
-    <script>
-        const navLinks = document.querySelectorAll('.nav-link');
-        const sections = document.querySelectorAll('section[id]');
-        const headerButtons = document.querySelector('.header-buttons');
+            <div class="footer-col">
+                <h4 class="footer-heading">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                </ul>
+            </div>
 
-        let lastSection = null;
+            <div class="footer-col">
+                <h4 class="footer-heading">Actions</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ route('submit.request') }}">Submit Ticket</a></li>
+                    <li><a href="{{ route('track.request') }}">Track Ticket</a></li>
+                    <li><a href="{{ route('login') }}">Login</a></li>
+                </ul>
+            </div>
 
-        /*
-        |--------------------------------------------------------------------------
-        | Smooth Scroll
-        |--------------------------------------------------------------------------
-        */
+            <div class="footer-col">
+                <h4 class="footer-heading">Contact</h4>
+                <ul class="footer-contact">
+                    <li>
+                        <i class="ti ti-mail"></i>
+                        <span>itsupport@biringan.gov.ph</span>
+                    </li>
+                    <li>
+                        <i class="ti ti-phone"></i>
+                        <span>09876543210</span>
+                    </li>
+                    <li>
+                        <i class="ti ti-map-pin"></i>
+                        <span>City of Biringan, Philippines</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                const targetId = this.getAttribute('href').substring(1);
-                const targetSection = document.getElementById(targetId);
-
-                if (!targetSection) return;
-
-                const headerOffset = 80;
-
-                const targetPosition =
-                    targetSection.getBoundingClientRect().top +
-                    window.scrollY -
-                    headerOffset;
-
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Active Navigation
-        |--------------------------------------------------------------------------
-        */
-
-        function updateActiveNavLink() {
-
-            const scrollPosition = window.scrollY + 120;
-
-            let currentSection = null;
-
-            /*
-            |--------------------------------------------------------------------------
-            | Detect Current Section
-            |--------------------------------------------------------------------------
-            */
-
-            sections.forEach(section => {
-
-                const sectionTop = section.offsetTop;
-                const sectionBottom = sectionTop + section.offsetHeight;
-
-                if (
-                    scrollPosition >= sectionTop &&
-                    scrollPosition < sectionBottom
-                ) {
-                    currentSection = section;
-                }
-
-            });
+        <div class="footer-bottom">
+            <p>&copy; 2026 City of Biringan &mdash; IT Support. All Rights Reserved</p>
+        </div>
+    </footer>
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | Keep Last Section While Crossing Dividers
-            |--------------------------------------------------------------------------
-            |
-            | Dividers live between sections, so the scroll position can fall
-            | inside none of them. Reuse the last known section so the header
-            | buttons don't flicker off while scrolling past a divider.
-            |
-            */
-
-            if (!currentSection) {
-                currentSection = lastSection;
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Detect Track Ticket at Bottom
-            |--------------------------------------------------------------------------
-            |
-            | This makes sure Track Ticket becomes active when the user
-            | reaches the bottom of the page.
-            |
-            */
-
-            const scrollBottom =
-                window.scrollY + window.innerHeight;
-
-            const documentBottom =
-                document.documentElement.scrollHeight;
-
-            if (scrollBottom >= documentBottom - 10) {
-
-                currentSection =
-                    document.getElementById('track-ticket');
-
-            }
-
-            lastSection = currentSection;
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Update Active Navigation
-            |--------------------------------------------------------------------------
-            */
-
-            navLinks.forEach(link => {
-
-                link.classList.remove('active');
-
-                if (
-                    currentSection &&
-                    link.getAttribute('href') === `#${currentSection.id}`
-                ) {
-                    link.classList.add('active');
-                }
-
-            });
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Show / Hide Header Buttons
-            |--------------------------------------------------------------------------
-            |
-            | Home     = hidden
-            | Others   = visible
-            |
-            */
-
-            if (headerButtons) {
-
-                if (
-                    currentSection &&
-                    currentSection.id !== 'home'
-                ) {
-
-                    headerButtons.style.display = 'flex';
-
-                } else {
-
-                    headerButtons.style.display = 'none';
-
-                }
-
-            }
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Scroll Event
-        |--------------------------------------------------------------------------
-        */
-
-        window.addEventListener(
-            'scroll',
-            updateActiveNavLink,
-            { passive: true }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Initial State
-        |--------------------------------------------------------------------------
-        */
-
-        updateActiveNavLink();
-    </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Staff Archives')
+@section('title', 'Archived Staff')
 
 @section('content')
 
@@ -121,7 +121,7 @@
         id="unarchive-confirmation-modal"
         title="Unarchive Staff"
         icon="ti ti-archive-off"
-        class="max-w-sm"
+        width="max-w-sm"
     >
         <div class="w-fit mx-auto space-y-5">
 

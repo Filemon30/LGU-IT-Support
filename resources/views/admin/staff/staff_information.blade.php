@@ -86,6 +86,7 @@
                         icon="ti ti-edit"
                         iconPosition="left"
                         type="button"
+                        data-modal-open="update-staff-modal"
                     >
                         Update
                     </x-button>
@@ -137,7 +138,7 @@
                     placeholder="Select Suffix"
                     label="Suffix"
                     :editable="false"
-                    class="max-w-[100px]"
+                    class="max-w-full"
                 />
 
                 <x-input_white
@@ -158,7 +159,7 @@
                     placeholder="Select Gender"
                     label="Gender"
                     :editable="false"
-                    class="max-w-[120px]"
+                    class="max-w-full"
                 />
 
                 <x-input_white
@@ -371,7 +372,7 @@
         id="archive-confirmation-modal"
         title="Archive Staff"
         icon="ti ti-archive"
-        class="max-w-sm"
+        width="max-w-sm"
     >
         <div class="w-fit mx-auto space-y-5">
 
@@ -452,6 +453,15 @@
     {{-- Success Modal --}}
     <x-success_modal id="archive-staff-success" text="Staff added to archives successfully!" />
 
+    <x-modal_form
+        id="update-staff-modal"
+        title="Update Staff"
+        icon="ti ti-user"
+        width="max-w-sm"
+    >
+
+        
+    </x-modal_form>
 
 
 @endsection

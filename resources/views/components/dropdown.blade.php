@@ -6,6 +6,15 @@
     'label' => null,
     'sublabel' => null,
     'size' => 'md',
+
+    // Colors
+    'backgroundColor' => '#ffffff',
+    'borderColor' => '#e5e7eb',
+    'focusColor' => '#2c51ec',
+    'textColor' => '#1f2937',
+    'placeholderColor' => '#9ca3af',
+    'hoverColor' => '#eef4ff',
+    'iconColor' => '#6b7280',
 ])
 
 @php
@@ -37,19 +46,29 @@
     }
 @endphp
 
-<div>
+<div
+    style="
+        --dd-bg: {{ $backgroundColor }};
+        --dd-border: {{ $borderColor }};
+        --dd-focus: {{ $focusColor }};
+        --dd-text: {{ $textColor }};
+        --dd-placeholder: {{ $placeholderColor }};
+        --dd-hover: {{ $hoverColor }};
+        --dd-icon: {{ $iconColor }};
+    "
+>
 
     {{-- Label --}}
     @if($label || $sublabel)
         <div class="inline-flex mb-1">
             @if($label)
-                <h1 class="text-xs font-semibold">
+                <h1 class="text-xs font-semibold" style="color: {{ $textColor }}">
                     {{ $label }}
                 </h1>
             @endif
 
             @if($sublabel)
-                <h1 class="text-xs text-gray-400 ml-1">
+                <h1 class="text-xs ml-1" style="color: {{ $placeholderColor }}">
                     {{ $sublabel }}
                 </h1>
             @endif
@@ -87,22 +106,26 @@
                 list-none
                 rounded-lg
                 border
-                border-gray-300
-                bg-white
                 pr-3
-                text-gray-800
                 outline-none
                 transition
-                focus:border-[#2c51ec]
                 focus:ring-2
-                focus:ring-gray-100
                 [&::-webkit-details-marker]:hidden
                 {{ $sizeClass }}
             "
+            style="
+                border-color: var(--dd-border);
+                background-color: var(--dd-bg);
+                color: var(--dd-text);
+                --tw-ring-color: var(--dd-focus);
+            "
+            onfocus="this.style.borderColor='var(--dd-focus)'"
+            onblur="this.style.borderColor='var(--dd-border)'"
         >
             <span
                 data-dropdown-label
-                class="truncate {{ $selectedText ? '' : 'text-gray-400' }}"
+                class="truncate {{ $selectedText ? '' : '' }}"
+                style="color: {{ $selectedText ? $textColor : $placeholderColor }}"
             >
                 {{ $selectedText ?? $placeholder }}
             </span>
@@ -113,11 +136,11 @@
                     ti-chevron-down
                     pointer-events-none
                     shrink-0
-                    text-gray-500
                     transition-transform
                     duration-200
                     group-open:rotate-180
                 "
+                style="color: var(--dd-icon)"
             ></i>
         </summary>
 
@@ -134,12 +157,11 @@
                 overflow-y-auto
                 rounded-lg
                 border
-                border-gray-200
-                bg-white
                 shadow-lg
-                focus:border-gray-400
-                focus:ring-2
-                focus:ring-gray-100
+            "
+            style="
+                border-color: var(--dd-border);
+                background-color: var(--dd-bg);
             "
         >
 
@@ -154,8 +176,10 @@
                     rounded-[2px]
                     border-l
                     border-t
-                    border-gray-200
-                    bg-white
+                "
+                style="
+                    border-color: var(--dd-border);
+                    background-color: var(--dd-bg);
                 "
             ></div>
 
@@ -173,10 +197,15 @@
                         pr-3
                         text-left
                         transition-colors
-                        hover:bg-[#eef4ff]
-                        {{ $selectedText ? '' : 'bg-[#eef4ff]' }}
+                        {{ $selectedText ? '' : '' }}
                         {{ $sizeClass }}
                     "
+                    style="
+                        color: {{ $placeholderColor }};
+                        {{ !$selectedText ? "background-color: var(--dd-hover);" : '' }}
+                    "
+                    onmouseenter="this.style.backgroundColor='var(--dd-hover)'"
+                    onmouseleave="this.style.backgroundColor='{{ !$selectedText ? 'var(--dd-hover)' : 'transparent' }}'"
                 >
                     {{ $placeholder }}
                 </button>
@@ -196,10 +225,14 @@
                         pr-3
                         text-left
                         transition-colors
-                        hover:bg-[#eef4ff]
-                        {{ (string) $option['value'] === (string) $selected ? 'bg-[#eef4ff]' : '' }}
                         {{ $sizeClass }}
                     "
+                    style="
+                        color: var(--dd-text);
+                        {{ (string) $option['value'] === (string) $selected ? 'background-color: var(--dd-hover);' : '' }}
+                    "
+                    onmouseenter="this.style.backgroundColor='var(--dd-hover)'"
+                    onmouseleave="this.style.backgroundColor='{{ (string) $option['value'] === (string) $selected ? 'var(--dd-hover)' : 'transparent' }}'"
                 >
                     {{ $option['label'] }}
                 </button>
@@ -234,14 +267,14 @@
 
             if (label) {
                 label.textContent = option.dataset.label;
-                label.classList.remove('text-gray-400');
+                label.style.color = root.style.getPropertyValue('--dd-text');
             }
 
             root.querySelectorAll('[data-dropdown-option]').forEach(function (item) {
-                item.classList.toggle(
-                    'bg-[#eef4ff]',
-                    item === option
-                );
+                const isSelected = item === option;
+                item.style.backgroundColor = isSelected
+                    ? root.style.getPropertyValue('--dd-hover')
+                    : 'transparent';
             });
 
             root.removeAttribute('open');

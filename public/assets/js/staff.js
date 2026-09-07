@@ -31,32 +31,32 @@ document.addEventListener('click', function (event) {
 });
 
 function confirmAddStaff() {
-            // Close confirmation modal
-            const confirmModal = document.getElementById('confirmation-staff-modal');
-            confirmModal.classList.add('hidden');
-            confirmModal.classList.remove('flex');
+    // Close confirmation modal
+    const confirmModal = document.getElementById('confirmation-staff-modal');
+    confirmModal.classList.add('hidden');
+    confirmModal.classList.remove('flex');
 
-            // Show loading modal
-            const loadingModal = document.getElementById('add-staff-loading');
-            loadingModal.classList.remove('hidden');
-            loadingModal.classList.add('flex');
+    // Show loading modal
+    const loadingModal = document.getElementById('add-staff-loading');
+    loadingModal.classList.remove('hidden');
+    loadingModal.classList.add('flex');
 
-            // After 2 seconds, hide loading and show success
-            setTimeout(() => {
-                loadingModal.classList.add('hidden');
-                loadingModal.classList.remove('flex');
+    // After 2 seconds, hide loading and show success
+    setTimeout(() => {
+        loadingModal.classList.add('hidden');
+        loadingModal.classList.remove('flex');
 
-                const successModal = document.getElementById('add-staff-success');
-                successModal.classList.remove('hidden');
-                successModal.classList.add('flex');
+        const successModal = document.getElementById('add-staff-success');
+        successModal.classList.remove('hidden');
+        successModal.classList.add('flex');
 
-                // Auto close success modal and redirect after 2 seconds
-                setTimeout(() => {
-                    successModal.classList.add('hidden');
-                    successModal.classList.remove('flex');
-                    window.location.href = '/admin/staff';
-                }, 2000);
-            }, 2000);
+        // Auto close success modal and redirect after 2 seconds
+        setTimeout(() => {
+            successModal.classList.add('hidden');
+            successModal.classList.remove('flex');
+            window.location.href = '/admin/staff';
+        }, 2000);
+    }, 2000);
 }
 
 function confirmArchivedStaff()
@@ -145,4 +145,19 @@ function confirmUnarchivedStaff()
                     window.location.href = '/admin/staff/staff_archives';
                 }, 2000);
             }, 2000);
+}
+
+
+function toggleRequestType(type) {
+
+    var passwordContaier = document.getElementById('password-container');
+    var statusContainer = document.getElementById('status-container');
+
+    if (type === 'password'){
+        statusContainer.classList.remove('hidden');
+        passwordContaier.classList.add('hidden');
+    } else {
+        passwordContaier.classList.remove('hidden');
+        statusContainer.classList.add('hidden');
+    }
 }

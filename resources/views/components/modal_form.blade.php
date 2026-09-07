@@ -2,6 +2,7 @@
     'id' => 'modal-form',
     'title' => 'Modal',
     'icon' => null,
+    'width' => 'max-w-2xl',
 ])
 
 <div
@@ -10,13 +11,13 @@
     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
 >
     <div
-        class="flex w-full max-w-2xl max-h-[calc(100vh-1.5rem)] sm:max-h-[calc(100vh-2rem)]
+        class="flex w-full {{ $width }} max-h-[calc(100vh-1.5rem)] sm:max-h-[calc(100vh-2rem)]
                flex-col overflow-hidden rounded-2xl bg-white shadow-xl"
     >
 
         {{-- Header --}}
         <div
-            class="relative flex shrink-0 items-center justify-center
+            class="relative flex shrink-0
                    border-b border-gray-200 px-5 py-4 sm:px-6 sm:py-5"
         >
 

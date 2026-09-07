@@ -206,6 +206,17 @@ header .text-xs {
     box-shadow: 0 8px 20px rgba(63, 140, 255, 0.7), 0 0 20px rgba(82, 120, 255, 0.6);
 }
 
+
+.cta-button.submit {
+    background: linear-gradient(135deg, #3f72ff, #0b1f6f);
+    box-shadow: inset 0 0 0 1px rgba(9, 44, 161, 0.12);
+}
+
+.cta-button.submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(63, 140, 255, 0.7), 0 0 20px rgba(82, 120, 255, 0.6);
+}
+
 .cta-button.secondary {
     background: rgba(255, 255, 255, 0.08);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
@@ -263,6 +274,16 @@ header .text-xs {
     background: rgba(255, 255, 255, 0.12);
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 4px 20px rgba(255, 255, 255, 0.1);
     transform: translateY(-1px);
+}
+
+.header-btn-submit {
+    background: linear-gradient(135deg, #3f72ff, #0b1f6f);
+    box-shadow: inset 0 0 0 1px rgba(9, 44, 161, 0.12);
+}
+
+.header-btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(63, 140, 255, 0.7), 0 0 20px rgba(82, 120, 255, 0.6);
 }
 
 .track-btn{
@@ -866,6 +887,18 @@ header .text-xs {
     color: var(--input-stroke);
 }
 
+/* ========================================
+   LABEL WHEN HAS VALUE (JS autofill fix)
+   ======================================== */
+
+.floating-input.has-value label {
+    opacity: 1;
+    color: var(--input-stroke);
+}
+
+.floating-input.has-value input:focus + label {
+    color: var(--input-focus);
+}
 
 /* ========================================
    LABEL WHEN VALUE + FOCUS
@@ -1078,6 +1111,309 @@ header .text-xs {
     }
 }
 
+/* ========================================
+   FOOTER
+   ======================================== */
+
+.site-footer {
+    background: #020d1d;
+    border-top: 1px solid rgba(63, 140, 255, 0.15);
+    padding: 3.5rem 2rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.site-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #3f8cff, transparent);
+    box-shadow: 0 0 20px rgba(63, 140, 255, 0.5);
+}
+
+.footer-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+    gap: 2.5rem;
+}
+
+.footer-col {
+    padding: 0.5rem 0;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.footer-logo {
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: 0;
+    object-fit: contain;
+    border: none;
+    box-shadow: none;
+    transition: all 0.3s ease;
+}
+
+.footer-logo:hover {
+    transform: scale(1.08);
+    box-shadow: none;
+}
+
+.footer-title {
+    display: block;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+}
+
+.footer-subtitle {
+    display: block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 2px;
+}
+
+.footer-desc {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.75;
+    margin: 0;
+}
+
+.footer-heading {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #3f8cff;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0 0 1.25rem 0;
+    position: relative;
+    padding-bottom: 0.6rem;
+}
+
+.footer-heading::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 24px;
+    height: 2px;
+    background: #3f8cff;
+    border-radius: 2px;
+    box-shadow: 0 0 8px rgba(63, 140, 255, 0.5);
+}
+
+.footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.6rem;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    font-size: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0;
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+.footer-links a::before {
+    content: '';
+    width: 0;
+    height: 1px;
+    background: #3f8cff;
+    transition: width 0.25s ease;
+    flex-shrink: 0;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+    padding-left: 0.4rem;
+}
+
+.footer-links a:hover::before {
+    width: 12px;
+}
+
+.footer-contact {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.footer-contact li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-bottom: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    transition: color 0.25s ease;
+}
+
+.footer-contact li:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-contact i {
+    font-size: 1rem;
+    color: #3f8cff;
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: rgba(63, 140, 255, 0.08);
+    border: 1px solid rgba(63, 140, 255, 0.15);
+    transition: all 0.25s ease;
+}
+
+.footer-contact li:hover i {
+    background: rgba(63, 140, 255, 0.15);
+    border-color: rgba(63, 140, 255, 0.3);
+    box-shadow: 0 0 12px rgba(63, 140, 255, 0.3);
+}
+
+.footer-bottom {
+    max-width: 1200px;
+    margin: 2.5rem auto 0;
+    padding: 1.25rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    text-align: center;
+}
+
+.footer-bottom p {
+    margin: 0;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ========================================
+   HAMBURGER MENU
+   ======================================== */
+
+.hamburger-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+    flex-shrink: 0;
+}
+
+.hamburger-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+.hamburger-btn.active {
+    background: rgba(63, 140, 255, 0.2);
+    box-shadow: inset 0 0 0 1px rgba(63, 140, 255, 0.4);
+}
+
+.hamburger-dropdown {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.75rem 1.25rem 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(6, 22, 46, 0.97);
+    backdrop-filter: blur(12px);
+}
+
+.hamburger-dropdown.open {
+    display: flex;
+}
+
+.hamburger-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.hamburger-nav .nav-link {
+    display: block;
+    padding: 0.7rem 0;
+    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.hamburger-nav .nav-link:last-child {
+    border-bottom: none;
+}
+
+.hamburger-nav .nav-link.active::after {
+    display: none;
+}
+
+.hamburger-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hamburger-buttons .header-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.65rem 1rem;
+}
+
+/* Desktop: hide hamburger, show regular header buttons */
+@media (min-width: 769px) {
+    .hamburger-btn {
+        display: none;
+    }
+
+    .hamburger-dropdown {
+        display: none !important;
+    }
+}
+
+/* Mobile: show hamburger, hide header buttons outside */
+@media (max-width: 768px) {
+    .hamburger-btn {
+        display: flex;
+    }
+
+    .header-buttons {
+        display: none !important;
+    }
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -1207,6 +1543,19 @@ header .text-xs {
         width: 100%;
         margin-left: 0;
         justify-content: center;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .footer-brand {
+        margin-bottom: 0.75rem;
+    }
+
+    .footer-bottom {
+        margin-top: 2rem;
     }
 }
 

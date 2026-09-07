@@ -22,6 +22,22 @@
         animation: radial-spin 1.2s linear infinite;
     }
 
+    .loading-logo-wrap {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .loading-logo {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: contain;
+    }
+
     .loading-radial::before {
         content: '';
         position: absolute;
@@ -59,7 +75,16 @@
     >
 
         {{-- Radial Spinner --}}
-        <div class="loading-radial mb-5"></div>
+        <div class="relative mb-5">
+            <div class="loading-radial"></div>
+            <div class="loading-logo-wrap">
+                <img
+                    src="{{ asset('assets/images/biringan.png') }}"
+                    alt="Logo"
+                    class="loading-logo"
+                />
+            </div>
+        </div>
 
         {{-- Changeable Text --}}
         <p class="loading-text text-sm font-medium text-gray-700 text-center">
