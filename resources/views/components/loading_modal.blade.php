@@ -67,6 +67,7 @@
 <div
     id="{{ $id }}"
     data-modal
+    data-modal-static
     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
 >
     <div

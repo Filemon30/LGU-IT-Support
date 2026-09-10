@@ -1,11 +1,13 @@
-document.addEventListener('DOMContentLoaded', function () {
-
 function toggleHamburgerMenu() {
     const dropdown = document.getElementById('hamburgerDropdown');
     const btn = document.querySelector('.hamburger-btn');
-    dropdown.classList.toggle('open');
-    btn.classList.toggle('active');
+    if (dropdown && btn) {
+        dropdown.classList.toggle('open');
+        btn.classList.toggle('active');
+    }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener('click', function (e) {
     const dropdown = document.getElementById('hamburgerDropdown');

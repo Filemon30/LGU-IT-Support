@@ -39,7 +39,7 @@
             {{-- Close Button --}}
             <button
                 type="button"
-                data-modal-close="{{ $id }}"
+                onclick="if(typeof closeModal === 'function') closeModal('{{ $id }}');"
                 class="absolute right-3 top-1/2 -translate-y-1/2
                        flex h-9 w-9 items-center justify-center
                        rounded-lg text-gray-400

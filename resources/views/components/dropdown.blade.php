@@ -28,10 +28,8 @@
     $normalized = [];
 
     foreach ($options as $value => $text) {
-        $optionValue = is_int($value) ? $text : $value;
-
         $normalized[] = [
-            'value' => $optionValue,
+            'value' => (string) $value,
             'label' => $text,
         ];
     }

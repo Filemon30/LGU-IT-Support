@@ -12,6 +12,8 @@
     <script src="{{ asset('assets/js/modal.js') }}"></script>
     <script src="{{ asset('assets/js/staff.js') }}"></script>
 
+    <input type="hidden" id="current-user-id" value="{{ session('user_id') }}">
+
 <div class="space-y-6">
             
         <x-card>
@@ -20,22 +22,25 @@
                 <x-overview_card
                     icon="ti ti-users-group"
                     label="Total Staffs"
-                    total="5"
+                    total="{{ $totalStaff }}"
                     color="blue"
+                    id="total-staff"
                 />
 
                 <x-overview_card
                     icon="ti ti-user-check"
                     label="Active Accounts"
-                    total="2"
+                    total="{{ $activeStaff }}"
                     color="green"
+                    id="active-staff"
                 />
 
                 <x-overview_card
                     icon="ti ti-user-cancel"
-                    label="Deactivated Accounts"
-                    total="3"
+                    label="Disabled Accounts"
+                    total="{{ $deactivatedStaff }}"
                     color="red"
+                    id="deactivated-staff"
                 />
             </div> 
             
@@ -69,7 +74,7 @@
                         placeholder="All Statuses"
                         :options="[
                             'active' => 'Active',
-                            'de-activated' => 'De-activated',
+                            'disabled' => 'Disabled',
                         ]"
                         class="w-full h-9 sm:ml-4 sm:w-[10rem]"
                     />
@@ -109,6 +114,7 @@
                     'ID',
                     'Full Name',
                     'Contact No.',
+                    'Position',
                     'Account Status',
                 ]"
                 :actions="true"
@@ -116,44 +122,59 @@
 
                 <x-slot:body>
 
-                    <tr class="border-b border-gray-100 transition-colors hover:bg-gray-50">
-                        <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            IT-00001
-                        </td>
-                        <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            Galanida, Filemon Jr., L.
-                        </td>
-                        <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            09123456789
-                        </td>
-                        <td class="px-4 py-3">
-                            <x-badge
-                                label="Active"
-                                color="green"
-                                icon="ti ti-circle-check"
-                            />
-                        </td>
-                        <td class="px-4 py-3">
-                            <div class="flex items-center gap-1.5">
-                                <x-action_btn
-                                    icon="ti ti-eye"
-                                    color="blue"
-                                    title="View Staff"
-                                    href="{{ route('admin.staff.staff_information')}}"
+                    @forelse ($staff as $member)
+                        <tr class="border-b border-gray-100 transition-colors hover:bg-gray-50">
+                            <td class="whitespace-nowrap px-4 py-3 text-gray-900">
+                                {{ $member->staff_ref_num }}
+                            </td>
+                            <td class="whitespace-nowrap px-4 py-3 text-gray-900">
+                                {{ $member->information->last_name }}, {{ $member->information->first_name }} {{ $member->information->middle_name ? $member->information->middle_name[0] . '.' : '' }} {{ $member->information->suffix }}
+                            </td>
+                            <td class="whitespace-nowrap px-4 py-3 text-gray-900">
+                                {{ $member->information->contact_number }}
+                            </td>
+                            <td class="px-4 py-3">
+                                <x-badge
+                                    label="{{ $member->role->role_name }}"
+                                    color="{{ $member->role->role_name === 'Admin' ? 'purple' : 'blue' }}"
                                 />
-
-                                <x-action_btn
-                                    icon="ti ti-archive"
-                                    color="red"
-                                    title="Achive Staff"
-                                    data-modal-open="archive-confirmation-modal"
+                            </td>
+                            <td class="px-4 py-3">
+                                <x-badge
+                                    label="{{ $member->status }}"
+                                    color="{{ $member->status === 'Active' ? 'green' : 'red' }}"
+                                    icon="{{ $member->status === 'Active' ? 'ti ti-circle-check' : 'ti ti-circle-x' }}"
                                 />
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-1.5">
+                                    <x-action_btn
+                                        icon="ti ti-eye"
+                                        color="blue"
+                                        title="View Staff"
+                                        href="{{ route('admin.staff.staff_information', ['id' => $member->user_id]) }}"
+                                    />
 
-                                
-                            </div>
-                        </td>
-                    </tr>
-
+                                    <x-action_btn
+                                        icon="ti ti-archive"
+                                        color="red"
+                                        title="Archive Staff"
+                                        data-modal-open="archive-confirmation-modal"
+                                        data-id="{{ $member->user_id }}"
+                                        data-ref="{{ $member->staff_ref_num }}"
+                                        data-name="{{ $member->information->last_name }}, {{ $member->information->first_name }} {{ $member->information->middle_name ? $member->information->middle_name[0] . '.' : '' }} {{ $member->information->suffix }}"
+                                        data-status="{{ $member->status }}"
+                                    />
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-500 mt-10">
+                                No staff members found.
+                            </td>
+                        </tr>
+                    @endforelse
 
                 </x-slot:body>
 
@@ -169,7 +190,7 @@
         title="New Staff"
         icon="ti ti-user-plus"
     >
-        <form action="{{ route('admin.staff') }}">
+        <form>
 
             <h2 class="text-lg font-semibold text-gray-900">
                 Staff Information
@@ -230,6 +251,7 @@
                     placeholder="Select Gender"
                     size="md"
                     label="Gender"
+                    :options="collect($genderOptions)->mapWithKeys(fn($g) => [$g => $g])->toArray()"
                 />
     
                 {{-- Contact --}}
@@ -249,26 +271,14 @@
                     placeholder="Select Barangay"
                     size="md"
                     label="Barangay"
+                    :options="$barangays->pluck('barangay_name', 'barangay_name')->toArray()"
                 />
 
                 {{-- City --}}
-                <x-input_white
-                    name="city"
-                    type="text"
-                    placeholder="Biringan City"
-                    label="City"
-                    sublabel="/ Municipality"
-                    :editable="false"
-                />
+                <input type="hidden" name="city" value="Biringan City">
 
                 {{-- Province --}}
-                <x-input_white
-                    name="province"
-                    type="text"
-                    placeholder="Encantadia"
-                    label="Province"
-                    :editable="false"
-                />
+                <input type="hidden" name="province" value="Encantadia">
 
                 {{-- Buttons --}}
                 <div class="col-span-1 md:col-span-3 flex w-full items-center justify-end gap-3 mt-3">
@@ -284,8 +294,7 @@
                     <x-button
                         type="button"
                         color="outline-green"
-                        data-modal-close="info-staff-modal"
-                        data-modal-open="account-staff-modal"
+                        onclick="validateAndProceedInfo()"
                     >
                         Proceed
                     </x-button>
@@ -306,7 +315,7 @@
         icon="ti ti-user-plus"
         width="max-w-sm"
     >
-        <form action="{{ route('admin.staff') }}">
+        <form>
 
             {{-- Section Title --}}
             <h2 class="text-lg font-semibold text-gray-900">
@@ -318,34 +327,67 @@
             {{-- Centered Form --}}
             <div class="flex flex-col items-center gap-3 mt-4">
 
-                {{-- Username --}}
+                {{-- Role --}}
+                <div class="w-full max-w-50">
+                    <x-dropdown
+                        name="role_id"
+                        placeholder="Select Position"
+                        size="md"
+                        label="Position"
+                        :options="$roles->pluck('role_name', 'role_id')->toArray()"
+                    />
+                </div>
+
+                {{-- Email --}}
                 <div class="w-full max-w-50">
                     <x-input_white
-                        name="username"
-                        type="text"
-                        placeholder="Username"
-                        label="Username"
+                        name="email"
+                        type="email"
+                        placeholder="email@biringancity.gov.ph"
+                        label="Email"
                     />
                 </div>
 
                 {{-- Password --}}
                 <div class="w-full max-w-50">
-                    <x-input_white
-                        name="password"
-                        type="password"
-                        placeholder="**********"
-                        label="Password"
-                    />
+                    <label class="text-xs font-semibold mb-1 block">Password</label>
+                    <div class="relative">
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            placeholder="**********"
+                            class="w-full h-9 rounded-lg border border-gray-300 bg-white px-3 pr-9 py-2.5 text-sm font-regular text-gray-900 placeholder-gray-400 outline-none transition focus:border-gray-400 focus:ring-2 focus:ring-gray-100"
+                        >
+                        <button
+                            type="button"
+                            onclick="togglePassword('password', this)"
+                            class="absolute inset-y-0 right-0 flex items-center justify-center w-9 text-gray-400 hover:text-gray-600"
+                        >
+                            <i class="ti ti-eye text-base"></i>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Confirm Password --}}
                 <div class="w-full max-w-50">
-                    <x-input_white
-                        name="password_confirmation"
-                        type="password"
-                        placeholder="********"
-                        label="Re-enter Password"
-                    />
+                    <label class="text-xs font-semibold mb-1 block">Re-enter Password</label>
+                    <div class="relative">
+                        <input
+                            type="password"
+                            name="password_confirmation"
+                            id="password_confirmation"
+                            placeholder="**********"
+                            class="w-full h-9 rounded-lg border border-gray-300 bg-white px-3 pr-9 py-2.5 text-sm font-regular text-gray-900 placeholder-gray-400 outline-none transition focus:border-gray-400 focus:ring-2 focus:ring-gray-100"
+                        >
+                        <button
+                            type="button"
+                            onclick="togglePassword('password_confirmation', this)"
+                            class="absolute inset-y-0 right-0 flex items-center justify-center w-9 text-gray-400 hover:text-gray-600"
+                        >
+                            <i class="ti ti-eye text-base"></i>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Buttons --}}
@@ -363,8 +405,7 @@
                     <x-button
                         type="button"
                         color="outline-green"
-                        data-modal-close="account-staff-modal"
-                        data-modal-open="confirmation-staff-modal"
+                        onclick="validateAndProceedAccount()"
                     >
                         Proceed
                     </x-button>
@@ -381,7 +422,7 @@
         title="New Staff"
         icon="ti ti-user-plus"
     >
-        <form action="{{ route('admin.staff') }}" method="POST">
+        <form>
             <h2 class="text-lg font-semibold text-gray-900">
                 Staff Info Confirmation
             </h2>
@@ -471,20 +512,22 @@
                 />
 
                 {{-- City --}}
+                <input type="hidden" name="city" value="Biringan City">
                 <x-input_white
-                    name="city"
+                    name="city_display"
                     type="text"
-                    placeholder="Biringan City"
+                    value="Biringan City"
                     label="City"
                     sublabel="/ Municipality"
                     :editable="false"
                 />
 
                 {{-- Province --}}
+                <input type="hidden" name="province" value="Encantadia">
                 <x-input_white
-                    name="province"
+                    name="province_display"
                     type="text"
-                    placeholder="Encantadia"
+                    value="Encantadia"
                     label="Province"
                     :editable="false"
                 />
@@ -497,13 +540,23 @@
             {{-- Centered Form --}}
             <div class="flex flex-col items-center gap-3 mt-3">
 
-                {{-- Username --}}
+                {{-- Role --}}
+                <input type="hidden" name="role_id" value="">
+                <x-input_white
+                    name="role_display"
+                    type="text"
+                    value=""
+                    label="Position"
+                    :editable="false"
+                />
+
+                {{-- Email --}}
                 <div class="w-full max-w-50">
                     <x-input_white
-                        name="username"
-                        type="text"
-                        placeholder="Username"
-                        label="Username"
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                        label="Email"
                         :editable="false"
                     />
                 </div>
@@ -518,6 +571,8 @@
                         :editable="false"
                     />
                 </div>
+
+                <input type="hidden" name="password_confirmation" value="">
 
                     {{-- Buttons --}}
                 <div class="flex w-full items-center justify-end gap-3 mt-5">
@@ -534,7 +589,7 @@
                     <x-button
                         type="button"
                         color="outline-green"
-                        onclick="confirmAddStaff()"
+                        onclick="submitAddStaff()"
                     >
                         Confirm
                     </x-button>
@@ -544,11 +599,14 @@
         </form>
     </x-modal_form>
 
+    {{-- Proceed Loading Modal --}}
+    <x-loading_modal id="proceed-loading" text="Proceeding to next step..." />
+
     {{-- Loading Modal --}}
     <x-loading_modal id="add-staff-loading" text="Adding new staff..." />
 
     {{-- Success Modal --}}
-    <x-success_modal id="add-staff-success" text="New staff created successfully!" />
+    <x-success_modal id="add-staff-success" text="New staff account created successfully!" />
 
 
     {{--- Archive Confirmation ---}}
@@ -561,6 +619,8 @@
     >
         <div class="w-fit mx-auto space-y-5">
 
+            <input type="hidden" id="archive-staff-id" value="">
+
             {{-- Confirmation Message --}}
             <p class="text-sm text-gray-600 text-center">
                 Are you sure you want to archive this staff?
@@ -571,14 +631,13 @@
                 
                 <div class="space-y-2">
 
-                    {{-- Full Name --}}
+                    {{-- ID No --}}
                     <div class="grid grid-cols-[100px_1fr] gap-2 items-start">
                         <span class="text-xs font-bold">
                             ID No:
                         </span>
 
-                        <span class="text-xs font-medium">
-                            STF-00001
+                        <span id="archive-staff-ref" class="text-xs font-medium">
                         </span>
                     </div>
 
@@ -588,8 +647,7 @@
                             Full Name:
                         </span>
 
-                        <span class="text-xs font-medium">
-                            Galanida, Filemon Jr., Leornas
+                        <span id="archive-staff-name" class="text-xs font-medium">
                         </span>
                     </div>
 
@@ -599,8 +657,7 @@
                             Account Status:
                         </span>
 
-                        <span class="text-xs font-medium">
-                            De-activated
+                        <span id="archive-staff-status" class="text-xs font-medium">
                         </span>
                     </div>
 
@@ -637,4 +694,28 @@
 
     {{-- Success Modal --}}
     <x-success_modal id="archive-staff-success" text="Staff added to archives successfully!" />
+
+    {{-- Self Archive Prevention Modal --}}
+    <div
+        id="self-archive-modal"
+        data-modal
+        data-modal-static
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
+    >
+        <div class="flex w-full max-w-sm flex-col items-center rounded-2xl bg-white px-8 py-10 shadow-xl">
+            <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+                <i class="ti ti-alert-triangle text-4xl text-red-500"></i>
+            </div>
+            <h3 class="text-base font-semibold text-gray-900 text-center mb-1">Cannot Archive Account</h3>
+            <p class="text-sm text-gray-500 text-center">You cannot archive your own account.</p>
+            <x-button
+                type="button"
+                color="gray"
+                data-modal-close="self-archive-modal"
+                class="w-full mt-5"
+            >
+                Okay
+            </x-button>
+        </div>
+    </div>
 @endsection

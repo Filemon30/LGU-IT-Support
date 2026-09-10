@@ -87,7 +87,7 @@
                     color="d-blue"
                     type="button"
                     icon="ti ti-building-plus"
-                    data-modal-open="add-division"
+                    onclick="openModal('add-division')"
                 >
                     Add Division
                 </x-button>
@@ -141,7 +141,7 @@
 
 <x-modal_form
     id="add-division"
-    title="Add Disivion"
+    title="Add Division"
     icon="ti ti-building-plus"
     width="max-w-sm"
 >
@@ -149,16 +149,32 @@
     <form
         action="{{ route('admin.offices.office_divisions')}}"
     >
-        <x-input_white
-            name="division"
-            type="text"
-            placeholder="Example"
-            label="Division Name"
-        />
-        <p id="division-error" class="text-red-500 text-xs mt-1 hidden">Division name is required</p>
+        <div id="division-inputs" class="space-y-3">
+            <div class="division-input-group flex items-end gap-2">
+                <div class="flex-1">
+                    <x-input_white
+                        name="division[]"
+                        type="text"
+                        placeholder="Example"
+                        label="Division Name"
+                    />
+                    <p class="division-error text-red-500 text-xs mt-1 hidden">Division name is required</p>
+                </div>
+            </div>
+        </div>
+
+        <button
+            type="button"
+            id="add-division-btn"
+            onclick="addDivisionInput()"
+            class="flex items-center gap-1.5 mt-3 text-xs font-medium text-[#2c51ec] hover:text-[#1a3a9e] transition-colors"
+        >
+            <i class="ti ti-plus text-sm"></i>
+            Add Another Division
+        </button>
 
         {{-- Buttons --}}
-        <div class="col-span-1 md:col-span-3 flex w-full items-center justify-end gap-3 mt-3">
+        <div class="col-span-1 md:col-span-3 flex w-full items-center justify-end gap-3 mt-4">
 
             <x-button
                 type="button"
@@ -180,8 +196,9 @@
 >
 
     <div class="text-center space-y-2">
-        <span class="text-gray-600 text-xs">Are you sure you want to add this division?</span>
-        <p class="text-sm font-medium text-gray-900">Division Name: <span id="confirm-division-name"></span></p>
+        <span class="text-gray-600 text-xs">Are you sure you want to add these divisions?</span>
+        <div id="confirm-division-list" class="w-full rounded-lg bg-gray-50 border border-gray-200 p-4 text-left mt-3">
+        </div>
     </div>
         
         {{-- Buttons --}}
@@ -190,8 +207,7 @@
             <x-button
                 type="button"
                 color="outline-red"
-                data-modal-close="add-division-confirmation"
-                data-modal-open="add-division"
+                onclick="closeModal('add-division-confirmation'); openModal('add-division');"
             >
                 No, Back
             </x-button>
@@ -211,6 +227,7 @@
 <div
     id="add-division-success"
     data-modal
+    data-modal-static
     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
 >
     <div class="flex w-full max-w-sm flex-col items-center rounded-2xl bg-white px-8 py-10 shadow-xl">
@@ -221,28 +238,18 @@
         </div>
 
         {{-- Message --}}
-        <h3 class="text-base font-semibold text-gray-900 text-center mb-1">New Division Added Successfully!</h3>
+        <h3 class="text-base font-semibold text-gray-900 text-center mb-1">Divisions Added Successfully!</h3>
+        <p class="text-xs text-gray-500 text-center mb-4">Please save the secret keys for each division.</p>
 
         {{-- Division Info --}}
-        <form action="{{ route('admin.offices.office_divisions') }}" method="POST" class="w-full mt-6">
-            <div class="rounded-lg bg-gray-50 border border-gray-200 p-4 mb-5">
-                <div class="flex justify-between py-2 border-b border-gray-200">
-                    <span class="text-xs text-gray-500">Division Name</span>
-                    <span id="division_name" class="text-xs font-semibold text-gray-900"></span>
-                </div>
-                <div class="flex justify-between py-2">
-                    <span class="text-xs text-gray-500">Secret Key</span>
-                    <span id="secret_key" class="text-xs font-semibold text-gray-900">123123asdasd</span>
-                </div>
-            </div>
-
-        </form>
+        <div id="success-division-list" class="w-full rounded-lg bg-gray-50 border border-gray-200 p-4 mb-5 max-h-60 overflow-y-auto">
+        </div>
 
         {{-- Close Button --}}
         <x-button
             type="button"
             color="gray"
-            data-modal-close="add-division-success"
+            onclick="closeModal('add-division-success'); resetDivisionForm();"
             class="w-full"
         >
             Close

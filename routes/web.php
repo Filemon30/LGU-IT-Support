@@ -6,6 +6,7 @@ use App\Http\Controllers\SubmitRequestController;
 use App\Http\Controllers\TrackRequestController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\Admin\OfficeController;
+use App\Http\Controllers\Admin\BarangayController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -143,6 +144,30 @@ Route::middleware('session.auth')->group(function () {
             Route::get('/staff', [PageController::class, 'staff'])
                 ->name('staff');
 
+            Route::post('/staff', [StaffController::class, 'store'])
+                ->name('staff.store');
+
+            Route::post('/staff/search', [StaffController::class, 'search'])
+                ->name('staff.search');
+
+            Route::post('/staff/search-archives', [StaffController::class, 'searchArchives'])
+                ->name('staff.searchArchives');
+
+            Route::post('/staff/archive', [StaffController::class, 'archive'])
+                ->name('staff.archive');
+
+            Route::post('/staff/unarchive', [StaffController::class, 'unarchive'])
+                ->name('staff.unarchive');
+
+            Route::post('/staff/update-password', [StaffController::class, 'updatePassword'])
+                ->name('staff.updatePassword');
+
+            Route::post('/staff/update-status', [StaffController::class, 'updateStatus'])
+                ->name('staff.updateStatus');
+
+            Route::post('/staff/validate-step', [StaffController::class, 'validateStep'])
+                ->name('staff.validateStep');
+
             Route::get('/staff/staff_information', 
                 [StaffController::class, 'staffInformation'])
             ->name('staff.staff_information');
@@ -152,6 +177,15 @@ Route::middleware('session.auth')->group(function () {
 
             Route::get('/barangays', [PageController::class, 'barangays'])
                 ->name('barangays');
+
+            Route::post('/barangays', [BarangayController::class, 'store'])
+                ->name('barangays.store');
+
+            Route::post('/barangays/search', [BarangayController::class, 'search'])
+                ->name('barangays.search');
+
+            Route::post('/barangays/update', [BarangayController::class, 'update'])
+                ->name('barangays.update');
 
             Route::get('/offices', [PageController::class, 'offices'])
                 ->name('offices');

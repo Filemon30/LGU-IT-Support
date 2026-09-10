@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PageController extends Controller
 {
@@ -137,7 +140,28 @@ class PageController extends Controller
      */
     public function staff()
     {
-        return $this->ajaxView('admin.staff.index');
+        $staff = User::with(['role', 'information'])
+            ->whereIn('status', ['Active', 'Disabled'])
+            ->orderBy('user_id')
+            ->get();
+
+        $totalStaff = $staff->count();
+        $activeStaff = $staff->where('status', 'Active')->count();
+        $deactivatedStaff = $staff->where('status', 'Disabled')->count();
+
+        $roles = Role::all();
+
+        $barangays = \App\Models\Barangay::where('key_status', 'Active')->get();
+
+        $genderColumn = DB::select("SHOW COLUMNS FROM user_informations LIKE 'gender'")[0] ?? null;
+        $genderOptions = [];
+        if ($genderColumn && preg_match("/enum\((.+)\)/i", $genderColumn->Type, $matches)) {
+            $genderOptions = array_map(function ($val) {
+                return trim($val, "'");
+            }, explode(',', $matches[1]));
+        }
+
+        return $this->ajaxView('admin.staff.index', compact('staff', 'totalStaff', 'activeStaff', 'deactivatedStaff', 'roles', 'genderOptions', 'barangays'));
     }
 
     /**
@@ -145,7 +169,9 @@ class PageController extends Controller
      */
     public function barangays()
     {
-        return $this->ajaxView('admin.barangays.index');
+        $barangays = \App\Models\Barangay::orderBy('barangay_id')->get();
+
+        return $this->ajaxView('admin.barangays.index', compact('barangays'));
     }
 
     /**
@@ -190,7 +216,7 @@ class PageController extends Controller
      * Render a view, returning only the content section
      * for AJAX requests.
      */
-    protected function ajaxView(string $view)
+    protected function ajaxView(string $view, array $data = [])
     {
         if (
             request()->ajax() ||
@@ -198,11 +224,11 @@ class PageController extends Controller
         ) {
 
             return response(
-                view($view)
+                view($view, $data)
                     ->renderSections()['content'] ?? ''
             );
         }
 
-        return view($view);
+        return view($view, $data);
     }
 }

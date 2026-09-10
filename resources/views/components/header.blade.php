@@ -79,8 +79,8 @@
                 </a>
 
                 <a href="{{ route('submit.request') }}" class="header-btn header-btn-submit">
-                    <span> Submit Request </span>
-                    <i class="ti ti-search"></i>
+                    <span> Submit Ticket </span>
+                    <i class="ti ti-send"></i>
                 </a>
 
                 <a href="{{ route('login') }}" class="header-btn header-btn-primary">

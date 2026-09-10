@@ -309,36 +309,32 @@
     </main>
 
 
-    {{-- Confirmation Modal --}}
-    <x-modal_form 
-        id="confirm-submit-modal" 
-        title="Confirm Submission" 
-        icon="ti ti-alert-circle" 
+    {{-- Barangay Confirmation Modal --}}
+    <x-modal_form
+        id="confirm-barangay-modal"
+        title="Confirm Barangay Submission"
+        icon="ti ti-alert-circle"
         width="max-w-sm"
     >
         <div>
-            <p class="text-xs text-center text-gray-600 mb-4">Please review your ticket details before submitting</p>
+            <p class="text-xs text-center text-gray-600 mb-4">Please review your barangay ticket details before submitting</p>
 
             <div class="w-full rounded-lg bg-gray-50 border border-gray-200 p-4 mb-5 text-left">
                 <div class="flex justify-between py-2 border-b border-gray-200">
-                    <span class="text-xs text-gray-500">Departments/Offices</span>
-                    <span id="confirm-dept" class="text-xs font-semibold text-gray-900">-</span>
-                </div>
-                <div class="flex justify-between py-2 border-b border-gray-200">
-                    <span class="text-xs text-gray-500">Division</span>
-                    <span id="confirm-division" class="text-xs font-semibold text-gray-900">-</span>
+                    <span class="text-xs text-gray-500">Barangay</span>
+                    <span id="brgy-confirm-dept" class="text-xs font-semibold text-gray-900">-</span>
                 </div>
                 <div class="flex justify-between py-2 border-b border-gray-200">
                     <span class="text-xs text-gray-500">Category</span>
-                    <span id="confirm-category" class="text-xs font-semibold text-gray-900">-</span>
+                    <span id="brgy-confirm-category" class="text-xs font-semibold text-gray-900">-</span>
                 </div>
                 <div class="flex justify-between py-2 border-b border-gray-200">
                     <span class="text-xs text-gray-500">Issue</span>
-                    <span id="confirm-issue" class="text-xs font-semibold text-gray-900">-</span>
+                    <span id="brgy-confirm-issue" class="text-xs font-semibold text-gray-900">-</span>
                 </div>
-                <div class="flex justify-between py-2">
-                    <span class="text-xs text-gray-500">Details</span>
-                    <span id="confirm-details" class="text-xs font-semibold text-gray-900 text-right max-w-[60%]">-</span>
+                <div class="py-2">
+                    <span class="text-xs text-gray-500 block mb-1">Details</span>
+                    <p id="brgy-confirm-details" class="text-xs font-semibold text-gray-900 text-justify break-words whitespace-normal m-0">-</p>
                 </div>
             </div>
 
@@ -346,7 +342,7 @@
                 <x-button
                     type="button"
                     color="outline-gray"
-                    data-modal-close="confirm-submit-modal"
+                    data-modal-close="confirm-barangay-modal"
                 >
                     Cancel
                 </x-button>
@@ -354,7 +350,61 @@
                     type="button"
                     color="outline-blue"
                     icon="ti ti-check"
-                    data-modal-close="confirm-submit-modal"
+                    data-modal-close="confirm-barangay-modal"
+                    data-modal-open="loading-submit-modal"
+                >
+                    Confirm
+                </x-button>
+            </div>
+        </div>
+    </x-modal_form>
+
+    {{-- City Office Confirmation Modal --}}
+    <x-modal_form
+        id="confirm-office-modal"
+        title="Confirm Office Submission"
+        icon="ti ti-alert-circle"
+        width="max-w-sm"
+    >
+        <div>
+            <p class="text-xs text-center text-gray-600 mb-4">Please review your office ticket details before submitting</p>
+
+            <div class="w-full rounded-lg bg-gray-50 border border-gray-200 p-4 mb-5 text-left">
+                <div class="flex justify-between py-2 border-b border-gray-200">
+                    <span class="text-xs text-gray-500">Department/Office</span>
+                    <span id="office-confirm-dept" class="text-xs font-semibold text-gray-900">-</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-200">
+                    <span class="text-xs text-gray-500">Division</span>
+                    <span id="office-confirm-division" class="text-xs font-semibold text-gray-900">-</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-200">
+                    <span class="text-xs text-gray-500">Category</span>
+                    <span id="office-confirm-category" class="text-xs font-semibold text-gray-900">-</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-200">
+                    <span class="text-xs text-gray-500">Issue</span>
+                    <span id="office-confirm-issue" class="text-xs font-semibold text-gray-900">-</span>
+                </div>
+                <div class="py-2">
+                    <span class="text-xs text-gray-500 block mb-1">Details</span>
+                    <p id="office-confirm-details" class="text-xs font-semibold text-gray-900 text-justify break-words whitespace-normal m-0">-</p>
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-3">
+                <x-button
+                    type="button"
+                    color="outline-gray"
+                    data-modal-close="confirm-office-modal"
+                >
+                    Cancel
+                </x-button>
+                <x-button
+                    type="button"
+                    color="outline-blue"
+                    icon="ti ti-check"
+                    data-modal-close="confirm-office-modal"
                     data-modal-open="loading-submit-modal"
                 >
                     Confirm
@@ -370,6 +420,7 @@
     <div
         id="success-submit-modal"
         data-modal
+        data-modal-static
         class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
     >
         <div class="flex w-full max-w-sm flex-col items-center rounded-2xl bg-white px-8 py-10 shadow-xl">

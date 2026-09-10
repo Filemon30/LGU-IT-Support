@@ -17,22 +17,25 @@
                 <x-overview_card
                     icon="ti ti-building-bank"
                     label="Barangays"
-                    total="2"
+                    :total="$barangays->count()"
                     color="blue"
+                    id="total-barangays"
                 />
 
                 <x-overview_card
                     icon="ti ti-key"
                     label="Active Keys"
-                    total="1"
+                    :total="$barangays->where('key_status', 'Active')->count()"
                     color="green"
+                    id="active-keys"
                 />
 
                 <x-overview_card
                     icon="ti ti-key-off"
-                    label="Deactivated Keys"
-                    total="0"
+                    label="Disabled Keys"
+                    :total="$barangays->where('key_status', 'Disabled')->count()"
                     color="red"
+                    id="deactivated-keys"
                 />
             </div> 
             
@@ -102,19 +105,28 @@
 
                 <x-slot:body>
 
+                    @forelse ($barangays as $barangay)
                     <tr class="border-b border-gray-100 transition-colors hover:bg-gray-50">
                         <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            BRGY-00001
+                            {{ $barangay->barangay_ref_num }}
                         </td>
                         <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            Barangay Amihan
+                            {{ $barangay->barangay_name }}
                         </td>
                         <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            <x-badge
-                                color="green"
-                                label="Active"
-                                icon="ti ti-circle-check"
-                            />
+                            @if ($barangay->key_status === 'Active')
+                                <x-badge
+                                    color="green"
+                                    label="Active"
+                                    icon="ti ti-circle-check"
+                                />
+                            @else
+                                <x-badge
+                                    color="red"
+                                    label="Disabled"
+                                    icon="ti ti-circle-x"
+                                />
+                            @endif
                         </td>
 
                         {{-- Buttons --}}
@@ -124,6 +136,10 @@
                                     icon="ti ti-refresh"
                                     color="d-blue"
                                     title="Update Barangay"
+                                    data-modal-open="update-barangay-modal"
+                                    data-id="{{ $barangay->barangay_id }}"
+                                    data-name="{{ $barangay->barangay_name }}"
+                                    data-status="{{ $barangay->key_status }}"
                                 />
 
                                 <x-action_btn
@@ -131,14 +147,23 @@
                                     color="blue"
                                     title="View Barangay"
                                     data-modal-open="barangay-information-modal"
+                                    data-ref="{{ $barangay->barangay_ref_num }}"
+                                    data-name="{{ $barangay->barangay_name }}"
+                                    data-key="{{ $barangay->secret_key_hash }}"
+                                    data-status="{{ $barangay->key_status }}"
                                 />
 
                                 
                             </div>
                         </td>
                     </tr>
-
-                    
+                    @empty
+                    <tr>
+                        <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-500">
+                            No barangays found.
+                        </td>
+                    </tr>
+                    @endforelse
 
                 </x-slot:body>
 
@@ -221,9 +246,10 @@
     <div
         id="add-barangay-success"
         data-modal
+        data-modal-static
         class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
     >
-        <div class="flex w-full max-w-sm flex-col items-center rounded-2xl bg-white px-8 py-10 shadow-xl">
+        <div class="flex w-full max-w-lg flex-col items-center rounded-2xl bg-white px-8 py-10 shadow-xl">
 
             {{-- Success Icon --}}
             <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-50">
@@ -234,19 +260,20 @@
             <h3 class="text-base font-semibold text-gray-900 text-center mb-1">New Barangay Added Successfully!</h3>
 
             {{-- Barangay Info --}}
-            <form action="{{ route('admin.barangays') }}" method="POST" class="w-full mt-6">
-                <div class="rounded-lg bg-gray-50 border border-gray-200 p-4 mb-5">
+                <div class="w-full rounded-lg bg-gray-50 border border-gray-200 p-4 mb-5">
+                    <div class="flex justify-between py-2 border-b border-gray-200">
+                        <span class="text-xs text-gray-500">Reference Number</span>
+                        <span id="success-barangay-ref" class="text-xs font-semibold text-gray-900"></span>
+                    </div>
                     <div class="flex justify-between py-2 border-b border-gray-200">
                         <span class="text-xs text-gray-500">Barangay Name</span>
-                        <span id="ticket-number" class="text-xs font-semibold text-gray-900">Amihan</span>
+                        <span id="success-barangay-name" class="text-xs font-semibold text-gray-900"></span>
                     </div>
                     <div class="flex justify-between py-2">
                         <span class="text-xs text-gray-500">Secret Key</span>
-                        <span id="date-submitted" class="text-xs font-semibold text-gray-900">JKAHSDKJ192390</span>
+                        <span id="success-secret-key" class="text-xs font-semibold text-gray-900"></span>
                     </div>
                 </div>
-
-            </form>
 
             {{-- Close Button --}}
             <x-button
@@ -277,29 +304,85 @@
         <x-card color="dark" class="w-full p-4 ">
             <div class="flex justify-between py-2 border-b border-gray-200">
                 <span class="text-xs text-gray-500">Barangay ID:</span>
-                <span id="ticket-number" class="text-xs font-semibold text-gray-900">BRGY-00001</span>
+                <span id="view-barangay-ref" class="text-xs font-semibold text-gray-900"></span>
             </div>
 
             <div class="flex justify-between py-2 border-b border-gray-200">
                 <span class="text-xs text-gray-500">Barangay Name:</span>
-                <span id="date-submitted" class="text-xs font-semibold text-gray-900">Amihan</span>
+                <span id="view-barangay-name" class="text-xs font-semibold text-gray-900"></span>
             </div>
 
             <div class="flex justify-between py-2 border-b border-gray-200">
-                <span class="text-xs text-gray-500">Secret key:</span>
-                <span id="date-submitted" class="text-xs font-semibold text-gray-900">KJA9081239ASD</span>
+                <span class="text-xs text-gray-500">Secret Key:</span>
+                <span id="view-barangay-key" class="text-xs font-semibold text-gray-900"></span>
             </div>
 
             <div class="flex justify-between py-2 ">
                 <span class="text-xs text-gray-500">Key Status:</span>
-                <x-badge 
-                    color="green"
-                    icon="ti ti-circle-check"
-                    label="Active"    
-                />
+                <span id="view-barangay-status"></span>
             </div>
         </x-card>
 
     </x-modal_form>
+
+    {{-- Update Barangay Modal --}}
+    <x-modal_form
+        id="update-barangay-modal"
+        title="Update Barangay"
+        icon="ti ti-refresh"
+        width="max-w-sm"
+    >
+        <form onsubmit="return false;">
+            <input type="hidden" name="barangay_id" id="update-barangay-id">
+
+            <x-input_white
+                name="barangay_name"
+                type="text"
+                placeholder="Barangay Name"
+                label="Barangay Name"
+                id="update-barangay-name"
+                :editable="false"
+            />
+            <p id="update-name-error" class="text-red-500 text-xs mt-1 hidden"></p>
+
+            <div class="mt-3">
+                <x-dropdown
+                    name="key_status"
+                    placeholder="Select Status"
+                    size="md"
+                    label="Key Status"
+                    :options="[
+                        'Active' => 'Active',
+                        'Disabled' => 'Disabled',
+                    ]"
+                />
+                <p id="update-status-error" class="text-red-500 text-xs mt-1 hidden"></p>
+            </div>
+
+            <div class="flex w-full items-center justify-end gap-3 mt-4">
+                <x-button
+                    type="button"
+                    color="outline-red"
+                    data-modal-close="update-barangay-modal"
+                >
+                    Cancel
+                </x-button>
+
+                <x-button
+                    type="button"
+                    color="outline-green"
+                    onclick="submitUpdateBarangay()"
+                >
+                    Update
+                </x-button>
+            </div>
+        </form>
+    </x-modal_form>
+
+    {{-- Update Loading Modal --}}
+    <x-loading_modal id="update-barangay-loading" text="Updating barangay..." />
+
+    {{-- Update Success Modal --}}
+    <x-success_modal id="update-barangay-success" text="Barangay updated successfully!" />
     
 @endsection

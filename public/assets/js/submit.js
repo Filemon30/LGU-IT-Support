@@ -114,21 +114,22 @@ function openConfirmModal() {
         var description = document.querySelector('[name="brgy_description"]');
         var descriptionText = description && description.value.trim() ? description.value.trim() : '-';
 
-        document.getElementById('confirm-dept').textContent = getSelectedLabel('barangay');
-        document.getElementById('confirm-division').textContent = '-';
-        document.getElementById('confirm-category').textContent = getSelectedLabel('brgy_category');
-        document.getElementById('confirm-issue').textContent = getSelectedLabel('brgy_issue');
-        document.getElementById('confirm-details').textContent = descriptionText;
+        document.getElementById('brgy-confirm-dept').textContent = getSelectedLabel('barangay');
+        document.getElementById('brgy-confirm-category').textContent = getSelectedLabel('brgy_category');
+        document.getElementById('brgy-confirm-issue').textContent = getSelectedLabel('brgy_issue');
+        document.getElementById('brgy-confirm-details').textContent = descriptionText;
+
+        openModal('confirm-barangay-modal');
     } else {
         var description = document.querySelector('[name="city_description"]');
         var descriptionText = description && description.value.trim() ? description.value.trim() : '-';
 
-        document.getElementById('confirm-dept').textContent = getSelectedLabel('department_office');
-        document.getElementById('confirm-division').textContent = getSelectedLabel('division');
-        document.getElementById('confirm-category').textContent = getSelectedLabel('city_category');
-        document.getElementById('confirm-issue').textContent = getSelectedLabel('city_issue');
-        document.getElementById('confirm-details').textContent = descriptionText;
-    }
+        document.getElementById('office-confirm-dept').textContent = getSelectedLabel('department_office');
+        document.getElementById('office-confirm-division').textContent = getSelectedLabel('division');
+        document.getElementById('office-confirm-category').textContent = getSelectedLabel('city_category');
+        document.getElementById('office-confirm-issue').textContent = getSelectedLabel('city_issue');
+        document.getElementById('office-confirm-details').textContent = descriptionText;
 
-    openModal('confirm-submit-modal');
+        openModal('confirm-office-modal');
+    }
 }

@@ -114,10 +114,12 @@ document.addEventListener('click', function (event) {
 
     if (event.target.matches('[data-modal]')) {
 
-        closeModal(event.target.id);
+        if (!event.target.hasAttribute('data-modal-static')) {
+            closeModal(event.target.id);
 
-        if (!document.querySelector('[data-modal]:not(.hidden)')) {
-            document.body.classList.remove('overflow-hidden');
+            if (!document.querySelector('[data-modal]:not(.hidden)')) {
+                document.body.classList.remove('overflow-hidden');
+            }
         }
 
     }
@@ -138,7 +140,7 @@ document.addEventListener('keydown', function (event) {
     }
 
     const modal = document.querySelector(
-        '[data-modal]:not(.hidden)'
+        '[data-modal]:not(.hidden):not([data-modal-static])'
     );
 
     if (modal) {

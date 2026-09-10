@@ -7,6 +7,12 @@
     <script src="{{ asset('assets/js/modal.js') }}"></script>
     <script src="{{ asset('assets/js/staff.js') }}"></script>
 
+    <input type="hidden" id="current-user-id" value="{{ session('user_id') }}">
+    <input type="hidden" id="archive-staff-id" value="{{ $user->user_id }}">
+    <input type="hidden" id="archive-staff-ref" value="{{ $user->staff_ref_num }}">
+    <input type="hidden" id="archive-staff-name" value="{{ $user->information->last_name }}, {{ $user->information->first_name }} {{ $user->information->middle_name ? $user->information->middle_name[0] . '.' : '' }} {{ $user->information->suffix }}">
+    <input type="hidden" id="archive-staff-status" value="{{ $user->status }}">
+
 
     <div class="space-y-6">
 
@@ -33,10 +39,10 @@
                     </h1>
 
                     <x-badge
-                        color="green"
+                        color="{{ $user->status === 'Active' ? 'green' : 'red' }}"
                         class="text-center ml-2 inline-flex"
                     >
-                        Active
+                        {{ $user->status }}
                     </x-badge>
                     
                 </div>
@@ -46,14 +52,25 @@
             <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
 
                 {{-- ID and Date Registered --}}
-                <div class="flex flex-col md:flex-row md:items-end gap-3">
+                <div class="flex flex-col md:flex-row md:items-end gap-3 mt-5">
+
 
                     {{-- ID No. --}}
                     <x-input_white
                         name="id"
                         type="text"
                         label="ID No."
-                        placeholder="IT-00001"
+                        value="{{ $user->staff_ref_num }}"
+                        :editable="false"
+                        class="w-fit"
+                    />
+
+                    {{-- Position --}}
+                    <x-input_white
+                        name="Position"
+                        type="text"
+                        label="Position"
+                        value="{{ $user->role->role_name }}"
                         :editable="false"
                         class="w-fit"
                     />
@@ -63,7 +80,7 @@
                         name="registered"
                         type="text"
                         label="Date Registered"
-                        placeholder="08/30/2026"
+                        value="{{ $user->created_at->format('m/d/Y') }}"
                         :editable="false"
                         class="w-fit"
                     />
@@ -71,7 +88,7 @@
                     <x-input_white
                     name="username"
                     type="text"
-                    placeholder="admin"
+                    value="{{ $user->account->email }}"
                     label="Username"
                     :editable="false"
                     class="w-fit"
@@ -86,7 +103,7 @@
                         icon="ti ti-edit"
                         iconPosition="left"
                         type="button"
-                        data-modal-open="update-staff-modal"
+                        onclick="if(document.getElementById('current-user-id').value === '{{ $user->user_id }}'){var m=document.getElementById('self-update-modal');m.classList.remove('hidden');m.classList.add('flex');document.body.classList.add('overflow-hidden');}else{var m=document.getElementById('update-staff-modal');m.classList.remove('hidden');m.classList.add('flex');document.body.classList.add('overflow-hidden');}"
                     >
                         Update
                     </x-button>
@@ -96,7 +113,7 @@
                         icon="ti ti-archive"
                         iconPosition="left"
                         type="button"
-                        data-modal-open="archive-confirmation-modal"
+                        onclick="if(document.getElementById('current-user-id').value === '{{ $user->user_id }}'){var m=document.getElementById('self-archive-modal');m.classList.remove('hidden');m.classList.add('flex');document.body.classList.add('overflow-hidden');}else{var m=document.getElementById('archive-confirmation-modal');m.classList.remove('hidden');m.classList.add('flex');document.body.classList.add('overflow-hidden');}"
                     >
                         Archive
                     </x-button>
@@ -110,7 +127,7 @@
                 <x-input_white
                     name="last"
                     type="text"
-                    placeholder="Last Name"
+                    value="{{ $user->information->last_name }}"
                     label="Last Name"
                     :editable="false"
                 />
@@ -118,7 +135,7 @@
                 <x-input_white
                     name="first"
                     type="text"
-                    placeholder="First Name"
+                    value="{{ $user->information->first_name }}"
                     label="First Name"
                     :editable="false"
                 />
@@ -126,27 +143,27 @@
                 <x-input_white
                     name="middle"
                     type="text"
-                    placeholder="Middle Name"
+                    value="{{ $user->information->middle_name }}"
                     label="Middle Name"
                     :editable="false"
-                    class="w-fit"
                 />
 
                 <x-input_white
                     name="suffix"
                     type="text"
-                    placeholder="Select Suffix"
+                    value="{{ $user->information->suffix }}"
                     label="Suffix"
                     :editable="false"
-                    class="max-w-full"
+                    class="w-20"
                 />
 
                 <x-input_white
                     name="birthdate"
                     type="text"
-                    placeholder="mm/dd/yyyy"
+                    value="{{ $user->information->birth_date ? \Carbon\Carbon::parse($user->information->birth_date)->format('m/d/Y') : '' }}"
                     label="Birthdate"
                     :editable="false"
+                    class="w-30"
                 />
 
             </div>
@@ -156,25 +173,25 @@
                 <x-input_white
                     name="gender"
                     type="text"
-                    placeholder="Select Gender"
+                    value="{{ $user->information->gender }}"
                     label="Gender"
                     :editable="false"
-                    class="max-w-full"
+                    class="w-30"
                 />
 
                 <x-input_white
                     name="contact"
                     type="text"
-                    placeholder="09876543210"
+                    value="{{ $user->information->contact_number }}"
                     label="Contact No."
                     :editable="false"
-                    class="w-fit"
+                    class="w-35"
                 />
 
                 <x-input_white
                     name="address"
                     type="text"
-                    placeholder="Barangay Amihan, Biringan City, Encantadia"
+                    value="{{ $user->information->barangay }}, {{ $user->information->city }}, {{ $user->information->province }}"
                     label="Address"
                     :editable="false"
                     class="w-full"
@@ -393,7 +410,7 @@
                         </span>
 
                         <span class="text-xs font-medium">
-                            STF-00001
+                            {{ $user->staff_ref_num }}
                         </span>
                     </div>
 
@@ -404,7 +421,7 @@
                         </span>
 
                         <span class="text-xs font-medium">
-                            Galanida, Filemon Jr., Leornas
+                            {{ $user->information->last_name }}, {{ $user->information->first_name }} {{ $user->information->middle_name ? $user->information->middle_name[0] . '.' : '' }} {{ $user->information->suffix }}
                         </span>
                     </div>
 
@@ -415,7 +432,7 @@
                         </span>
 
                         <span class="text-xs font-medium">
-                            De-activated
+                            {{ $user->status }}
                         </span>
                     </div>
 
@@ -453,15 +470,162 @@
     {{-- Success Modal --}}
     <x-success_modal id="archive-staff-success" text="Staff added to archives successfully!" />
 
+    {{-- Update Loading Modal --}}
+    <x-loading_modal id="update-staff-loading" text="Updating staff..." />
+
+    {{-- Update Success Modal --}}
+    <x-success_modal id="update-staff-success" text="Staff updated successfully!" />
+
     <x-modal_form
         id="update-staff-modal"
         title="Update Staff"
         icon="ti ti-user"
-        width="max-w-sm"
+        width="max-w-md"
     >
+        <form onsubmit="return false;">
 
-        
+            <input type="hidden" name="user_id" value="{{ $user->user_id }}">
+
+            <div class="mb-3">
+                <x-dropdown
+                    name="update_type"
+                    placeholder="Select Update Type"
+                    size="md"
+                    label="Update Type"
+                    :options="[
+                        'password' => 'Change Password',
+                        'status' => 'Change Account Status',
+                    ]"
+                />
+            </div>
+
+            {{-- Password Fields --}}
+            <div id="password-fields" class="hidden space-y-3">
+                <div>
+                    <label class="text-xs font-semibold mb-1 block">New Password</label>
+                    <div class="relative">
+                        <input
+                            type="password"
+                            name="password"
+                            id="update-password"
+                            placeholder="**********"
+                            class="w-full h-9 rounded-lg border border-gray-300 bg-white px-3 pr-9 py-2.5 text-sm font-regular text-gray-900 placeholder-gray-400 outline-none transition focus:border-gray-400 focus:ring-2 focus:ring-gray-100"
+                        >
+                        <button
+                            type="button"
+                            onclick="togglePassword('update-password', this)"
+                            class="absolute inset-y-0 right-0 flex items-center justify-center w-9 text-gray-400 hover:text-gray-600"
+                        >
+                            <i class="ti ti-eye text-base"></i>
+                        </button>
+                    </div>
+                    <p id="password-error" class="text-red-500 text-xs mt-1 hidden"></p>
+                </div>
+
+                <div>
+                    <label class="text-xs font-semibold mb-1 block">Re-enter Password</label>
+                    <div class="relative">
+                        <input
+                            type="password"
+                            name="password_confirmation"
+                            id="update-password-confirmation"
+                            placeholder="**********"
+                            class="w-full h-9 rounded-lg border border-gray-300 bg-white px-3 pr-9 py-2.5 text-sm font-regular text-gray-900 placeholder-gray-400 outline-none transition focus:border-gray-400 focus:ring-2 focus:ring-gray-100"
+                        >
+                        <button
+                            type="button"
+                            onclick="togglePassword('update-password-confirmation', this)"
+                            class="absolute inset-y-0 right-0 flex items-center justify-center w-9 text-gray-400 hover:text-gray-600"
+                        >
+                            <i class="ti ti-eye text-base"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Status Fields --}}
+            <div id="status-fields" class="hidden">
+                <x-dropdown
+                    name="status"
+                    placeholder="Select Status"
+                    size="md"
+                    label="Account Status"
+                    :options="[
+                        'Active' => 'Active',
+                        'Disabled' => 'Disabled',
+                    ]"
+                />
+                <p id="status-error" class="text-red-500 text-xs mt-1 hidden"></p>
+            </div>
+
+            <div class="flex w-full items-center justify-end gap-3 mt-4">
+                <x-button
+                    type="button"
+                    color="outline-red"
+                    data-modal-close="update-staff-modal"
+                >
+                    Cancel
+                </x-button>
+
+                <x-button
+                    type="button"
+                    color="outline-green"
+                    onclick="submitUpdateStaff()"
+                >
+                    Update
+                </x-button>
+            </div>
+
+        </form>
     </x-modal_form>
+
+    {{-- Self Archive Prevention Modal --}}
+    <div
+        id="self-archive-modal"
+        data-modal
+        data-modal-static
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
+    >
+        <div class="flex w-full max-w-sm flex-col items-center rounded-2xl bg-white px-8 py-10 shadow-xl">
+            <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+                <i class="ti ti-alert-triangle text-4xl text-red-500"></i>
+            </div>
+            <h3 class="text-base font-semibold text-gray-900 text-center mb-1">Cannot Archive Account</h3>
+            <p class="text-sm text-gray-500 text-center">You cannot archive your own account.</p>
+            <x-button
+                type="button"
+                color="gray"
+                data-modal-close="self-archive-modal"
+                class="w-full mt-5"
+            >
+                Okay
+            </x-button>
+        </div>
+    </div>
+
+    {{-- Self Update Prevention Modal --}}
+    <div
+        id="self-update-modal"
+        data-modal
+        data-modal-static
+        class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
+    >
+        <div class="flex w-full max-w-sm flex-col items-center rounded-2xl bg-white px-8 py-10 shadow-xl">
+            <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+                <i class="ti ti-alert-triangle text-4xl text-red-500"></i>
+            </div>
+            <h3 class="text-base font-semibold text-gray-900 text-center mb-1">Cannot Update Account</h3>
+            <p class="text-sm text-gray-500 text-center">You cannot update your own account.</p>
+            <x-button
+                type="button"
+                color="gray"
+                data-modal-close="self-update-modal"
+                class="w-full mt-5"
+            >
+                Okay
+            </x-button>
+        </div>
+    </div>
 
 
 @endsection

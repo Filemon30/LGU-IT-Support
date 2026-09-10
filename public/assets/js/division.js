@@ -1,118 +1,194 @@
-document.addEventListener('click', function (event) {
+var MAX_DIVISIONS = 5;
+var isConfirming = false;
 
-    // Open modal
-    const openButton = event.target.closest('[data-modal-open]');
-
-    if (openButton) {
-        const modalId = openButton.dataset.modalOpen;
-        const modal = document.getElementById(modalId);
-
-        if (modal) {
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.classList.add('overflow-hidden');
-        }
+function openModal(modalId) {
+    var modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
     }
+}
 
-    // Close modal
-    const closeButton = event.target.closest('[data-modal-close]');
-
-    if (closeButton) {
-        const modalId = closeButton.dataset.modalClose;
-        const modal = document.getElementById(modalId);
-
-        if (modal) {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-            document.body.classList.remove('overflow-hidden');
-        }
+function closeModal(modalId) {
+    var modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
     }
-
-});
+}
 
 document.addEventListener('DOMContentLoaded', function () {
-    const officeInput = document.getElementById('division');
-    const errorMsg = document.getElementById('division-error');
+    updateAddButtonVisibility();
 
-    if (officeInput && errorMsg) {
-        officeInput.addEventListener('input', function () {
-            errorMsg.classList.add('hidden');
+    document.getElementById('division-inputs').addEventListener('input', function (e) {
+        if (e.target.name === 'division[]') {
+            var group = e.target.closest('.division-input-group');
+            if (group) {
+                var errorEl = group.querySelector('.division-error');
+                if (errorEl) errorEl.classList.add('hidden');
+            }
+        }
+    });
+
+    var addDivisionModal = document.getElementById('add-division');
+    if (addDivisionModal) {
+        var observer = new MutationObserver(function () {
+            if (addDivisionModal.classList.contains('hidden') && !isConfirming) {
+                resetDivisionForm();
+            }
         });
+        observer.observe(addDivisionModal, { attributes: true, attributeFilter: ['class'] });
     }
 });
 
-function showConfirmDivisionName() {
-    const officeInput = document.getElementById('division');
-    const errorMsg = document.getElementById('division-error');
-    const confirmName = document.getElementById('confirm-division-name');
+function addDivisionInput() {
+    var container = document.getElementById('division-inputs');
+    var currentCount = container.querySelectorAll('.division-input-group').length;
 
-    if (!officeInput.value.trim()) {
-        errorMsg.classList.remove('hidden');
-        return;
+    if (currentCount >= MAX_DIVISIONS) return;
+
+    var group = document.createElement('div');
+    group.className = 'division-input-group flex items-end gap-2';
+    group.innerHTML = '<div class="flex-1">' +
+        '<input type="text" name="division[]" placeholder="Division Name" ' +
+        'class="w-full h-9 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm font-regular text-gray-900 placeholder-gray-400 outline-none transition focus:border-gray-400 focus:ring-2 focus:ring-gray-100" />' +
+        '<p class="division-error text-red-500 text-xs mt-1 hidden">Division name is required</p>' +
+        '</div>' +
+        '<button type="button" onclick="removeDivisionInput(this)" ' +
+        'class="flex h-9 w-9 items-center justify-center rounded-lg border border-gray-300 text-gray-400 hover:border-red-400 hover:bg-red-50 hover:text-red-500 transition-colors mb-0.5">' +
+        '<i class="ti ti-x text-sm"></i></button>';
+
+    container.appendChild(group);
+    updateAddButtonVisibility();
+}
+
+function removeDivisionInput(btn) {
+    var group = btn.closest('.division-input-group');
+    group.remove();
+    updateAddButtonVisibility();
+}
+
+function updateAddButtonVisibility() {
+    var container = document.getElementById('division-inputs');
+    var addBtn = document.getElementById('add-division-btn');
+    var currentCount = container.querySelectorAll('.division-input-group').length;
+
+    if (currentCount >= MAX_DIVISIONS) {
+        addBtn.classList.add('hidden');
+    } else {
+        addBtn.classList.remove('hidden');
     }
+}
 
-    errorMsg.classList.add('hidden');
-    confirmName.textContent = officeInput.value;
+function resetDivisionForm() {
+    var container = document.getElementById('division-inputs');
+    var groups = container.querySelectorAll('.division-input-group');
 
-    // Close add modal and open confirmation
-    const addModal = document.getElementById('add-division');
-    addModal.classList.add('hidden');
-    addModal.classList.remove('flex');
+    groups.forEach(function (group, i) {
+        if (i === 0) {
+            var input = group.querySelector('input[name="division[]"]');
+            var error = group.querySelector('.division-error');
+            if (input) input.value = '';
+            if (error) error.classList.add('hidden');
+        } else {
+            group.remove();
+        }
+    });
 
-    const confirmModal = document.getElementById('add-division-confirmation');
-    confirmModal.classList.remove('hidden');
-    confirmModal.classList.add('flex');
+    updateAddButtonVisibility();
+}
+
+function getDivisionNames() {
+    var inputs = document.querySelectorAll('#division-inputs input[name="division[]"]');
+    var names = [];
+    inputs.forEach(function (input) {
+        var val = input.value.trim();
+        if (val) names.push(val);
+    });
+    return names;
+}
+
+function showConfirmDivisionName() {
+    var container = document.getElementById('division-inputs');
+    var groups = container.querySelectorAll('.division-input-group');
+    var confirmList = document.getElementById('confirm-division-list');
+    var names = [];
+    var hasError = false;
+
+    groups.forEach(function (group) {
+        var input = group.querySelector('input[name="division[]"]');
+        var errorEl = group.querySelector('.division-error');
+        var val = input.value.trim();
+
+        if (!val) {
+            if (errorEl) errorEl.classList.remove('hidden');
+            hasError = true;
+        } else {
+            if (errorEl) errorEl.classList.add('hidden');
+            names.push(val);
+        }
+    });
+
+    if (hasError || names.length === 0) return;
+
+    var html = '';
+    names.forEach(function (name, i) {
+        var borderClass = i < names.length - 1 ? 'border-b border-gray-200' : '';
+        html += '<div class="flex justify-between py-2 ' + borderClass + '">';
+        html += '<span class="text-xs text-gray-500">Division ' + (i + 1) + '</span>';
+        html += '<span class="text-xs font-semibold text-gray-900">' + name + '</span>';
+        html += '</div>';
+    });
+    confirmList.innerHTML = html;
+
+    isConfirming = true;
+    closeModal('add-division');
+    openModal('add-division-confirmation');
 }
 
 function confirmAddDivision() {
-    // =========================
-    // CLOSE CONFIRMATION
-    // =========================
-    const confirmModal = document.getElementById('add-division-confirmation');
+    var names = getDivisionNames();
+    isConfirming = false;
 
-    confirmModal.classList.add('hidden');
-    confirmModal.classList.remove('flex');
+    closeModal('add-division-confirmation');
 
-
-    // =========================
-    // SHOW LOADING
-    // =========================
-    const loadingModal = document.getElementById('add-division-loading');
-
+    var loadingModal = document.getElementById('add-division-loading');
     loadingModal.classList.remove('hidden');
     loadingModal.classList.add('flex');
 
-
-    // =========================
-    // LOADING → GENERATING
-    // =========================
-    setTimeout(() => {
-
+    setTimeout(function () {
         loadingModal.classList.add('hidden');
         loadingModal.classList.remove('flex');
 
-
-        const generatingModal = document.getElementById('generating-key-loading');
-
+        var generatingModal = document.getElementById('generating-key-loading');
         generatingModal.classList.remove('hidden');
         generatingModal.classList.add('flex');
 
-
-        // =========================
-        // GENERATING → SUCCESS
-        // =========================
-        setTimeout(() => {
-
+        setTimeout(function () {
             generatingModal.classList.add('hidden');
             generatingModal.classList.remove('flex');
 
+            var successList = document.getElementById('success-division-list');
+            var html = '';
+            names.forEach(function (name, i) {
+                var borderClass = i < names.length - 1 ? 'border-b border-gray-200' : '';
+                html += '<div class="py-2 ' + borderClass + '">';
+                html += '<div class="flex justify-between mb-1">';
+                html += '<span class="text-xs text-gray-500">Division Name</span>';
+                html += '<span class="text-xs font-semibold text-gray-900">' + name + '</span>';
+                html += '</div>';
+                html += '<div class="flex justify-between">';
+                html += '<span class="text-xs text-gray-500">Secret Key</span>';
+                html += '<span class="text-xs font-semibold text-gray-900">-</span>';
+                html += '</div>';
+                html += '</div>';
+            });
+            successList.innerHTML = html;
 
-            const successModal = document.getElementById('add-division-success');
+            openModal('add-division-success');
 
-            successModal.classList.remove('hidden');
-            successModal.classList.add('flex');
-
-            
         }, 3000);
 
     }, 2000);
