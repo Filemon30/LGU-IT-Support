@@ -23,6 +23,8 @@
         - City of Biringan IT Support
     </title>
 
+    @yield('head')
+
     @vite([
         'resources/css/app.css',
         'resources/js/app.js'

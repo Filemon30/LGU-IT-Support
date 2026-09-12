@@ -3,16 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TicketAssignment extends Model
 {
     use HasFactory;
 
     protected $table = 'ticket_assignments';
+
     protected $primaryKey = 'assignment_id';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
 
     public $timestamps = false;

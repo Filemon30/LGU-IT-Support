@@ -34,10 +34,10 @@ class StaffController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('staff_ref_num', 'like', "%{$search}%")
-                  ->orWhereHas('information', function ($q2) use ($search) {
-                      $q2->where('first_name', 'like', "%{$search}%")
-                         ->orWhere('last_name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('information', function ($q2) use ($search) {
+                        $q2->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -50,21 +50,21 @@ class StaffController extends Controller
         $html = '';
 
         foreach ($staff as $member) {
-            $fullName = $member->information->last_name . ', ' . $member->information->first_name . ' ' . ($member->information->middle_name ? $member->information->middle_name[0] . '.' : '') . ' ' . $member->information->suffix;
+            $fullName = $member->information->last_name.', '.$member->information->first_name.' '.($member->information->middle_name ? $member->information->middle_name[0].'.' : '').' '.$member->information->suffix;
             $roleColor = $member->role->role_name === 'Admin' ? 'purple' : 'blue';
             $statusColor = $member->status === 'Active' ? 'green' : 'red';
             $statusIcon = $member->status === 'Active' ? 'ti ti-circle-check' : 'ti ti-circle-x';
-            $staffUrl = '/admin/staff/staff_information?id=' . $member->user_id;
+            $staffUrl = '/admin/staff/staff_information?id='.$member->user_id;
 
             $html .= '<tr class="border-b border-gray-100 transition-colors hover:bg-gray-50">';
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . e($member->staff_ref_num) . '</td>';
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . e($fullName) . '</td>';
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . e($member->information->contact_number) . '</td>';
-            $html .= '<td class="px-4 py-3"><span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba(' . ($roleColor === 'purple' ? '168, 85, 247' : '59, 130, 246') . ', 0.10); color: ' . ($roleColor === 'purple' ? '#c084fc' : '#60a5fa') . '; border-color: rgba(' . ($roleColor === 'purple' ? '168, 85, 247' : '59, 130, 246') . ', 0.30);"><span class="text-[0.7rem]">' . e($member->role->role_name) . '</span></span></td>';
-            $html .= '<td class="px-4 py-3"><span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba(' . ($statusColor === 'green' ? '34, 197, 94' : '239, 68, 68') . ', 0.10); color: ' . ($statusColor === 'green' ? '#4ade80' : '#f87171') . '; border-color: rgba(' . ($statusColor === 'green' ? '34, 197, 94' : '239, 68, 68') . ', 0.30);"><i class="' . $statusIcon . ' text-[0.7rem]"></i><span class="text-[0.7rem]">' . e($member->status) . '</span></span></td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.e($member->staff_ref_num).'</td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.e($fullName).'</td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.e($member->information->contact_number).'</td>';
+            $html .= '<td class="px-4 py-3"><span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba('.($roleColor === 'purple' ? '168, 85, 247' : '59, 130, 246').', 0.10); color: '.($roleColor === 'purple' ? '#c084fc' : '#60a5fa').'; border-color: rgba('.($roleColor === 'purple' ? '168, 85, 247' : '59, 130, 246').', 0.30);"><span class="text-[0.7rem]">'.e($member->role->role_name).'</span></span></td>';
+            $html .= '<td class="px-4 py-3"><span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba('.($statusColor === 'green' ? '34, 197, 94' : '239, 68, 68').', 0.10); color: '.($statusColor === 'green' ? '#4ade80' : '#f87171').'; border-color: rgba('.($statusColor === 'green' ? '34, 197, 94' : '239, 68, 68').', 0.30);"><i class="'.$statusIcon.' text-[0.7rem]"></i><span class="text-[0.7rem]">'.e($member->status).'</span></span></td>';
             $html .= '<td class="px-4 py-3"><div class="flex items-center gap-1.5">';
-            $html .= '<a href="' . $staffUrl . '" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="View Staff"><i class="ti ti-eye text-xs text-white"></i></a>';
-            $html .= '<button type="button" data-modal-open="archive-confirmation-modal" data-id="' . $member->user_id . '" data-ref="' . e($member->staff_ref_num) . '" data-name="' . e($fullName) . '" data-status="' . e($member->status) . '" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-red-600 hover:bg-red-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="Archive Staff"><i class="ti ti-archive text-xs text-white"></i></button>';
+            $html .= '<a href="'.$staffUrl.'" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="View Staff"><i class="ti ti-eye text-xs text-white"></i></a>';
+            $html .= '<button type="button" data-modal-open="archive-confirmation-modal" data-id="'.$member->user_id.'" data-ref="'.e($member->staff_ref_num).'" data-name="'.e($fullName).'" data-status="'.e($member->status).'" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-red-600 hover:bg-red-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="Archive Staff"><i class="ti ti-archive text-xs text-white"></i></button>';
             $html .= '</div></td>';
             $html .= '</tr>';
         }
@@ -86,10 +86,10 @@ class StaffController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('staff_ref_num', 'like', "%{$search}%")
-                  ->orWhereHas('information', function ($q2) use ($search) {
-                      $q2->where('first_name', 'like', "%{$search}%")
-                         ->orWhere('last_name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('information', function ($q2) use ($search) {
+                        $q2->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -98,16 +98,16 @@ class StaffController extends Controller
         $html = '';
 
         foreach ($archived as $member) {
-            $fullName = $member->information->last_name . ', ' . $member->information->first_name . ' ' . ($member->information->middle_name ? $member->information->middle_name[0] . '.' : '') . ' ' . $member->information->suffix;
+            $fullName = $member->information->last_name.', '.$member->information->first_name.' '.($member->information->middle_name ? $member->information->middle_name[0].'.' : '').' '.$member->information->suffix;
             $remaining = max(0, 30 - intdiv($member->updated_at->diffInMilliseconds(now()), 86400000));
 
             $html .= '<tr class="border-b border-gray-100 transition-colors hover:bg-gray-50">';
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . e($member->staff_ref_num) . '</td>';
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . e($fullName) . '</td>';
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . $member->updated_at->format('m/d/Y') . '</td>';
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . $remaining . ' days</td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.e($member->staff_ref_num).'</td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.e($fullName).'</td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.$member->updated_at->format('m/d/Y').'</td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.$remaining.' days</td>';
             $html .= '<td class="px-4 py-3"><div class="flex items-center">';
-            $html .= '<button type="button" data-modal-open="unarchive-confirmation-modal" data-id="' . $member->user_id . '" data-ref="' . e($member->staff_ref_num) . '" data-name="' . e($fullName) . '" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-green-600 hover:bg-green-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="Unarchive Staff"><i class="ti ti-archive-off text-xs text-white"></i></button>';
+            $html .= '<button type="button" data-modal-open="unarchive-confirmation-modal" data-id="'.$member->user_id.'" data-ref="'.e($member->staff_ref_num).'" data-name="'.e($fullName).'" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-green-600 hover:bg-green-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="Unarchive Staff"><i class="ti ti-archive-off text-xs text-white"></i></button>';
             $html .= '</div></td>';
             $html .= '</tr>';
         }
@@ -167,7 +167,7 @@ class StaffController extends Controller
 
                 $request->validate([
 
-                    'role_id' => ['required', 'in:' . implode(',', $validRoleIds)],
+                    'role_id' => ['required', 'in:'.implode(',', $validRoleIds)],
 
                     'email' => [
                         'required',
@@ -231,7 +231,7 @@ class StaffController extends Controller
                 'city' => ['required', 'string', 'max:255'],
                 'province' => ['required', 'string', 'max:255'],
 
-                'role_id' => ['required', 'in:' . implode(',', $validRoleIds)],
+                'role_id' => ['required', 'in:'.implode(',', $validRoleIds)],
 
                 'email' => [
                     'required',
@@ -323,7 +323,7 @@ class StaffController extends Controller
             'New Staff Added',
             'User',
             $result->user_id,
-            'Added new staff: ' . $result->staff_ref_num
+            'Added new staff: '.$result->staff_ref_num
         );
 
         if ($request->expectsJson()) {
@@ -336,7 +336,7 @@ class StaffController extends Controller
                 'staff' => [
                     'user_id' => $user->user_id,
                     'staff_ref_num' => $user->staff_ref_num,
-                    'full_name' => $user->information->last_name . ', ' . $user->information->first_name . ' ' . ($user->information->middle_name ? $user->information->middle_name[0] . '.' : '') . ' ' . $user->information->suffix,
+                    'full_name' => $user->information->last_name.', '.$user->information->first_name.' '.($user->information->middle_name ? $user->information->middle_name[0].'.' : '').' '.$user->information->suffix,
                     'role_name' => $user->role->role_name,
                     'contact_number' => $user->information->contact_number,
                     'status' => $user->status,
@@ -353,7 +353,7 @@ class StaffController extends Controller
     private function generateRefNum()
     {
         do {
-            $refNum = '2026' . str_pad(random_int(10000000, 99999999), 8, '0', STR_PAD_LEFT);
+            $refNum = '2026'.str_pad(random_int(10000000, 99999999), 8, '0', STR_PAD_LEFT);
         } while (User::where('staff_ref_num', $refNum)->exists());
 
         return $refNum;
@@ -384,7 +384,7 @@ class StaffController extends Controller
             'Staff Status Updated',
             'User',
             $user->user_id,
-            'Archived staff: ' . $user->staff_ref_num,
+            'Archived staff: '.$user->staff_ref_num,
             ['status' => $oldStatus],
             ['status' => 'Archived']
         );
@@ -427,7 +427,7 @@ class StaffController extends Controller
             'Staff Status Updated',
             'User',
             $user->user_id,
-            'Unarchived staff: ' . $user->staff_ref_num,
+            'Unarchived staff: '.$user->staff_ref_num,
             ['status' => $oldStatus],
             ['status' => 'Active']
         );
@@ -476,7 +476,7 @@ class StaffController extends Controller
             'Staff Password Updated',
             'User',
             $user->user_id,
-            'Updated password for staff: ' . $user->staff_ref_num
+            'Updated password for staff: '.$user->staff_ref_num
         );
 
         if ($request->expectsJson()) {
@@ -522,7 +522,7 @@ class StaffController extends Controller
             'Staff Status Updated',
             'User',
             $user->user_id,
-            'Updated status for staff: ' . $user->staff_ref_num,
+            'Updated status for staff: '.$user->staff_ref_num,
             ['status' => $oldStatus],
             ['status' => $newStatus]
         );
@@ -542,7 +542,7 @@ class StaffController extends Controller
 
     private function logTransaction($actionType, $entityType, $entityId, $description = null, $oldValues = null, $newValues = null)
     {
-        $refNum = 'ATRN-' . str_pad(random_int(1, 99999999), 8, '0', STR_PAD_LEFT);
+        $refNum = str_pad(random_int(1, 9999999999), 10, '0', STR_PAD_LEFT);
 
         AdminTransaction::create([
             'admin_transaction_ref' => $refNum,

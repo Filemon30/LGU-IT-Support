@@ -36,14 +36,11 @@ class AuthController extends Controller
 
         ], [
 
-            'email.required' =>
-                'Must not be Empty',
+            'email.required' => 'Must not be Empty',
 
-            'email.regex' =>
-                'Invalid email',
+            'email.regex' => 'Invalid email',
 
-            'password.required' =>
-                'Must not be Empty',
+            'password.required' => 'Must not be Empty',
 
         ]);
 
@@ -87,10 +84,9 @@ class AuthController extends Controller
 
             'role' => $role,
 
-            'user_name' =>
-                $user->information->first_name
-                . ' '
-                . $user->information->last_name,
+            'user_name' => $user->information->first_name
+                .' '
+                .$user->information->last_name,
 
             'staff_ref_num' => $user->staff_ref_num,
 

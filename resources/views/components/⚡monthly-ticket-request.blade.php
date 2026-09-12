@@ -1,7 +1,8 @@
 <?php
 
 use Livewire\Component;
-use Carbon\Carbon;
+use App\Models\Ticket;
+use App\Models\Category;
 
 new class extends Component
 {
@@ -15,7 +16,7 @@ new class extends Component
     public function with(): array
     {
         return [
-            'years' => range((int) date('Y'), 2020),
+            'years' => array_combine(range((int) date('Y'), 2020), range((int) date('Y'), 2020)),
 
             'currentYear' => (int) date('Y'),
 
@@ -23,69 +24,56 @@ new class extends Component
         ];
     }
 
-    /**
-     * Monthly ticket request data.
-     *
-     * Displays January to December.
-     * Future months of the current year have 0 data.
-     */
     private function chartData(): array
     {
         $months = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December',
+            'January', 'February', 'March', 'April',
+            'May', 'June', 'July', 'August',
+            'September', 'October', 'November', 'December',
         ];
 
         $currentYear = (int) date('Y');
         $currentMonth = (int) date('n');
 
-        mt_srand($this->year);
+        $hwId = Category::where('category_name', 'Hardware')->value('category_id');
+        $swId = Category::where('category_name', 'Software')->value('category_id');
+        $netId = Category::where('category_name', 'Network')->value('category_id');
 
         $hardware = [];
         $software = [];
         $network = [];
         $totals = [];
 
-        foreach ($months as $index => $month) {
-
-            $monthNumber = $index + 1;
-
-            /*
-             * If the selected year is the current year,
-             * future months should have no data yet.
-             *
-             * If an older year is selected, all 12 months
-             * can have data.
-             */
-            if (
-                $this->year === $currentYear &&
-                $monthNumber > $currentMonth
-            ) {
+        for ($i = 1; $i <= 12; $i++) {
+            if ($this->year === $currentYear && $i > $currentMonth) {
                 $hardware[] = 0;
                 $software[] = 0;
                 $network[] = 0;
                 $totals[] = 0;
-
                 continue;
             }
 
-            /*
-             * Sample data.
-             * Replace this with your actual ticket queries later.
-             */
-            $h = mt_rand(0, 30);
-            $s = mt_rand(0, 25);
-            $n = mt_rand(0, 20);
+            $h = $hwId
+                ? Ticket::where('issue_id', '!=', null)
+                    ->whereHas('issue.category', fn ($q) => $q->where('category_id', $hwId))
+                    ->whereYear('created_at', $this->year)
+                    ->whereMonth('created_at', $i)
+                    ->count()
+                : 0;
+
+            $s = $swId
+                ? Ticket::whereHas('issue.category', fn ($q) => $q->where('category_id', $swId))
+                    ->whereYear('created_at', $this->year)
+                    ->whereMonth('created_at', $i)
+                    ->count()
+                : 0;
+
+            $n = $netId
+                ? Ticket::whereHas('issue.category', fn ($q) => $q->where('category_id', $netId))
+                    ->whereYear('created_at', $this->year)
+                    ->whereMonth('created_at', $i)
+                    ->count()
+                : 0;
 
             $hardware[] = $h;
             $software[] = $s;
@@ -95,9 +83,7 @@ new class extends Component
 
         return [
             'year' => $this->year,
-
             'labels' => $months,
-
             'hardware' => $hardware,
             'software' => $software,
             'network' => $network,
@@ -251,7 +237,9 @@ new class extends Component
                     chart.destroy();
                 }
 
-                const blue = '#2c51ec';
+                const orange = '#071f45';
+                const blue   = '#1E4079';
+                const green  = '#1FC2C4';
 
                 chart = new Chart(
                     canvas.getContext('2d'),
@@ -263,63 +251,42 @@ new class extends Component
 
                             datasets: [
                                 {
-                                    label: `Ticket Requests ${payload.year}`,
-
-                                    data: payload.totals,
-
-                                    borderColor: blue,
-
-                                    /**
-                                     * Gradient fill.
-                                     *
-                                     * chartArea is available after
-                                     * Chart.js calculates the layout.
-                                     */
-                                    backgroundColor: (context) => {
-
-                                        const {
-                                            chart,
-                                            chartArea,
-                                        } = context;
-
-                                        const gradient = chart.ctx.createLinearGradient(
-                                            0,
-                                            0,
-                                            0,
-                                            chart.canvas.height
-                                        );
-
-                                        gradient.addColorStop(
-                                            0,
-                                            'rgba(44, 81, 236, 1)'
-                                        );
-
-                                        gradient.addColorStop(
-                                            1,
-                                            'rgba(44, 81, 236, 0.2)'
-                                        );
-
-                                        if (!chartArea) {
-                                            return gradient;
-                                        }
-
-                                        return gradient;
-                                    },
-
-                                    fill: true,
-
+                                    label: 'Hardware',
+                                    data: payload.hardware,
+                                    borderColor: orange,
+                                    backgroundColor: 'transparent',
                                     tension: 0.35,
-
                                     borderWidth: 2,
-
                                     pointRadius: 3,
-
                                     pointHoverRadius: 5,
-
-                                    pointBackgroundColor: blue,
-
+                                    pointBackgroundColor: orange,
                                     pointBorderColor: '#ffffff',
-
+                                    pointBorderWidth: 2,
+                                },
+                                {
+                                    label: 'Software',
+                                    data: payload.software,
+                                    borderColor: blue,
+                                    backgroundColor: 'transparent',
+                                    tension: 0.35,
+                                    borderWidth: 2,
+                                    pointRadius: 3,
+                                    pointHoverRadius: 5,
+                                    pointBackgroundColor: blue,
+                                    pointBorderColor: '#ffffff',
+                                    pointBorderWidth: 2,
+                                },
+                                {
+                                    label: 'Network',
+                                    data: payload.network,
+                                    borderColor: green,
+                                    backgroundColor: 'transparent',
+                                    tension: 0.35,
+                                    borderWidth: 2,
+                                    pointRadius: 3,
+                                    pointHoverRadius: 5,
+                                    pointBackgroundColor: green,
+                                    pointBorderColor: '#ffffff',
                                     pointBorderWidth: 2,
                                 },
                             ],
@@ -358,29 +325,6 @@ new class extends Component
                                         title: (items) => {
                                             return `${items[0].label} ${payload.year}`;
                                         },
-
-                                        label: (item) => {
-                                            return `Ticket Requests: ${item.parsed.y}`;
-                                        },
-
-                                        footer: (items) => {
-
-                                            const index =
-                                                items[0].dataIndex;
-
-                                            return [
-                                                `Hardware: ${payload.hardware[index]}`,
-                                                `Software: ${payload.software[index]}`,
-                                                `Network: ${payload.network[index]}`,
-                                                `Total: ${payload.totals[index]}`,
-                                            ];
-                                        },
-                                    },
-
-                                    footerBorderColor: '#e5e7eb',
-
-                                    footerFont: {
-                                        weight: 'bold',
                                     },
 
                                     boxPadding: 3,

@@ -1,3 +1,17 @@
+function insertRowSorted(tbody, newRow) {
+    const newRef = newRow.querySelector('td')?.textContent?.trim() || '';
+    const rows = tbody.querySelectorAll('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+        const existingRef = rows[i].querySelector('td')?.textContent?.trim() || '';
+        if (newRef < existingRef) {
+            tbody.insertBefore(newRow, rows[i]);
+            return;
+        }
+    }
+    tbody.appendChild(newRow);
+}
+
 document.addEventListener('click', function (event) {
 
     // Open modal
@@ -430,7 +444,7 @@ function submitAddStaff() {
             const tbody = document.querySelector('table tbody');
             const emptyRow = tbody.querySelector('td[colspan]');
             if (emptyRow) emptyRow.closest('tr').remove();
-            tbody.insertBefore(row, tbody.firstChild);
+            insertRowSorted(tbody, row);
 
             const totalEl = document.getElementById('total-staff');
             const activeEl = document.getElementById('active-staff');

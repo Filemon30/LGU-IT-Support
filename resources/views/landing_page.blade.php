@@ -96,7 +96,7 @@
 
                 <div class="service-card">
                     <div class="service-icon">
-                        <i class="ti ti-apps"></i>
+                        <i class="ti ti-brand-windows"></i>
                     </div>
                     <h3>Software Support</h3>
                     <p>Get assistance with software installation, updates, compatibility issues, and application troubleshooting.</p>
@@ -104,7 +104,7 @@
 
                 <div class="service-card">
                     <div class="service-icon">
-                        <i class="ti ti-network"></i>
+                        <i class="ti ti-wifi"></i>
                     </div>
                     <h3>Network Support</h3>
                     <p>Resolve connectivity issues, network configuration, and ensure stable internet access.</p>
@@ -121,7 +121,7 @@
 
         <div class="animated-divider"></div>
 
-        <div class="mx-auto max-w-6xl">
+        <div class="mx-auto max-w-auto">
             <h2 class="feature-title text-center">Core Features</h2>
 
             <p class="text-center text-sm font-light opacity-75 leading-relaxed max-w-2xl mx-auto">
@@ -129,7 +129,7 @@
                 to manage every support issue efficiently.
             </p>
 
-            <div class="feature-cards mt-10 grid grid-cols-2 gap-6">
+            <div class="flex grid grid-cols-1 md:grid-cols-4 mx-auto mt-10 gap-6">
 
                 <x-feature_card
                     title="Easy Ticketing"

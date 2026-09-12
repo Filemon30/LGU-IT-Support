@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
-
 class BarangayController extends Controller
 {
     public function store(Request $request)
@@ -57,7 +56,7 @@ class BarangayController extends Controller
             'New Barangay Added',
             'Barangay',
             $result->barangay_id,
-            'Added new barangay: ' . $result->barangay_name
+            'Added new barangay: '.$result->barangay_name
         );
 
         if ($request->expectsJson()) {
@@ -90,7 +89,7 @@ class BarangayController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('barangay_ref_num', 'like', "%{$search}%")
-                  ->orWhere('barangay_name', 'like', "%{$search}%");
+                    ->orWhere('barangay_name', 'like', "%{$search}%");
             });
         }
 
@@ -104,16 +103,16 @@ class BarangayController extends Controller
 
         foreach ($barangays as $barangay) {
             $statusBadge = $barangay->key_status === 'Active'
-                ? '<span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba(34, 197, 94, 0.10); color: #4ade80; border-color: rgba(34, 197, 94, 0.30);"><i class="ti ti-circle-check text-[0.7rem]"></i><span class="text-[0.7rem]">' . e($barangay->key_status) . '</span></span>'
-                : '<span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba(239, 68, 68, 0.10); color: #f87171; border-color: rgba(239, 68, 68, 0.30);"><i class="ti ti-circle-x text-[0.7rem]"></i><span class="text-[0.7rem]">' . e($barangay->key_status) . '</span></span>';
+                ? '<span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba(34, 197, 94, 0.10); color: #4ade80; border-color: rgba(34, 197, 94, 0.30);"><i class="ti ti-circle-check text-[0.7rem]"></i><span class="text-[0.7rem]">'.e($barangay->key_status).'</span></span>'
+                : '<span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba(239, 68, 68, 0.10); color: #f87171; border-color: rgba(239, 68, 68, 0.30);"><i class="ti ti-circle-x text-[0.7rem]"></i><span class="text-[0.7rem]">'.e($barangay->key_status).'</span></span>';
 
             $html .= '<tr class="border-b border-gray-100 transition-colors hover:bg-gray-50">';
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . e($barangay->barangay_ref_num) . '</td>';
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . e($barangay->barangay_name) . '</td>';
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . $statusBadge . '</td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.e($barangay->barangay_ref_num).'</td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.e($barangay->barangay_name).'</td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.$statusBadge.'</td>';
             $html .= '<td class="px-4 py-3"><div class="flex items-center gap-1.5">';
-            $html .= '<button type="button" data-modal-open="update-barangay-modal" data-id="' . $barangay->barangay_id . '" data-name="' . e($barangay->barangay_name) . '" data-status="' . e($barangay->key_status) . '" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#071f45] hover:bg-[#0a2d5e] hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="Update Barangay"><i class="ti ti-refresh text-xs text-white"></i></button>';
-            $html .= '<button type="button" data-modal-open="barangay-information-modal" data-ref="' . e($barangay->barangay_ref_num) . '" data-name="' . e($barangay->barangay_name) . '" data-key="' . e($barangay->secret_key_hash) . '" data-status="' . e($barangay->key_status) . '" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="View Barangay"><i class="ti ti-eye text-xs text-white"></i></button>';
+            $html .= '<button type="button" data-modal-open="update-barangay-modal" data-id="'.$barangay->barangay_id.'" data-name="'.e($barangay->barangay_name).'" data-status="'.e($barangay->key_status).'" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#071f45] hover:bg-[#0a2d5e] hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="Update Barangay"><i class="ti ti-refresh text-xs text-white"></i></button>';
+            $html .= '<button type="button" data-modal-open="barangay-information-modal" data-ref="'.e($barangay->barangay_ref_num).'" data-name="'.e($barangay->barangay_name).'" data-key="'.e($barangay->secret_key_hash).'" data-status="'.e($barangay->key_status).'" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="View Barangay"><i class="ti ti-eye text-xs text-white"></i></button>';
             $html .= '</div></td>';
             $html .= '</tr>';
         }
@@ -136,7 +135,7 @@ class BarangayController extends Controller
             $nextNum = (int) substr($last, strrpos($last, '-') + 1) + 1;
         }
 
-        return 'BRGY-' . str_pad($nextNum, 5, '0', STR_PAD_LEFT);
+        return 'BRGY-'.str_pad($nextNum, 5, '0', STR_PAD_LEFT);
     }
 
     public function update(Request $request)
@@ -145,7 +144,7 @@ class BarangayController extends Controller
 
             $request->validate([
                 'barangay_id' => ['required', 'integer', 'exists:barangays,barangay_id'],
-                'barangay_name' => ['required', 'string', 'max:255', 'unique:barangays,barangay_name,' . $request->input('barangay_id') . ',barangay_id'],
+                'barangay_name' => ['required', 'string', 'max:255', 'unique:barangays,barangay_name,'.$request->input('barangay_id').',barangay_id'],
                 'key_status' => ['required', 'in:Active,Disabled'],
             ], [
                 'barangay_name.required' => 'Barangay name is required.',
@@ -176,7 +175,7 @@ class BarangayController extends Controller
             $barangay->key_status === 'Active' ? 'Activated Barangay Secret Key' : 'Disabled Barangay Secret Key',
             'Barangay',
             $barangay->barangay_id,
-            'Updated barangay: ' . $barangay->barangay_name,
+            'Updated barangay: '.$barangay->barangay_name,
             ['barangay_name' => $oldName, 'key_status' => $oldStatus],
             ['barangay_name' => $barangay->barangay_name, 'key_status' => $barangay->key_status]
         );
@@ -202,7 +201,7 @@ class BarangayController extends Controller
 
     private function logTransaction($actionType, $entityType, $entityId, $description = null, $oldValues = null, $newValues = null)
     {
-        $refNum = 'ATRN-' . str_pad(random_int(1, 99999999), 8, '0', STR_PAD_LEFT);
+        $refNum = str_pad(random_int(1, 9999999999), 10, '0', STR_PAD_LEFT);
 
         AdminTransaction::create([
             'admin_transaction_ref' => $refNum,

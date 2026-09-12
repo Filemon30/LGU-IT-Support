@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\EnsureUserIsLoggedIn;
+use App\Http\Middleware\EnsureUserIsNotAdmin;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Routing\Exceptions\InvalidSignatureException;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Exceptions\InvalidSignatureException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,8 +19,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'session.auth' => EnsureUserIsLoggedIn::class,
-            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
-            'not.admin' => \App\Http\Middleware\EnsureUserIsNotAdmin::class,
+            'admin' => EnsureUserIsAdmin::class,
+            'not.admin' => EnsureUserIsNotAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -10,6 +10,8 @@
         content="width=device-width, initial-scale=1.0"
     >
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link
         rel="icon"
         type="image/png"
@@ -287,6 +289,7 @@
     </main>
 
     <script src="{{ asset('assets/js/modal.js') }}"></script>
+    <script src="{{ asset('assets/js/submit.js') }}"></script>
 
 </body>
 

@@ -15,14 +15,14 @@
                 <x-overview_card
                     icon="ti ti-building-bank"
                     label="Offices"
-                    total="1"
+                    :total="$offices->count()"
                     color="blue"
                 />
 
                 <x-overview_card
                     icon="ti ti-building"
                     label="Divisions"
-                    total="0"
+                    :total="$offices->sum('divisions_count')"
                     color="d-blue"
                 />
 
@@ -40,6 +40,7 @@
                         placeholder="Search by name or id"
                         icon="ti ti-search"
                         class="w-full sm:w-[20rem]"
+                        oninput="debounceSearch()"
                     />
 
                     {{-- Search Button --}}
@@ -47,6 +48,7 @@
                         color="d-blue"
                         type="button"
                         class="h-9 w-full lg:inline-flex sm:w-auto text-xs"
+                        onclick="searchOffices()"
                     >
                         Search
                     </x-button>
@@ -85,16 +87,16 @@
 
                 <x-slot:body>
 
-
+                    @forelse ($offices as $office)
                     <tr class="border-b border-gray-100 transition-colors hover:bg-gray-50">
                         <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            OFF-00001
+                            {{ $office->office_ref_num }}
                         </td>
                         <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            CDRRMO
+                            {{ $office->office_name }}
                         </td>
                         <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            0
+                            {{ $office->divisions_count }}
                         </td>
 
                         <td class="px-4 py-3">
@@ -103,11 +105,18 @@
                                     icon="ti ti-eye"
                                     color="blue"
                                     title="View Office"
-                                    href="{{ route('admin.offices.office_divisions') }}"
+                                    href="{{ route('admin.offices.office_divisions', $office) }}"
                                 />
                             </div>
                         </td>
                     </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-500">
+                            No offices found.
+                        </td>
+                    </tr>
+                    @endforelse
 
                 </x-slot:body>
 
@@ -125,15 +134,17 @@
     >
 
         <form
-            action="{{ route('admin.offices')}}"
+            onsubmit="return false;"
         >
             <x-input_white
                 name="office"
+                id="office"
                 type="text"
                 placeholder="Office Name"
                 label="Office Name"
             />
             <p id="office-error" class="text-red-500 text-xs mt-1 hidden">Office name is required</p>
+            <p id="office-duplicate-error" class="text-red-500 text-xs mt-1 hidden"></p>
 
             {{-- Buttons --}}
             <div class="col-span-1 md:col-span-3 flex w-full items-center justify-end gap-3 mt-3">
@@ -161,7 +172,7 @@
 
         <div class="text-center space-y-2">
             <span class="text-gray-600 text-xs">Are you sure you want to add this Office?</span>
-            <p class="text-sm font-medium text-gray-900">Office Name: <span id="confirm-office-name" method="POST"></span></p>
+            <p class="text-sm font-medium text-gray-900">Office Name: <span id="confirm-office-name"></span></p>
         </div>
             
             {{-- Buttons --}}

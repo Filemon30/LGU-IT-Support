@@ -3,17 +3,20 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Model;
 
 class Requester extends Model
 {
     use HasFactory;
 
     protected $table = 'requesters';
+
     protected $primaryKey = 'requester_id';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
 
     public $timestamps = false;

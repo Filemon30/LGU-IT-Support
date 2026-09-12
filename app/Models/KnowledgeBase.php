@@ -3,16 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class KnowledgeBase extends Model
 {
     use HasFactory;
 
     protected $table = 'knowledge_base';
+
     protected $primaryKey = 'knowledge_id';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
 
     protected $fillable = [

@@ -9,6 +9,7 @@ export default defineConfig({
                     'resources/js/app.js',
                     'public/assets/css/landing.css',
                     'public/assets/css/login.css',
+                    'public/assets/css/track_submit.css',
                 ],
             refresh: true,
         }),

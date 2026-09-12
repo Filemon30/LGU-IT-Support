@@ -3,16 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class UserInformation extends Model
 {
     use HasFactory;
 
     protected $table = 'user_informations';
+
     protected $primaryKey = 'user_info_id';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
 
     protected $fillable = [

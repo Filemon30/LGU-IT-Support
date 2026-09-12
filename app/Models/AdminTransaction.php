@@ -3,16 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AdminTransaction extends Model
 {
     use HasFactory;
 
     protected $table = 'admin_transactions';
+
     protected $primaryKey = 'admin_transaction_id';
+
     public $incrementing = true;
+
     protected $keyType = 'int';
 
     public $timestamps = false;
