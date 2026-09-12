@@ -6,7 +6,10 @@ export default defineConfig({
     plugins: [
         laravel({
             input: ['resources/css/app.css',
-                    'resources/js/app.js'
+                    'resources/js/app.js',
+                    'public/assets/css/landing.css',
+                    'public/assets/css/login.css',
+                    'public/assets/css/track_submit.css',
                 ],
             refresh: true,
         }),

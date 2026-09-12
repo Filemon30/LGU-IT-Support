@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\UserAccount;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -33,70 +36,61 @@ class AuthController extends Controller
 
         ], [
 
-            'email.required' =>
-                'Must not be Empty',
+            'email.required' => 'Must not be Empty',
 
-            'email.regex' =>
-                'Invalid email',
+            'email.regex' => 'Invalid email',
 
-            'password.required' =>
-                'Must not be Empty',
+            'password.required' => 'Must not be Empty',
 
         ]);
 
+        $email = strtolower($request->input('email'));
 
-        $email =
-            strtolower(
-                $request->input('email')
-            );
+        $account = UserAccount::where('email', $email)->first();
 
+        if (! $account || ! Hash::check($request->input('password'), $account->password_hash)) {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Determine Role
-        |--------------------------------------------------------------------------
-        */
+            return back()
+                ->withErrors([
+                    'email' => 'Invalid credentials.',
+                ])
+                ->onlyInput('email');
+        }
 
-        $role = match (true) {
+        $user = User::where('user_acc_id', $account->user_acc_id)
+            ->where('status', 'Active')
+            ->first();
 
-            str_contains(
-                $email,
-                'barangay'
-            )
-                => 'barangay',
+        if (! $user) {
 
-            str_contains(
-                $email,
-                'staff'
-            )
-                => 'staff',
+            return back()
+                ->withErrors([
+                    'email' => 'Account is not active.',
+                ])
+                ->onlyInput('email');
+        }
 
-            default
-                => 'admin',
+        $user->load('role', 'information');
 
-        };
+        $account->update(['last_login_at' => now()]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Store Session
-        |--------------------------------------------------------------------------
-        */
+        $role = strtolower($user->role->role_name);
 
         session([
+
             'logged_in' => true,
+
+            'user_id' => $user->user_id,
 
             'role' => $role,
 
-            'user_name' =>
-                ucfirst(
-                    strtok(
-                        $request->input('email'),
-                        '@'
-                    )
-                ),
-        ]);
+            'user_name' => $user->information->first_name
+                .' '
+                .$user->information->last_name,
 
+            'staff_ref_num' => $user->staff_ref_num,
+
+        ]);
 
         $dashboardRoute =
             $role === 'admin'
@@ -112,12 +106,10 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        session()->forget([
-            'logged_in',
-            'role',
-            'user_name',
-        ]);
+        $request = request();
 
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect()
             ->route('login')

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Staff Archives')
+@section('title', 'Archived Staff')
 
 @section('content')
 
@@ -81,18 +81,19 @@
 
                 <x-slot:body>
 
+                    @forelse ($archived as $member)
                     <tr class="border-b border-gray-100 transition-colors hover:bg-gray-50">
                         <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            IT-00001
+                            {{ $member->staff_ref_num }}
                         </td>
                         <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            Galanida, Filemon Jr., L.
+                            {{ $member->information->last_name }}, {{ $member->information->first_name }} {{ $member->information->middle_name ? $member->information->middle_name[0] . '.' : '' }} {{ $member->information->suffix }}
                         </td>
                         <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            08/31/2026
+                            {{ $member->updated_at->format('m/d/Y') }}
                         </td>
                         <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-                            30 xdays
+                            {{ max(0, 30 - intdiv($member->updated_at->diffInMilliseconds(now()), 86400000)) }} days
                         </td>
                         
                         <td class="px-4 py-3">
@@ -103,11 +104,20 @@
                                     color="green"
                                     title="Unarchive Staff"
                                     data-modal-open="unarchive-confirmation-modal"
+                                    data-id="{{ $member->user_id }}"
+                                    data-ref="{{ $member->staff_ref_num }}"
+                                    data-name="{{ $member->information->last_name }}, {{ $member->information->first_name }} {{ $member->information->middle_name ? $member->information->middle_name[0] . '.' : '' }} {{ $member->information->suffix }}"
                                 />
                             </div>
                         </td>
                     </tr>
-
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-500">
+                            No archived staff found.
+                        </td>
+                    </tr>
+                    @endforelse
 
                 </x-slot:body>
 
@@ -121,9 +131,11 @@
         id="unarchive-confirmation-modal"
         title="Unarchive Staff"
         icon="ti ti-archive-off"
-        class="max-w-sm"
+        width="max-w-sm"
     >
         <div class="w-fit mx-auto space-y-5">
+
+            <input type="hidden" id="unarchive-staff-id" value="">
 
             {{-- Confirmation Message --}}
             <p class="text-sm text-gray-600 text-center">
@@ -141,8 +153,7 @@
                             ID No:
                         </span>
 
-                        <span class="text-xs font-medium">
-                            STF-00001
+                        <span id="unarchive-staff-ref" class="text-xs font-medium">
                         </span>
                     </div>
 
@@ -152,19 +163,7 @@
                             Full Name:
                         </span>
 
-                        <span class="text-xs font-medium">
-                            Galanida, Filemon Jr., Leornas
-                        </span>
-                    </div>
-
-                    {{-- Account Status --}}
-                    <div class="grid grid-cols-[100px_1fr] gap-2 items-start">
-                        <span class="text-xs font-bold">
-                            Account Status:
-                        </span>
-
-                        <span class="text-xs font-medium">
-                            De-activated
+                        <span id="unarchive-staff-name" class="text-xs font-medium">
                         </span>
                     </div>
 
@@ -188,7 +187,7 @@
                     color="outline-red"
                     onclick="confirmUnarchivedStaff()"
                 >
-                    Yes, Archive
+                    Yes, Unarchive
                 </x-button>
 
             </div>

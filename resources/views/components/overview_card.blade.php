@@ -4,6 +4,7 @@
     'total' => 0,
     'color' => 'blue',
     'span' => null,
+    'id' => null,
 ])
 
 @php
@@ -79,7 +80,7 @@
             {{ $label }}
         </p>
 
-        <p class="text-xl font-extrabold text-gray-900">
+        <p @if($id) id="{{ $id }}" @endif class="text-xl font-extrabold text-gray-900">
             {{ $total }}
         </p>
 

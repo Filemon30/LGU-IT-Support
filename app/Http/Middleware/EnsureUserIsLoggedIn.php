@@ -23,7 +23,6 @@ class EnsureUserIsLoggedIn
         $isLoggedIn =
             $request->session()->get('logged_in') === true;
 
-
         /*
         |--------------------------------------------------------------------------
         | Protected Routes
@@ -41,7 +40,6 @@ class EnsureUserIsLoggedIn
                 401
             );
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -65,7 +63,6 @@ class EnsureUserIsLoggedIn
                     ->route($dashboardRoute);
             }
 
-
             /*
              * Prevent directly typing /login
              */
@@ -87,7 +84,6 @@ class EnsureUserIsLoggedIn
                 }
             }
         }
-
 
         /*
         |--------------------------------------------------------------------------

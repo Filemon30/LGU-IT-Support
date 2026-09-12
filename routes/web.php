@@ -1,8 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\BarangayController;
+use App\Http\Controllers\Admin\DivisionController;
+use App\Http\Controllers\Admin\OfficeController;
+use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\Admin\StaffController;
+use App\Http\Controllers\SubmitRequestController;
+use App\Http\Controllers\TrackRequestController;
+use App\Http\Controllers\Admin\TicketController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +20,26 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [PageController::class, 'home'])
     ->name('home');
 
+Route::get('/track-request', [TrackRequestController::class, 'trackRequest'])
+    ->name('track.request');
+
+Route::post('/track-request', [TrackRequestController::class, 'trackSubmit'])
+    ->name('track.submit');
+
+Route::get('/submit-request', [SubmitRequestController::class, 'showSubmitRequestForm'])
+    ->name('submit.request');
+
+Route::post('/submit-request/barangay', [SubmitRequestController::class, 'submitBarangay'])
+    ->name('submit.barangay');
+
+Route::post('/submit-request/office', [SubmitRequestController::class, 'submitOffice'])
+    ->name('submit.office');
+
+Route::get('/submit-request/divisions/{officeId}', [SubmitRequestController::class, 'getDivisionsByOffice'])
+    ->name('submit.divisions');
+
+Route::get('/submit-request/issues/{categoryId}', [SubmitRequestController::class, 'getIssuesByCategory'])
+    ->name('submit.issues');
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +54,6 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])
 Route::post('/login', [AuthController::class, 'login'])
     ->name('login.store')
     ->middleware('session.auth:guest');
-
 
 /*
 |--------------------------------------------------------------------------
@@ -81,7 +106,6 @@ Route::middleware('session.auth')->group(function () {
         ->middleware('not.admin')
         ->name('history');
 
-
     /*
     |--------------------------------------------------------------------------
     | Admin Routes
@@ -103,8 +127,20 @@ Route::middleware('session.auth')->group(function () {
                 ->name('tickets.')
                 ->group(function () {
 
-                    Route::get('/', [PageController::class, 'adminTickets'])
+                    Route::get('/', [TicketController::class, 'index'])
                         ->name('index');
+
+                    Route::post('/assign', [TicketController::class, 'assign'])
+                        ->name('assign');
+
+                    Route::post('/filter', [TicketController::class, 'filter'])
+                        ->name('filter');
+
+                    Route::get('/dashboard', [PageController::class, 'adminTicketDashboard'])
+                        ->name('dashboard');
+
+                    Route::get('/poll', [PageController::class, 'pollNewTickets'])
+                        ->name('poll');
 
                 });
 
@@ -126,18 +162,66 @@ Route::middleware('session.auth')->group(function () {
             Route::get('/staff', [PageController::class, 'staff'])
                 ->name('staff');
 
-            Route::get('/staff/staff_information', 
+            Route::post('/staff', [StaffController::class, 'store'])
+                ->name('staff.store');
+
+            Route::post('/staff/search', [StaffController::class, 'search'])
+                ->name('staff.search');
+
+            Route::post('/staff/search-archives', [StaffController::class, 'searchArchives'])
+                ->name('staff.searchArchives');
+
+            Route::post('/staff/archive', [StaffController::class, 'archive'])
+                ->name('staff.archive');
+
+            Route::post('/staff/unarchive', [StaffController::class, 'unarchive'])
+                ->name('staff.unarchive');
+
+            Route::post('/staff/update-password', [StaffController::class, 'updatePassword'])
+                ->name('staff.updatePassword');
+
+            Route::post('/staff/update-status', [StaffController::class, 'updateStatus'])
+                ->name('staff.updateStatus');
+
+            Route::post('/staff/validate-step', [StaffController::class, 'validateStep'])
+                ->name('staff.validateStep');
+
+            Route::get('/staff/staff_information',
                 [StaffController::class, 'staffInformation'])
-            ->name('staff.staff_information');
+                ->name('staff.staff_information');
             Route::get('/staff/staff_archives',
                 [StaffController::class, 'staffArchives'])
-            ->name('staff.staff_archives');
+                ->name('staff.staff_archives');
 
             Route::get('/barangays', [PageController::class, 'barangays'])
                 ->name('barangays');
 
-            Route::get('/departments', [PageController::class, 'departments'])
-                ->name('departments');
+            Route::post('/barangays', [BarangayController::class, 'store'])
+                ->name('barangays.store');
+
+            Route::post('/barangays/search', [BarangayController::class, 'search'])
+                ->name('barangays.search');
+
+            Route::post('/barangays/update', [BarangayController::class, 'update'])
+                ->name('barangays.update');
+
+            Route::get('/offices', [PageController::class, 'offices'])
+                ->name('offices');
+            Route::post('/offices', [OfficeController::class, 'store'])
+                ->name('offices.store');
+            Route::post('/offices/search', [OfficeController::class, 'search'])
+                ->name('offices.search');
+            Route::post('/offices/load', [OfficeController::class, 'loadOffices'])
+                ->name('offices.load');
+            Route::get('/offices/{office}/divisions',
+                [OfficeController::class, 'officeDivisions'])
+                ->name('offices.office_divisions');
+            Route::post('/offices/{office}/divisions',
+                [DivisionController::class, 'store'])
+                ->name('offices.divisions.store');
+            Route::post('/offices/divisions/update',
+                [DivisionController::class, 'update'])
+                ->name('offices.divisions.update');
 
             Route::get('/services', [PageController::class, 'services'])
                 ->name('services');
@@ -149,7 +233,6 @@ Route::middleware('session.auth')->group(function () {
 
 });
 
-
 /*
 |--------------------------------------------------------------------------
 | Logout
@@ -158,7 +241,6 @@ Route::middleware('session.auth')->group(function () {
 
 Route::get('/logout', [AuthController::class, 'logout'])
     ->name('logout');
-
 
 /*
 |--------------------------------------------------------------------------

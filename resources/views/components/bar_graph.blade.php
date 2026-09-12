@@ -18,7 +18,7 @@
             <div>
                 <div class="flex items-center justify-between mb-1">
                     <span class="text-xs font-medium text-gray-600">{{ $item['label'] }}</span>
-                    <span class="text-xs font-bold" style="color: {{ $item['color'] }};">{{ $item['count'] }}</span>
+                    <span @if(!empty($item['id'])) id="{{ $item['id'] }}" @endif class="text-xs font-bold" style="color: {{ $item['color'] }};">{{ $item['count'] }}</span>
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-3">
                     <div

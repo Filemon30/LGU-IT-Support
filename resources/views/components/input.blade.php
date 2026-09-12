@@ -41,11 +41,15 @@
     if ($rightIcon) {
         $inputClass .= ' has-right-icon';
     }
+
+    if (!is_null($value) && $value !== '') {
+        $inputClass .= ' has-value';
+    }
 @endphp
 
 <div
     {{ $attributes->merge([
-        'class' => $inputClass,
+        'class' => $inputClass, 'h-9',
         'style' => "
             --input-bg: {$backgroundColor};
             --input-stroke: {$strokeColor};

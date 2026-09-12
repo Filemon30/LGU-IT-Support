@@ -2,48 +2,82 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class User extends Authenticatable
+class User extends Model
 {
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    protected $table = 'users';
+
+    protected $primaryKey = 'user_id';
+
+    public $incrementing = true;
+
+    protected $keyType = 'int';
+
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'staff_ref_num',
+        'role_id',
+        'user_info_id',
+        'user_acc_id',
+        'status',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
+    protected $casts = [
+        'role_id' => 'integer',
+        'user_info_id' => 'integer',
+        'user_acc_id' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function role(): BelongsTo
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->belongsTo(Role::class, 'role_id', 'role_id');
+    }
+
+    public function information(): HasOne
+    {
+        return $this->hasOne(UserInformation::class, 'user_info_id', 'user_info_id');
+    }
+
+    public function account(): HasOne
+    {
+        return $this->hasOne(UserAccount::class, 'user_acc_id', 'user_acc_id');
+    }
+
+    public function assignedTickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class, 'assigned_to', 'user_id');
+    }
+
+    public function createdKnowledge(): HasMany
+    {
+        return $this->hasMany(KnowledgeBase::class, 'created_by', 'user_id');
+    }
+
+    public function updatedKnowledge(): HasMany
+    {
+        return $this->hasMany(KnowledgeBase::class, 'updated_by', 'user_id');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(TicketComment::class, 'user_id', 'user_id');
+    }
+
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'user_id', 'user_id');
+    }
+
+    public function adminTransactions(): HasMany
+    {
+        return $this->hasMany(AdminTransaction::class, 'handled_by', 'user_id');
     }
 }

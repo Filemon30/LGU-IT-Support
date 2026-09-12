@@ -4,7 +4,7 @@
     'logo' => null,
     'background' => '#0f172a',
     'textColor' => '#ffffff',
-    
+    'showHamburger' => false,
 ])
 
 <header
@@ -41,15 +41,53 @@
             </div>
         @endif
 
-        <div class="flex items-center gap-2 justify-self-end self-center header-buttons" style="display: none;">
-            <button type="button" class="header-btn header-btn-secondary">
-                <span> Track Request </span>
-                <i class="ti ti-search"></i>
-            </button>
-            <a href="{{ route('login') }}" class="header-btn header-btn-primary">
-                <span> Login </span>
-                <i class="ti ti-login"></i>
-            </a>
+        <div class="flex items-center gap-2 justify-self-end self-center">
+            <div class="header-buttons hidden md:flex items-center gap-2" style="display: none;">
+                <a href="{{ route('track.request') }}" class="header-btn header-btn-secondary">
+                    <span> Track Ticket </span>
+                    <i class="ti ti-search"></i>
+                </a>
+
+                <a href="{{ route('submit.request') }}" class="header-btn header-btn-submit">
+                    <span> Submit Ticket </span>
+                    <i class="ti ti-send"></i>
+                </a>
+
+                <a href="{{ route('login') }}" class="header-btn header-btn-primary">
+                    <span> Login </span>
+                    <i class="ti ti-login"></i>
+                </a>
+            </div>
+
+            @if($showHamburger)
+                <button class="hamburger-btn" onclick="toggleHamburgerMenu()" aria-label="Menu">
+                    <i class="ti ti-menu-2"></i>
+                </button>
+            @endif
         </div>
     </div>
+
+    @if($showHamburger)
+        <div class="hamburger-dropdown" id="hamburgerDropdown">
+            <nav class="hamburger-nav">
+                {{ $slot }}
+            </nav>
+            <div class="hamburger-buttons">
+                <a href="{{ route('track.request') }}" class="header-btn header-btn-secondary">
+                    <span> Track Request </span>
+                    <i class="ti ti-search"></i>
+                </a>
+
+                <a href="{{ route('submit.request') }}" class="header-btn header-btn-submit">
+                    <span> Submit Ticket </span>
+                    <i class="ti ti-send"></i>
+                </a>
+
+                <a href="{{ route('login') }}" class="header-btn header-btn-primary">
+                    <span> Login </span>
+                    <i class="ti ti-login"></i>
+                </a>
+            </div>
+        </div>
+    @endif
 </header>

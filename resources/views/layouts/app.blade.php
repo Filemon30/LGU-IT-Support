@@ -10,6 +10,8 @@
         content="width=device-width, initial-scale=1.0"
     >
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link
         rel="icon"
         type="image/png"
@@ -20,6 +22,8 @@
         @yield('title', 'Dashboard')
         - City of Biringan IT Support
     </title>
+
+    @yield('head')
 
     @vite([
         'resources/css/app.css',
@@ -218,45 +222,34 @@
 
             @if ($isAdmin)
 
-                <x-side_nav_group
-                    icon="ti ti-users-group"
-                    label="Users"
-                    :open="request()->routeIs('admin.staff*') || request()->routeIs('admin.barangays')"
-                    :active="request()->routeIs('admin.staff*') || request()->routeIs('admin.barangays')"
-                >
-
-                    <x-side_nav_child
-                        icon="ti ti-user"
+                <x-side_nav_btn
+                        icon="ti ti-users-group"
                         label="Staff"
                         href="{{ route('admin.staff') }}"
-                        data-sidebar-child
+                        data-sidebar-btn
                         data-ajax-nav
                         data-sidebar-link
                         :active="request()->routeIs('admin.staff*')"
                     />
 
-                    <x-side_nav_child
-                        icon="ti ti-building-bank"
+                    <x-side_nav_btn
+                        icon="ti ti-building-community"
                         label="Barangays"
                         href="{{ route('admin.barangays') }}"
-                        data-sidebar-child
+                        data-sidebar-btn
                         data-ajax-nav
                         data-sidebar-link
                         :active="request()->routeIs('admin.barangays')"
                     />
 
-                    
-
-                </x-side_nav_group>
-
                 <x-side_nav_btn
-                        icon="ti ti-building"
-                        label="Departments"
-                        href="{{ route('admin.departments') }}"
+                        icon="ti ti-building-bank"
+                        label="Offices"
+                        href="{{ route('admin.offices') }}"
                         data-sidebar-btn
                         data-ajax-nav
                         data-sidebar-link
-                        :active="request()->routeIs('admin.departments')"
+                        :active="request()->routeIs('admin.offices') || request()->routeIs('admin.offices.office_divisions')"
                 />
 
                 
