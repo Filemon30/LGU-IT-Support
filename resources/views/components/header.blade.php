@@ -2,18 +2,19 @@
     'title' => 'Help Desk',
     'subtitle' => null,
     'logo' => null,
-    'background' => '#0f172a',
-    'textColor' => '#ffffff',
+    'background' => '#ffffff',
+    'textColor' => '#111827',
     'showHamburger' => false,
 ])
 
 <header
     {{ $attributes->merge([
-        'class' => 'w-full shadow-sm',
+        'class' => 'w-full shadow-sm border-b border-gray-200',
         'style' => 'background-color: '.$background.'; color: '.$textColor.';',
     ]) }}
 >
-    <div class="grid w-full grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-3 sm:px-6 sm:py-4 lg:px-8">
+    <div class="mx-auto w-full" style="max-width: min(1200px, calc(100% - 2rem));">
+        <div class="grid w-full grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_1fr] items-center gap-3 px-0 py-3">
         <a
             href="{{ request()->routeIs('home') ? route('home') : url()->current() }}"
             class="flex items-center gap-2 sm:gap-3 justify-self-start self-center min-w-0 hover:opacity-85 transition-opacity"
@@ -90,4 +91,5 @@
             </div>
         </div>
     @endif
+    </div>
 </header>

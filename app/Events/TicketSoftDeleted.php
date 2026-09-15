@@ -8,18 +8,15 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewTicketSubmitted implements ShouldBroadcastNow
+class TicketSoftDeleted implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public function __construct(
+        public int $ticketId,
         public string $ticketRefNum,
-        public string $requesterName,
-        public string $requesterType,
-        public string $categoryName,
-        public string $priorityName,
-        public string $ticketStatus,
-        public string $createdAt
+        public string $oldStatus,
+        public string $categoryName
     ) {}
 
     public function broadcastOn(): array
@@ -31,19 +28,16 @@ class NewTicketSubmitted implements ShouldBroadcastNow
 
     public function broadcastAs(): string
     {
-        return 'new-ticket';
+        return 'ticket-soft-deleted';
     }
 
     public function broadcastWith(): array
     {
         return [
+            'ticket_id' => $this->ticketId,
             'ticket_ref_num' => $this->ticketRefNum,
-            'requester_name' => $this->requesterName,
-            'requester_type' => $this->requesterType,
+            'old_status' => $this->oldStatus,
             'category_name' => $this->categoryName,
-            'priority_name' => $this->priorityName,
-            'ticket_status' => $this->ticketStatus,
-            'created_at' => $this->createdAt,
         ];
     }
 }

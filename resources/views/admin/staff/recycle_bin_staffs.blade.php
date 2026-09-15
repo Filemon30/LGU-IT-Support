@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Archived Staff')
+@section('title', 'Deleted Staffs')
 
 @section('content')
 
@@ -33,7 +33,7 @@
                     </span>
 
                     <span class="text-xs text-center">
-                        Archived Staff will be permanently deleted in 30 days after being archived.
+                        Deleted Staff will be permanently deleted in 30 days after being archived.
                     </span>
 
                 </div>
@@ -73,7 +73,7 @@
                 :columns="[
                     'ID',
                     'Full Name',
-                    'Archived Date',
+                    'Date Deleted',
                     'Remaining Days',
                 ]"
                 :actions="true"
@@ -100,9 +100,9 @@
                             <div class="flex items-center">
 
                                 <x-action_btn
-                                    icon="ti ti-archive-off"
+                                    icon="ti ti-arrow-back-up"
                                     color="green"
-                                    title="Unarchive Staff"
+                                    title="Restore Staff"
                                     data-modal-open="unarchive-confirmation-modal"
                                     data-id="{{ $member->user_id }}"
                                     data-ref="{{ $member->staff_ref_num }}"
@@ -126,11 +126,11 @@
         </div>
     </x-card>
 
-{{--- Archive Confirmation ---}}
+{{--- Restore Confirmation ---}}
     <x-modal_form
         id="unarchive-confirmation-modal"
-        title="Unarchive Staff"
-        icon="ti ti-archive-off"
+        title="Restore Staff"
+        icon="ti ti-arrow-back-up"
         width="max-w-sm"
     >
         <div class="w-fit mx-auto space-y-5">
@@ -139,7 +139,7 @@
 
             {{-- Confirmation Message --}}
             <p class="text-sm text-gray-600 text-center">
-                Are you sure you want to unarchive this staff?
+                Are you sure you want to restore this staff?
             </p>
 
             {{-- Staff Information --}}
@@ -177,17 +177,17 @@
                 <x-button
                     type="button"
                     color="outline-gray"
-                    data-modal-close="archive-confirmation-modal"
+                    data-modal-close="unarchive-confirmation-modal"
                 >
                    No, Cancel
                 </x-button>
 
                 <x-button
                     type="button"
-                    color="outline-red"
+                    color="outline-green"
                     onclick="confirmUnarchivedStaff()"
                 >
-                    Yes, Unarchive
+                    Yes, Restore
                 </x-button>
 
             </div>
@@ -197,8 +197,8 @@
 
     
     {{-- Loading Modal --}}
-    <x-loading_modal id="unarchive-staff-loading" text="Unarchiving staff..." />
+    <x-loading_modal id="unarchive-staff-loading" text="Restoring staff..." />
 
     {{-- Success Modal --}}
-    <x-success_modal id="unarchive-staff-success" text="Staff removed from archived successfully!" />
+    <x-success_modal id="unarchive-staff-success" text="Staff restored successfully!" />
 @endsection

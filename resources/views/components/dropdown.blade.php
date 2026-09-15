@@ -147,7 +147,7 @@
                 absolute
                 right-0
                 top-full
-                z-20
+                z-[60]
                 mt-1.5
                 min-w-full
                 w-fit

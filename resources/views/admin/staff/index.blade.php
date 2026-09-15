@@ -84,7 +84,7 @@
                 <div class="gap-2">
 
                     <x-button
-                        color="d-blue"
+                        color="outline-green"
                         type="button"
                         icon="ti ti-user-plus"
                         data-modal-open="info-staff-modal"
@@ -95,10 +95,10 @@
                     <x-button
                         color="outline-red"
                         type="button"
-                        icon="ti ti-archive"
-                        href="{{ route('admin.staff.staff_archives')}}"
+                        icon="ti ti-trash"
+                        href="{{ route('admin.staff.recycle_bin')}}"
                     >
-                        Archives
+                        Recycle Bin
                     </x-button>
                 </div>
             </div>
@@ -156,10 +156,10 @@
                                     />
 
                                     <x-action_btn
-                                        icon="ti ti-archive"
+                                        icon="ti ti-trash"
                                         color="red"
-                                        title="Archive Staff"
-                                        data-modal-open="archive-confirmation-modal"
+                                        title="Delete Staff"
+                                        data-modal-open="delete-confirmation-modal"
                                         data-id="{{ $member->user_id }}"
                                         data-ref="{{ $member->staff_ref_num }}"
                                         data-name="{{ $member->information->last_name }}, {{ $member->information->first_name }} {{ $member->information->middle_name ? $member->information->middle_name[0] . '.' : '' }} {{ $member->information->suffix }}"
@@ -609,21 +609,21 @@
     <x-success_modal id="add-staff-success" text="New staff account created successfully!" />
 
 
-    {{--- Archive Confirmation ---}}
+    {{--- Delete Confirmation ---}}
     <x-modal_form
-        id="archive-confirmation-modal"
-        title="Archive Staff"
-        icon="ti ti-archive"
+        id="delete-confirmation-modal"
+        title="Delete Staff"
+        icon="ti ti-trash"
         width="max-w-sm"
 
     >
         <div class="w-fit mx-auto space-y-5">
 
-            <input type="hidden" id="archive-staff-id" value="">
+            <input type="hidden" id="delete-staff-id" value="">
 
             {{-- Confirmation Message --}}
             <p class="text-sm text-gray-600 text-center">
-                Are you sure you want to archive this staff?
+                Are you sure you want to delete this staff?
             </p>
 
             {{-- Staff Information --}}
@@ -637,7 +637,7 @@
                             ID No:
                         </span>
 
-                        <span id="archive-staff-ref" class="text-xs font-medium">
+                        <span id="delete-staff-ref" class="text-xs font-medium">
                         </span>
                     </div>
 
@@ -647,7 +647,7 @@
                             Full Name:
                         </span>
 
-                        <span id="archive-staff-name" class="text-xs font-medium">
+                        <span id="delete-staff-name" class="text-xs font-medium">
                         </span>
                     </div>
 
@@ -657,7 +657,7 @@
                             Account Status:
                         </span>
 
-                        <span id="archive-staff-status" class="text-xs font-medium">
+                        <span id="delete-staff-status" class="text-xs font-medium">
                         </span>
                     </div>
 
@@ -671,7 +671,7 @@
                 <x-button
                     type="button"
                     color="outline-gray"
-                    data-modal-close="archive-confirmation-modal"
+                    data-modal-close="delete-confirmation-modal"
                 >
                     No, Cancel
                 </x-button>
@@ -679,9 +679,9 @@
                 <x-button
                     type="button"
                     color="outline-red"
-                    onclick="confirmArchivedStaff()"
+                    onclick="confirmDeleteStaff()"
                 >
-                    Yes, Archive
+                    Yes, Delete
                 </x-button>
 
             </div>
@@ -690,14 +690,14 @@
     </x-modal_form>
 
     {{-- Loading Modal --}}
-    <x-loading_modal id="archive-staff-loading" text="Archiving staff..." />
+    <x-loading_modal id="delete-staff-loading" text="Deleting staff..." />
 
     {{-- Success Modal --}}
-    <x-success_modal id="archive-staff-success" text="Staff added to archives successfully!" />
+    <x-success_modal id="delete-staff-success" text="Staff deleted successfully!" />
 
-    {{-- Self Archive Prevention Modal --}}
+    {{-- Self Delete Prevention Modal --}}
     <div
-        id="self-archive-modal"
+        id="self-delete-modal"
         data-modal
         data-modal-static
         class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
@@ -706,12 +706,12 @@
             <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
                 <i class="ti ti-alert-triangle text-4xl text-red-500"></i>
             </div>
-            <h3 class="text-base font-semibold text-gray-900 text-center mb-1">Cannot Archive Account</h3>
-            <p class="text-sm text-gray-500 text-center">You cannot archive your own account.</p>
+            <h3 class="text-base font-semibold text-gray-900 text-center mb-1">Cannot Delete Account</h3>
+            <p class="text-sm text-gray-500 text-center">You cannot delete your own account.</p>
             <x-button
                 type="button"
                 color="gray"
-                data-modal-close="self-archive-modal"
+                data-modal-close="self-delete-modal"
                 class="w-full mt-5"
             >
                 Okay

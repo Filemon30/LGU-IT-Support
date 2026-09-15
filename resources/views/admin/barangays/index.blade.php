@@ -77,7 +77,7 @@
                 </div>
 
                 <x-button
-                    color="d-blue"
+                    color="outline-green"
                     type="button"
                     icon="ti ti-building-plus"
                     class="hidden h-9 lg:inline-flex lg:w-auto text-xs"

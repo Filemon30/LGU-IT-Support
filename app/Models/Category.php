@@ -20,9 +20,10 @@ class Category extends Model
     protected $keyType = 'int';
 
     protected $fillable = [
-        'service_id',
         'category_name',
         'description',
+        'icon',
+        'color_id',
         'status',
     ];
 
@@ -31,9 +32,9 @@ class Category extends Model
         'updated_at' => 'datetime',
     ];
 
-    public function service(): BelongsTo
+    public function color(): BelongsTo
     {
-        return $this->belongsTo(Service::class, 'service_id', 'service_id');
+        return $this->belongsTo(Color::class, 'color_id', 'color_id');
     }
 
     public function issues(): HasMany

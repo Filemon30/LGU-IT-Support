@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}?v=3">
     <link rel="icon" type="image/png" href="{{ asset('assets/images/biringan.png') }}">
 
-    <title>City of Biringan - IT Support | Login</title>
+    <title>City of Biringan - EnchantaTech | Login</title>
 
     @vite([
         'resources/css/app.css',
@@ -20,21 +20,21 @@
 <body class="min-h-screen">
 
     <x-header
-        title="IT SUPPORT"
+        title="ENCHANTATECH"
         subtitle="City of Biringan"
         logo="{{ asset('assets/images/biringan.png') }}"
-        background="rgba(9, 22, 40, 0.3)"
-        textColor="#ffffff"
+        background="#ffffff"
+        textColor="#111827"
     />
 
-    <main class="w-[calc(100%-2rem)] max-w-sm sm:max-w-none sm:w-fit h-fit px-6 py-6 sm:px-10 sm:py-8 bg-[#020d1d] rounded-xl mx-auto my-4 sm:my-8 shadow-2xl shadow-black/60">
+    <main class="w-[calc(100%-2rem)] max-w-sm sm:max-w-none sm:w-fit h-fit px-6 py-6 sm:px-10 sm:py-8 bg-white rounded-xl mx-auto my-4 sm:my-8 shadow-lg border border-gray-200">
         
         @if (! session('from_logout'))
         <div class="flex justify-start">
             <a
                 href="{{ route('home') }}"
                 title="Back"
-                class="flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-white hover:bg-white/10 transition-colors"
+                class="flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
             >
                 <i class="ti ti-arrow-narrow-left text-xl"></i>
                 <span class="text-xs font-light"> Return </span>
@@ -42,12 +42,12 @@
         </div>
         @endif
 
-        <div class="flex items-center justify-center w-15 h-15 mx-auto mt-2 rounded-xl bg-[#071827] text-[#2c51ec]">
+        <div class="flex items-center justify-center w-15 h-15 mx-auto mt-2 rounded-xl bg-blue-50 text-blue-600">
          <i class="ti ti-shield-lock text-3xl"> </i> 
         </div>
 
-        <h1 class="text-xl font-bold text-center text-white mt-2"> Welcome Back!</h1>
-        <p class="text-center text-xs text-gray-400 mt-2"> Sign in with your credentials to access the <br> IT support portal. </p>
+        <h1 class="text-xl font-bold text-center text-gray-900 mt-2"> Welcome Back!</h1>
+        <p class="text-center text-xs text-gray-500 mt-2"> Sign in with your credentials to access the <br> EnchantaTech portal. </p>
         
         <form id="login-form" class="w-full sm:w-80 mt-10 space-y-4" method="POST" action="{{ route('login.store') }}">
             @csrf
@@ -59,9 +59,9 @@
                 name="email"
                 autocomplete="email"
                 leftIcon="ti ti-mail"
-                backgroundColor="#071827"
-                focusColor="#2c51ec"
-                iconFocusColor="#2c51ec"
+                backgroundColor="#ffffff"
+                focusColor="#2563eb"
+                iconFocusColor="#2563eb"
                 :value="old('email')"
                 class="{{ $errors->has('email') ? 'input-error' : '' }}"
                  :error="$errors->has('email') ? $errors->first('email') : null"
@@ -76,16 +76,16 @@
                 autocomplete="password"
                 leftIcon="ti ti-lock"
                 rightIcon="ti ti-eye-off"
-                backgroundColor="#071827"
-                focusColor="#2c51ec"
-                iconFocusColor="#2c51ec"
+                backgroundColor="#ffffff"
+                focusColor="#2563eb"
+                iconFocusColor="#2563eb"
                 :error="$errors->has('password') ? $errors->first('password') : null"
             />
 
             <div class="flex justify-end mt-2">
                 <a
                     onclick="openModal('contact-admin')"
-                    class="inline text-xs text-[#2c51ec] hover:text-[#3d63ff] hover:underline transition-colors cursor-pointer"
+                    class="inline text-xs text-blue-600 hover:text-blue-700 hover:underline transition-colors cursor-pointer"
                 >
                     Forgot Password?
                 </a>
@@ -101,10 +101,10 @@
                 <i class="ti ti-login"></i>
             </button>
 
-            <p class="text-center text-xs text-gray-400 mt-2"> Are you from City Offices or Barangay? </p>
+            <p class="text-center text-xs text-gray-500 mt-2"> Are you from City Offices or Barangay? </p>
 
             <a href="{{ route('submit.request') }}" class="cta-button h-10 w-full flex items-center justify-center gap-2 rounded-xl text-xs font-semibold text-white">
-                    <span class="text-sm"> Submit Request</span>
+                    <span class="text-sm"> Submit Ticket</span>
                     <i class="text-sm ti ti-send"></i>
             </a>
 

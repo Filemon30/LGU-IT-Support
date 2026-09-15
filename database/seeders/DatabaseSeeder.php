@@ -13,6 +13,9 @@ class DatabaseSeeder extends Seeder
             UserInformationSeeder::class,
             UserAccountSeeder::class,
             UserSeeder::class,
+            ColorSeeder::class,
+            CategoriesSeeder::class,
+            PriorityLevelSeeder::class,
         ]);
     }
 }

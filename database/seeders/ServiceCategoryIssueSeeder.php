@@ -61,26 +61,26 @@ class ServiceCategoryIssueSeeder extends Seeder
         // Issues
         $issues = [
             // Hardware issues
-            ['category_name' => 'Hardware', 'issue_name' => 'Not Working', 'description' => 'Device is not turning on or functioning', 'priority' => 'High'],
-            ['category_name' => 'Hardware', 'issue_name' => 'Slow Performance', 'description' => 'Device is running slower than expected', 'priority' => 'Medium'],
-            ['category_name' => 'Hardware', 'issue_name' => 'Error/Crash', 'description' => 'Device is showing errors or crashing', 'priority' => 'High'],
-            ['category_name' => 'Hardware', 'issue_name' => 'Setup/Installation', 'description' => 'New device setup or installation needed', 'priority' => 'Low'],
-            ['category_name' => 'Hardware', 'issue_name' => 'Replacement', 'description' => 'Device needs replacement', 'priority' => 'Medium'],
+            ['category_name' => 'Hardware', 'description' => 'Device is not turning on or functioning', 'priority' => 'High'],
+            ['category_name' => 'Hardware', 'description' => 'Device is running slower than expected', 'priority' => 'Medium'],
+            ['category_name' => 'Hardware', 'description' => 'Device is showing errors or crashing', 'priority' => 'High'],
+            ['category_name' => 'Hardware', 'description' => 'New device setup or installation needed', 'priority' => 'Low'],
+            ['category_name' => 'Hardware', 'description' => 'Device needs replacement', 'priority' => 'Medium'],
             // Software issues
-            ['category_name' => 'Software', 'issue_name' => 'Not Working', 'description' => 'Application is not launching or responding', 'priority' => 'High'],
-            ['category_name' => 'Software', 'issue_name' => 'Slow Performance', 'description' => 'Application is running slower than expected', 'priority' => 'Medium'],
-            ['category_name' => 'Software', 'issue_name' => 'Error/Crash', 'description' => 'Application is showing errors or crashing', 'priority' => 'High'],
-            ['category_name' => 'Software', 'issue_name' => 'Setup/Installation', 'description' => 'New software installation needed', 'priority' => 'Low'],
-            ['category_name' => 'Software', 'issue_name' => 'License', 'description' => 'Software license issue', 'priority' => 'Medium'],
+            ['category_name' => 'Software', 'description' => 'Application is not launching or responding', 'priority' => 'High'],
+            ['category_name' => 'Software', 'description' => 'Application is running slower than expected', 'priority' => 'Medium'],
+            ['category_name' => 'Software', 'description' => 'Application is showing errors or crashing', 'priority' => 'High'],
+            ['category_name' => 'Software', 'description' => 'New software installation needed', 'priority' => 'Low'],
+            ['category_name' => 'Software', 'description' => 'Software license issue', 'priority' => 'Medium'],
             // Network issues
-            ['category_name' => 'Network', 'issue_name' => 'Not Working', 'description' => 'No network/internet connection', 'priority' => 'Critical'],
-            ['category_name' => 'Network', 'issue_name' => 'Slow Performance', 'description' => 'Network is slow or intermittent', 'priority' => 'High'],
-            ['category_name' => 'Network', 'issue_name' => 'Error/Crash', 'description' => 'Network errors or frequent disconnections', 'priority' => 'High'],
-            ['category_name' => 'Network', 'issue_name' => 'Setup/Installation', 'description' => 'New network setup or configuration needed', 'priority' => 'Medium'],
-            ['category_name' => 'Network', 'issue_name' => 'Access Request', 'description' => 'Request for network access or permissions', 'priority' => 'Low'],
+            ['category_name' => 'Network', 'description' => 'No network/internet connection', 'priority' => 'Critical'],
+            ['category_name' => 'Network', 'description' => 'Network is slow or intermittent', 'priority' => 'High'],
+            ['category_name' => 'Network', 'description' => 'Network errors or frequent disconnections', 'priority' => 'High'],
+            ['category_name' => 'Network', 'description' => 'New network setup or configuration needed', 'priority' => 'Medium'],
+            ['category_name' => 'Network', 'description' => 'Request for network access or permissions', 'priority' => 'Low'],
             // Other issues
-            ['category_name' => 'Other', 'issue_name' => 'General Inquiry', 'description' => 'General IT-related question or concern', 'priority' => 'Low'],
-            ['category_name' => 'Other', 'issue_name' => 'Request', 'description' => 'General IT request', 'priority' => 'Low'],
+            ['category_name' => 'Other', 'description' => 'General IT-related question or concern', 'priority' => 'Low'],
+            ['category_name' => 'Other', 'description' => 'General IT request', 'priority' => 'Low'],
         ];
 
         foreach ($issues as $i) {
@@ -90,11 +90,10 @@ class ServiceCategoryIssueSeeder extends Seeder
             $refNum = 'ISS-'.str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
 
             DB::table('issues')->updateOrInsert(
-                ['issue_name' => $i['issue_name'], 'category_id' => $categoryId],
+                ['description' => $i['description'], 'category_id' => $categoryId],
                 [
                     'category_id' => $categoryId,
                     'issue_ref_num' => $refNum,
-                    'issue_name' => $i['issue_name'],
                     'description' => $i['description'],
                     'default_priority_level_id' => $priorityId,
                     'status' => 'Active',

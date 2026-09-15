@@ -22,6 +22,7 @@
                 </div>
                 <div class="w-full bg-gray-200 rounded-full h-3">
                     <div
+                        @if(!empty($item['id'])) id="{{ $item['id'] }}-bar" @endif
                         class="h-3 rounded-full transition-all duration-500"
                         style="width: {{ $percentage }}%; background-color: {{ $item['color'] }};"
                     ></div>

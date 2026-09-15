@@ -37,14 +37,14 @@ class UserSeeder extends Seeder
 
         DB::table('users')->insert([
             [
-                'staff_ref_num' => '2026-00001',
+                'staff_ref_num' => '202656581024',
                 'role_id' => $adminRole->role_id,
                 'user_info_id' => $adminInfo->user_info_id,
                 'user_acc_id' => $adminAccount->user_acc_id,
                 'status' => 'Active',
             ],
             [
-                'staff_ref_num' => '2026-00002',
+                'staff_ref_num' => '202656581025',
                 'role_id' => $staffRole->role_id,
                 'user_info_id' => $staffInfo->user_info_id,
                 'user_acc_id' => $staffAccount->user_acc_id,
