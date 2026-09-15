@@ -11,6 +11,9 @@
     >
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="reverb-key" content="{{ config('broadcasting.connections.reverb.key') }}">
+    <meta name="reverb-host" content="{{ config('broadcasting.connections.reverb.options.host') }}">
+    <meta name="reverb-port" content="{{ config('broadcasting.connections.reverb.options.port') }}">
 
     <link
         rel="icon"
@@ -20,7 +23,7 @@
 
     <title>
         @yield('title', 'Dashboard')
-        - City of Biringan IT Support
+        - City of Biringan EnchantaTech
     </title>
 
     @yield('head')
@@ -115,7 +118,7 @@
 
                 <img
                     src="{{ asset('assets/images/biringan-sm.png') }}"
-                    alt="IT Support logo"
+                    alt="EnchantaTech logo"
                     class="
                         h-11
                         w-11
@@ -154,7 +157,7 @@
                             text-gray-400
                         "
                     >
-                        IT SUPPORT TICKETING SYSTEM
+                        ENCHANTATECH IT SUPPORT
                     </span>
 
                 </div>
@@ -262,7 +265,7 @@
                     data-sidebar-btn
                     data-ajax-nav
                     data-sidebar-link
-                    :active="request()->routeIs('admin.services')"
+                    :active="request()->routeIs('admin.services*')"
                 />
 
             @endif
@@ -280,18 +283,6 @@
                 :active="$isAdmin ? request()->routeIs('admin.tickets.index') : request()->routeIs('tickets.index')"
             />
 
-
-            {{-- Knowledge Base --}}
-
-            <x-side_nav_btn
-                icon="ti ti-book-2"
-                label="Knowledge Base"
-                href="{{ $isAdmin ? route('admin.knowledge') : route('knowledge') }}"
-                data-sidebar-btn
-                data-ajax-nav
-                data-sidebar-link
-                :active="$isAdmin ? request()->routeIs('admin.knowledge') : request()->routeIs('knowledge')"
-            />
 
 
             {{-- Notifications --}}
@@ -1014,7 +1005,96 @@
             backdrop.addEventListener('click', closeSidebar);
         }
     });
+
+    // Toast Container
+    var toastContainer = document.createElement('div');
+    toastContainer.id = 'toast-container';
+    toastContainer.className = 'fixed top-4 right-4 z-[9999] flex flex-col gap-3 pointer-events-none';
+    document.body.appendChild(toastContainer);
+
+    // Render hidden alert templates using the Blade component
+    var alertTemplates = {};
+    document.querySelectorAll('[data-alert-template]').forEach(function(el) {
+        alertTemplates[el.dataset.alertTemplate] = el.outerHTML;
+        el.remove();
+    });
+
+    function showToast(title, message, type) {
+        type = type || 'info';
+        var html = alertTemplates[type] || alertTemplates.info;
+        if (!html) return;
+
+        var wrapper = document.createElement('div');
+        wrapper.innerHTML = html;
+        var toast = wrapper.firstElementChild;
+
+        toast.classList.add('pointer-events-auto', 'shadow-lg', 'max-w-sm', 'w-full');
+        toast.style.transform = 'translateX(120%)';
+        toast.style.opacity = '0';
+        toast.style.transition = 'all 0.3s ease-out';
+
+        var titleEl = toast.querySelector('h5');
+        if (titleEl) titleEl.textContent = title;
+
+        var descEl = toast.querySelector('p');
+        if (descEl) {
+            descEl.textContent = message;
+            descEl.classList.add('line-clamp-2');
+        }
+
+        var closeBtn = document.createElement('button');
+        closeBtn.className = 'shrink-0 text-gray-400 hover:text-gray-600 transition-colors';
+        closeBtn.innerHTML = '<i class="ti ti-x text-sm"></i>';
+        closeBtn.onclick = function() { toast.remove(); };
+        toast.appendChild(closeBtn);
+
+        toastContainer.appendChild(toast);
+
+        requestAnimationFrame(function() {
+            toast.style.transform = 'translateX(0)';
+            toast.style.opacity = '1';
+        });
+
+        setTimeout(function() {
+            toast.style.transform = 'translateX(120%)';
+            toast.style.opacity = '0';
+            setTimeout(function() { toast.remove(); }, 300);
+        }, 5000);
+    }
+
+    // Echo New Ticket Listener
+    (function() {
+        function bindEcho() {
+            if (typeof window.Echo === 'undefined') return false;
+
+            window.Echo.channel('tickets')
+                .listen('.new-ticket', function(e) {
+                    var requester = e.requester_type === 'Barangay'
+                        ? 'Barangay - ' + (e.requester_name || '-')
+                        : 'Office - ' + (e.requester_name || '-');
+                    var msg = 'New ticket ' + (e.ticket_ref_num || '') + ' from ' + requester;
+                    showToast('New Ticket', msg, 'info');
+                });
+            return true;
+        }
+
+        if (!bindEcho()) {
+            var tries = 0;
+            var timer = setInterval(function() {
+                tries++;
+                if (bindEcho() || tries > 50) clearInterval(timer);
+            }, 200);
+        }
+    })();
 </script>
+
+{{-- Hidden Alert Notification Templates --}}
+<div style="display:none">
+    <x-alert-notification data-alert-template="info" type="info" title=" " description=" " />
+    <x-alert-notification data-alert-template="success" type="success" title=" " description=" " />
+    <x-alert-notification data-alert-template="warning" type="warning" title=" " description=" " />
+    <x-alert-notification data-alert-template="error" type="error" title=" " description=" " />
+</div>
 
 </body>
 </html>

@@ -4,9 +4,17 @@
     'icon' => null,
     'iconPosition' => 'left',
     'href' => null,
+    'size' => 'md',
 ])
 
 @php
+
+    $sizes = [
+        'sm' => 'h-8 py-1.5 pl-3 text-xs',
+        'md' => 'h-9 p-2.5 text-sm',
+    ];
+
+    $sizeClass = $sizes[$size] ?? $sizes['md'];
 
     $colors = [
 
@@ -100,6 +108,7 @@
             'border' => 'border-blue-200',
             'ring' => 'focus:ring-blue-100',
         ],
+
 
         'outline-green' => [
             'bg' => 'bg-green-50',

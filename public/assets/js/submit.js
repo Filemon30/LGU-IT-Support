@@ -189,6 +189,46 @@ function clearAllErrors() {
 }
 
 
+function clearForm() {
+    // Clear textareas
+    document.querySelectorAll('textarea').forEach(function (el) {
+        el.value = '';
+    });
+
+    // Clear password inputs
+    document.querySelectorAll('input[type="password"]').forEach(function (el) {
+        el.value = '';
+    });
+
+    // Reset radio buttons to barangay
+    var barangayRadio = document.getElementById('radio-barangay');
+    if (barangayRadio) {
+        barangayRadio.checked = true;
+    }
+
+    // Show barangay container, hide city office
+    var barangayContainer = document.getElementById('barangay-container');
+    var cityOfficeContainer = document.getElementById('city-office-container');
+    if (barangayContainer) barangayContainer.classList.remove('hidden');
+    if (cityOfficeContainer) cityOfficeContainer.classList.add('hidden');
+
+    // Reset all dropdowns
+    document.querySelectorAll('details[data-dropdown]').forEach(function (dd) {
+        var input = dd.querySelector('[data-dropdown-input]');
+        var label = dd.querySelector('[data-dropdown-label]');
+        if (input) input.value = '';
+        if (label) {
+            var placeholder = label.getAttribute('data-placeholder') || 'Select';
+            label.textContent = placeholder;
+        }
+        dd.removeAttribute('open');
+    });
+
+    // Clear all errors
+    clearAllErrors();
+}
+
+
 /*
 |--------------------------------------------------------------------------
 | Helpers
@@ -329,60 +369,102 @@ function openConfirmModal() {
 
 function submitTicket() {
     var loading = document.getElementById('loading-submit-modal');
-    if (loading) {
-        loading.classList.remove('hidden');
-        loading.classList.add('flex');
-    }
-
     var csrfMeta = document.querySelector('meta[name="csrf-token"]');
     if (!csrfMeta) {
-        if (loading) {
-            loading.classList.add('hidden');
-            loading.classList.remove('flex');
-        }
         alert('CSRF token not found. Please refresh the page.');
         return;
     }
     var csrfToken = csrfMeta.getAttribute('content');
     var requestType = document.querySelector('input[name="request_type"]:checked').value;
 
-    var url, data;
+    if (loading) {
+        loading.classList.remove('hidden');
+        loading.classList.add('flex');
+    }
 
+    var checkData;
     if (requestType === 'barangay') {
-        url = '/submit-request/barangay';
-        data = {
-            barangay_id: getSelectedValue('barangay'),
-            category_id: getSelectedValue('brgy_category'),
-            issue_id: getSelectedValue('brgy_issue'),
-            description: document.querySelector('[name="brgy_description"]').value.trim(),
+        checkData = {
+            type: 'barangay',
             secret_key: document.querySelector('[name="brgy_secret_key"]').value,
+            barangay_id: getSelectedValue('barangay'),
         };
     } else {
-        url = '/submit-request/office';
-        data = {
-            division_id: getSelectedValue('division'),
-            category_id: getSelectedValue('city_category'),
-            issue_id: getSelectedValue('city_issue'),
-            description: document.querySelector('[name="city_description"]').value.trim(),
+        checkData = {
+            type: 'office',
             secret_key: document.querySelector('[name="city_secret_key"]').value,
+            division_id: getSelectedValue('division'),
         };
     }
 
-    fetch(url, {
+    fetch('/submit-request/check-key-status', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-TOKEN': csrfToken,
             'Accept': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(checkData),
     })
     .then(function (response) {
+        if (!response.ok) {
+            return { status: 'active' };
+        }
+        return response.json();
+    })
+    .then(function (keyResult) {
+        if (keyResult.status === 'Disabled' || keyResult.status === 'disabled') {
+            if (loading) {
+                loading.classList.add('hidden');
+                loading.classList.remove('flex');
+            }
+            var disabledModal = document.getElementById('disabled-key-modal');
+            if (disabledModal) {
+                disabledModal.classList.remove('hidden');
+                disabledModal.classList.add('flex');
+            }
+            return null;
+        }
+
+        var url, data;
+        if (requestType === 'barangay') {
+            url = '/submit-request/barangay';
+            data = {
+                barangay_id: getSelectedValue('barangay'),
+                category_id: getSelectedValue('brgy_category'),
+                issue_id: getSelectedValue('brgy_issue'),
+                description: document.querySelector('[name="brgy_description"]').value.trim(),
+                secret_key: document.querySelector('[name="brgy_secret_key"]').value,
+            };
+        } else {
+            url = '/submit-request/office';
+            data = {
+                division_id: getSelectedValue('division'),
+                category_id: getSelectedValue('city_category'),
+                issue_id: getSelectedValue('city_issue'),
+                description: document.querySelector('[name="city_description"]').value.trim(),
+                secret_key: document.querySelector('[name="city_secret_key"]').value,
+            };
+        }
+
+        return fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+    })
+    .then(function (response) {
+        if (!response) return null;
         return response.json().then(function (json) {
             return { status: response.status, json: json };
         });
     })
     .then(function (result) {
+        if (!result) return;
         setTimeout(function () {
             if (loading) {
                 loading.classList.add('hidden');
@@ -407,6 +489,8 @@ function submitTicket() {
                     successModal.classList.remove('hidden');
                     successModal.classList.add('flex');
                 }
+
+                clearForm();
             } else {
                 var errors = result.json.errors || {};
                 var requestType = document.querySelector('input[name="request_type"]:checked').value;
@@ -433,11 +517,11 @@ function submitTicket() {
         }, 1500);
     })
     .catch(function (error) {
+        console.error('Submit error:', error);
         if (loading) {
             loading.classList.add('hidden');
             loading.classList.remove('flex');
         }
-        alert('An error occurred. Please try again.');
     });
 }
 
@@ -560,7 +644,7 @@ function updateDropdown(details, items, placeholder) {
     var input = details.querySelector('[data-dropdown-input]');
     var label = details.querySelector('[data-dropdown-label]');
 
-    var optionsContainer = details.querySelector('.absolute.z-20');
+    var optionsContainer = details.querySelector('.absolute');
 
     var existingButtons = optionsContainer.querySelectorAll('[data-dropdown-option]');
     existingButtons.forEach(function (btn) { btn.remove(); });
@@ -582,14 +666,15 @@ function updateDropdown(details, items, placeholder) {
 
     items.forEach(function (item) {
         var keys = Object.keys(item);
+        var displayLabel = item.description || item[keys[1]];
         var btn = document.createElement('button');
         btn.type = 'button';
         btn.setAttribute('data-dropdown-option', '');
         btn.setAttribute('data-value', item[keys[0]]);
-        btn.setAttribute('data-label', item[keys[1]]);
+        btn.setAttribute('data-label', displayLabel);
         btn.className = 'flex w-full items-center whitespace-nowrap pr-3 text-left transition-colors h-9 p-2.5 text-sm';
         btn.style.color = details.style.getPropertyValue('--dd-text');
-        btn.textContent = item[keys[1]];
+        btn.textContent = displayLabel;
         btn.onmouseenter = function () { this.style.backgroundColor = details.style.getPropertyValue('--dd-hover'); };
         btn.onmouseleave = function () { this.style.backgroundColor = 'transparent'; };
         optionsContainer.appendChild(btn);

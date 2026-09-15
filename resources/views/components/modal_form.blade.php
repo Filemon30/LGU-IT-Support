@@ -8,11 +8,12 @@
 <div
     id="{{ $id }}"
     data-modal
+    {{ $attributes }}
     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
 >
     <div
         class="flex w-full {{ $width }} max-h-[calc(100vh-1.5rem)] sm:max-h-[calc(100vh-2rem)]
-               flex-col overflow-hidden rounded-2xl bg-white shadow-xl"
+               flex-col overflow-visible rounded-2xl bg-white shadow-xl"
     >
 
         {{-- Header --}}

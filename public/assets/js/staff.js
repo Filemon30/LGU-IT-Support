@@ -27,7 +27,7 @@ document.addEventListener('click', function (event) {
             document.body.classList.add('overflow-hidden');
         }
 
-        if (modalId === 'archive-confirmation-modal' && openButton.dataset.ref) {
+        if (modalId === 'delete-confirmation-modal' && openButton.dataset.ref) {
             const currentUserId = document.getElementById('current-user-id')?.value;
 
             if (openButton.dataset.id === currentUserId) {
@@ -35,17 +35,17 @@ document.addEventListener('click', function (event) {
                 modal.classList.remove('flex');
                 document.body.classList.remove('overflow-hidden');
 
-                const selfModal = document.getElementById('self-archive-modal');
+                const selfModal = document.getElementById('self-delete-modal');
                 selfModal.classList.remove('hidden');
                 selfModal.classList.add('flex');
                 document.body.classList.add('overflow-hidden');
                 return;
             }
 
-            document.getElementById('archive-staff-ref').textContent = openButton.dataset.ref;
-            document.getElementById('archive-staff-name').textContent = openButton.dataset.name;
-            document.getElementById('archive-staff-status').textContent = openButton.dataset.status;
-            document.getElementById('archive-staff-id').value = openButton.dataset.id;
+            document.getElementById('delete-staff-ref').textContent = openButton.dataset.ref;
+            document.getElementById('delete-staff-name').textContent = openButton.dataset.name;
+            document.getElementById('delete-staff-status').textContent = openButton.dataset.status;
+            document.getElementById('delete-staff-id').value = openButton.dataset.id;
         }
 
         if (modalId === 'unarchive-confirmation-modal' && openButton.dataset.ref) {
@@ -466,17 +466,17 @@ function submitAddStaff() {
     });
 }
 
-function confirmArchivedStaff()
+function confirmDeleteStaff()
 {
-    const confirmModal = document.getElementById('archive-confirmation-modal');
+    const confirmModal = document.getElementById('delete-confirmation-modal');
     confirmModal.classList.add('hidden');
     confirmModal.classList.remove('flex');
 
-    const loadingModal = document.getElementById('archive-staff-loading');
+    const loadingModal = document.getElementById('delete-staff-loading');
     loadingModal.classList.remove('hidden');
     loadingModal.classList.add('flex');
 
-    const userId = document.getElementById('archive-staff-id').value;
+    const userId = document.getElementById('delete-staff-id').value;
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
     fetch('/admin/staff/archive', {
@@ -494,7 +494,7 @@ function confirmArchivedStaff()
         loadingModal.classList.remove('flex');
 
         if (body.success) {
-            const successModal = document.getElementById('archive-staff-success');
+            const successModal = document.getElementById('delete-staff-success');
             successModal.classList.remove('hidden');
             successModal.classList.add('flex');
 
@@ -504,7 +504,7 @@ function confirmArchivedStaff()
                 window.location.href = '/admin/staff';
             }, 2000);
         } else {
-            alert(body.message || 'Failed to archive staff.');
+            alert(body.message || 'Failed to delete staff.');
         }
     })
     .catch(() => {
@@ -550,10 +550,10 @@ function confirmUnarchivedStaff()
             setTimeout(() => {
                 successModal.classList.add('hidden');
                 successModal.classList.remove('flex');
-                window.location.href = '/admin/staff/staff_archives';
+                window.location.href = '/admin/staff/recycle-bin';
             }, 2000);
         } else {
-            alert(body.message || 'Failed to unarchive staff.');
+            alert(body.message || 'Failed to restore staff.');
         }
     })
     .catch(() => {
@@ -756,7 +756,7 @@ function searchStaff() {
     const tbody = document.querySelector('table tbody');
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
 
-    const isArchives = window.location.pathname.includes('staff_archives');
+    const isArchives = window.location.pathname.includes('recycle-bin');
     const url = isArchives ? '/admin/staff/search-archives' : '/admin/staff/search';
 
     const body = isArchives

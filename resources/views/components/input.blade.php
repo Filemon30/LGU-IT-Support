@@ -97,12 +97,14 @@
     @endif
 
     {{-- Validation Error --}}
-    <span class="input-error-message">
-        <i class="ti ti-alert-circle"></i>
+    @if($error)
+        <span class="input-error-message">
+            <i class="ti ti-alert-circle"></i>
 
-        <span class="error-text">
-            {{ $error }}
+            <span class="error-text">
+                {{ $error }}
+            </span>
         </span>
-    </span>
+    @endif
 
 </div>

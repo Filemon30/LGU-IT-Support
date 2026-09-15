@@ -4,31 +4,31 @@
 
 @section('content')
 
-    <main class="w-[calc(100%-2rem)] sm:w-[36rem] h-fit px-6 py-6 sm:px-10 sm:py-8 bg-[#020d1d] rounded-xl mx-auto my-4 sm:my-8 shadow-2xl shadow-black/60">
+    <main class="w-[calc(100%-2rem)] sm:w-[36rem] h-fit px-6 py-6 sm:px-10 sm:py-8 bg-white rounded-xl mx-auto my-4 sm:my-8 shadow-lg border border-gray-200">
         <div class="flex justify-start">
             <a
                 href="{{ route('home') }}"
                 title="Back"
-                class="flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-white hover:bg-white/10 transition-colors"
+                class="flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
             >
                 <i class="ti ti-arrow-narrow-left text-xl"></i>
                 <span class="text-xs font-light"> Return </span>
             </a>
         </div>
 
-        <div class="flex items-center justify-center w-15 h-15 mx-auto mt-2 rounded-xl bg-[#071827] text-[#2c51ec]">
+        <div class="flex items-center justify-center w-15 h-15 mx-auto mt-2 rounded-xl bg-blue-50 text-blue-600">
             <i class="ti ti-send text-3xl"></i>
         </div>
 
-        <h1 class="text-xl font-bold text-center text-white mt-2">Submit a Ticket</h1>
+        <h1 class="text-xl font-bold text-center text-gray-900 mt-2">Submit a Ticket</h1>
         <div class="flex justify-center items-center mt-2">
-            <p class="text-center text-xs text-gray-400">
+            <p class="text-center text-xs text-gray-500">
                 Track your submitted ticket.
             </p>
 
             <a
                 href="{{ route('track.request') }}"
-                class="text-xs font-semibold text-[#2c51ec] ml-2"
+                class="text-xs font-semibold text-blue-600 ml-2"
             >
                 Click Here.
             </a>
@@ -37,26 +37,26 @@
 
         {{-- Request Type Selection --}}
         <div class="mt-4">
-            <label class="text-xs font-semibold text-white mb-2 block">Please select</label>
+            <label class="text-xs font-semibold text-gray-700 mb-2 block">Please select</label>
             <div class="flex gap-4">
-                <label class="flex items-center gap-2.5 cursor-pointer px-4 py-2.5 rounded-lg border border-gray-700 bg-[#071827] hover:bg-[#0d2341] transition-colors has-[:checked]:border-[#2c51ec] has-[:checked]:bg-[#2c51ec]/10">
+                <label class="flex items-center gap-2.5 cursor-pointer px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
                     <input type="radio" name="request_type" value="barangay" id="radio-barangay" checked
-                        class="w-4 h-4 text-[#2c51ec] bg-[#071827] border-gray-500 focus:ring-[#2c51ec] focus:ring-2 cursor-pointer"
+                        class="w-4 h-4 text-blue-600 bg-white border-gray-300 focus:ring-blue-500 focus:ring-2 cursor-pointer"
                         onchange="toggleRequestType('barangay')">
-                    <span class="text-sm text-white font-medium">Barangay</span>
+                    <span class="text-sm text-gray-700 font-medium">Barangay</span>
                 </label>
-                <label class="flex items-center gap-2.5 cursor-pointer px-4 py-2.5 rounded-lg border border-gray-700 bg-[#071827] hover:bg-[#0d2341] transition-colors has-[:checked]:border-[#2c51ec] has-[:checked]:bg-[#2c51ec]/10">
+                <label class="flex items-center gap-2.5 cursor-pointer px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-colors has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50">
                     <input type="radio" name="request_type" value="city_office" id="radio-city-office"
-                        class="w-4 h-4 text-[#2c51ec] bg-[#071827] border-gray-500 focus:ring-[#2c51ec] focus:ring-2 cursor-pointer"
+                        class="w-4 h-4 text-blue-600 bg-white border-gray-300 focus:ring-blue-500 focus:ring-2 cursor-pointer"
                         onchange="toggleRequestType('city_office')">
-                    <span class="text-sm text-white font-medium">City Office</span>
+                    <span class="text-sm text-gray-700 font-medium">City Office</span>
                 </label>
             </div>
         </div>
 
         {{-- Barangay Container --}}
-        <div id="barangay-container" class="space-y-4 mt-4 p-4 rounded-xl border border-gray-700 bg-[#071827]/50">
-            <h2 class="text-sm font-semibold text-[#2c51ec] mb-4">
+        <div id="barangay-container" class="space-y-4 mt-4 p-4 rounded-xl border border-gray-200 bg-gray-50">
+            <h2 class="text-sm font-semibold text-blue-600 mb-4">
                 <i class="ti ti-building-community mr-1"></i> Barangay Request
             </h2>
 
@@ -69,15 +69,15 @@
                         placeholder="Select Barangay"
                         label="Barangay"
                         :options="$barangays->pluck('barangay_name', 'barangay_id')->toArray()"
-                        backgroundColor="#071827"
-                        borderColor="#374151"
-                        focusColor="#2c51ec"
-                        textColor="#ffffff"
-                        placeholderColor="#6b7280"
-                        hoverColor="#0d2341"
-                        iconColor="#6b7280"
+                        backgroundColor="#ffffff"
+                        borderColor="#d1d5db"
+                        focusColor="#2563eb"
+                        textColor="#111827"
+                        placeholderColor="#9ca3af"
+                        hoverColor="#f9fafb"
+                        iconColor="#9ca3af"
                     />
-                    <p id="error-barangay" class="text-xs text-red-400 mt-1 hidden"></p>
+                    <p id="error-barangay" class="text-xs text-red-500 mt-1 hidden"></p>
                 </div>
 
                 {{-- Category --}}
@@ -87,15 +87,15 @@
                         placeholder="Select Category"
                         label="Category"
                         :options="$categories->pluck('category_name', 'category_id')->toArray()"
-                        backgroundColor="#071827"
-                        borderColor="#374151"
-                        focusColor="#2c51ec"
-                        textColor="#ffffff"
-                        placeholderColor="#6b7280"
-                        hoverColor="#0d2341"
-                        iconColor="#6b7280"
+                        backgroundColor="#ffffff"
+                        borderColor="#d1d5db"
+                        focusColor="#2563eb"
+                        textColor="#111827"
+                        placeholderColor="#9ca3af"
+                        hoverColor="#f9fafb"
+                        iconColor="#9ca3af"
                     />
-                    <p id="error-brgy_category" class="text-xs text-red-400 mt-1 hidden"></p>
+                    <p id="error-brgy_category" class="text-xs text-red-500 mt-1 hidden"></p>
                 </div>
 
             </div>
@@ -108,15 +108,15 @@
                         placeholder="Select category first"
                         label="Issue"
                         :options="[]"
-                        backgroundColor="#071827"
-                        borderColor="#374151"
-                        focusColor="#2c51ec"
-                        textColor="#ffffff"
-                        placeholderColor="#6b7280"
-                        hoverColor="#0d2341"
-                        iconColor="#6b7280"
+                        backgroundColor="#ffffff"
+                        borderColor="#d1d5db"
+                        focusColor="#2563eb"
+                        textColor="#111827"
+                        placeholderColor="#9ca3af"
+                        hoverColor="#f9fafb"
+                        iconColor="#9ca3af"
                     />
-                    <p id="error-brgy_issue" class="text-xs text-red-400 mt-1 hidden"></p>
+                    <p id="error-brgy_issue" class="text-xs text-red-500 mt-1 hidden"></p>
                 </div>
             </div>
 
@@ -125,21 +125,21 @@
                 {{-- Description --}}
                 <div class="md:col-span-2">
                     <label class="inline-flex mb-1">
-                        <h1 class="text-xs font-semibold text-white">Description </h1>
+                        <h1 class="text-xs font-semibold text-gray-700">Description </h1>
                     </label>
                     <textarea
                         name="brgy_description"
                         rows="6"
                         placeholder="Provide a detailed description of your request..."
-                        class="w-full rounded-lg border border-gray-700 bg-[#071827] px-3 py-2.5 text-sm font-regular text-white placeholder-gray-500 outline-none transition focus:border-[#2c51ec] focus:ring-2 focus:ring-[#2c51ec]/30 resize-y"
+                        class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-regular text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 resize-y"
                     ></textarea>
-                    <p id="error-brgy_description" class="text-xs text-red-400 mt-1 hidden"></p>
+                    <p id="error-brgy_description" class="text-xs text-red-500 mt-1 hidden"></p>
                 </div>
 
                 {{-- Secret Key --}}
                 <div class="md:col-span-2 mt-4">
                     <label class="inline-flex mb-1">
-                        <h1 class="text-xs font-semibold text-white">Secret Key</h1>
+                        <h1 class="text-xs font-semibold text-gray-700">Secret Key</h1>
                     </label>
                     <div class="relative">
                         <input
@@ -147,25 +147,25 @@
                             name="brgy_secret_key"
                             id="brgy_secret_key"
                             placeholder="Enter your barangay's secret key"
-                            class="w-full rounded-lg border border-gray-700 bg-[#071827] px-3 py-2.5 pr-10 text-sm font-regular text-white placeholder-gray-500 outline-none transition focus:border-[#2c51ec] focus:ring-2 focus:ring-[#2c51ec]/30"
+                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 pr-10 text-sm font-regular text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                         />
                         <button
                             type="button"
                             onclick="togglePassword('brgy_secret_key')"
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                         >
                             <i class="ti ti-eye text-lg"></i>
                         </button>
                     </div>
-                    <p id="error-brgy_secret_key" class="text-xs text-red-400 mt-1 hidden"></p>
+                    <p id="error-brgy_secret_key" class="text-xs text-red-500 mt-1 hidden"></p>
                 </div>
 
             </div>
         </div>
 
         {{-- City Office Container --}}
-        <div id="city-office-container" class="mt-4 p-4 rounded-xl border border-gray-700 bg-[#071827]/50 hidden">
-            <h2 class="text-sm font-semibold text-[#2c51ec] mb-4">
+        <div id="city-office-container" class="mt-4 p-4 rounded-xl border border-gray-200 bg-gray-50 hidden">
+            <h2 class="text-sm font-semibold text-blue-600 mb-4">
                 <i class="ti ti-building-bank mr-1"></i> City Office Request
             </h2>
             <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -177,15 +177,15 @@
                         placeholder="Select Department/Office"
                         label="Departments/Offices"
                         :options="$offices->pluck('office_name', 'office_id')->toArray()"
-                        backgroundColor="#071827"
-                        borderColor="#374151"
-                        focusColor="#2c51ec"
-                        textColor="#ffffff"
-                        placeholderColor="#6b7280"
-                        hoverColor="#0d2341"
-                        iconColor="#6b7280"
+                        backgroundColor="#ffffff"
+                        borderColor="#d1d5db"
+                        focusColor="#2563eb"
+                        textColor="#111827"
+                        placeholderColor="#9ca3af"
+                        hoverColor="#f9fafb"
+                        iconColor="#9ca3af"
                     />
-                    <p id="error-department_office" class="text-xs text-red-400 mt-1 hidden"></p>
+                    <p id="error-department_office" class="text-xs text-red-500 mt-1 hidden"></p>
                 </div>
 
                 {{-- Division --}}
@@ -195,15 +195,15 @@
                         placeholder="Select office first"
                         label="Division"
                         :options="[]"
-                        backgroundColor="#071827"
-                        borderColor="#374151"
-                        focusColor="#2c51ec"
-                        textColor="#ffffff"
-                        placeholderColor="#6b7280"
-                        hoverColor="#0d2341"
-                        iconColor="#6b7280"
+                        backgroundColor="#ffffff"
+                        borderColor="#d1d5db"
+                        focusColor="#2563eb"
+                        textColor="#111827"
+                        placeholderColor="#9ca3af"
+                        hoverColor="#f9fafb"
+                        iconColor="#9ca3af"
                     />
-                    <p id="error-division" class="text-xs text-red-400 mt-1 hidden"></p>
+                    <p id="error-division" class="text-xs text-red-500 mt-1 hidden"></p>
                 </div>
 
                 {{-- Category --}}
@@ -213,15 +213,15 @@
                         placeholder="Select Category"
                         label="Category"
                         :options="$categories->pluck('category_name', 'category_id')->toArray()"
-                        backgroundColor="#071827"
-                        borderColor="#374151"
-                        focusColor="#2c51ec"
-                        textColor="#ffffff"
-                        placeholderColor="#6b7280"
-                        hoverColor="#0d2341"
-                        iconColor="#6b7280"
+                        backgroundColor="#ffffff"
+                        borderColor="#d1d5db"
+                        focusColor="#2563eb"
+                        textColor="#111827"
+                        placeholderColor="#9ca3af"
+                        hoverColor="#f9fafb"
+                        iconColor="#9ca3af"
                     />
-                    <p id="error-city_category" class="text-xs text-red-400 mt-1 hidden"></p>
+                    <p id="error-city_category" class="text-xs text-red-500 mt-1 hidden"></p>
                 </div>
 
                 {{-- Issue --}}
@@ -231,37 +231,37 @@
                         placeholder="Select category first"
                         label="Issue"
                         :options="[]"
-                        backgroundColor="#071827"
-                        borderColor="#374151"
-                        focusColor="#2c51ec"
-                        textColor="#ffffff"
-                        placeholderColor="#6b7280"
-                        hoverColor="#0d2341"
-                        iconColor="#6b7280"
+                        backgroundColor="#ffffff"
+                        borderColor="#d1d5db"
+                        focusColor="#2563eb"
+                        textColor="#111827"
+                        placeholderColor="#9ca3af"
+                        hoverColor="#f9fafb"
+                        iconColor="#9ca3af"
                     />
-                    <p id="error-city_issue" class="text-xs text-red-400 mt-1 hidden"></p>
+                    <p id="error-city_issue" class="text-xs text-red-500 mt-1 hidden"></p>
                 </div>
 
                 {{-- Description --}}
                 <div class="md:col-span-2">
-                    <label class="inline-flex mb-1">
-                        <h1 class="text-xs font-semibold text-white">Description </h1>
-                        <h1 class="text-xs text-gray-300"> ( Please provide section name to avoid ticket cancellation. ) </h1>
+                    <label class="inline-flex flex-col mb-1">
+                        <h1 class="text-xs font-semibold text-gray-700">Description</h1>
+                        <h1 class="text-xs text-gray-400">Please provide section name to avoid ticket cancellation.</h1>
                     </label>
                     <textarea
                         name="city_description"
                         rows="6"
                         placeholder="Provide a detailed description of your request..."
-                        class="w-full rounded-lg border border-gray-700 bg-[#071827] px-3 py-2.5 text-sm font-regular text-white placeholder-gray-500 outline-none transition focus:border-[#2c51ec] focus:ring-2 focus:ring-[#2c51ec]/30 resize-y"
+                        class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 text-sm font-regular text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 resize-y"
                     ></textarea>
-                    <p id="error-city_description" class="text-xs text-red-400 mt-1 hidden"></p>
+                    <p id="error-city_description" class="text-xs text-red-500 mt-1 hidden"></p>
                     
                 </div>
 
                 {{-- Secret Key --}}
                 <div class="md:col-span-2">
                     <label class="inline-flex mb-1">
-                        <h1 class="text-xs font-semibold text-white">Secret Key</h1>
+                        <h1 class="text-xs font-semibold text-gray-700">Secret Key</h1>
                     </label>
                     <div class="relative">
                         <input
@@ -269,17 +269,17 @@
                             name="city_secret_key"
                             id="city_secret_key"
                             placeholder="Enter your office's secret key"
-                            class="w-full rounded-lg border border-gray-700 bg-[#071827] px-3 py-2.5 pr-10 text-sm font-regular text-white placeholder-gray-500 outline-none transition focus:border-[#2c51ec] focus:ring-2 focus:ring-[#2c51ec]/30"
+                            class="w-full rounded-lg border border-gray-200 bg-white px-3 py-2.5 pr-10 text-sm font-regular text-gray-900 placeholder-gray-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                         />
                         <button
                             type="button"
                             onclick="togglePassword('city_secret_key')"
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                         >
                             <i class="ti ti-eye text-lg"></i>
                         </button>
                     </div>
-                    <p id="error-city_secret_key" class="text-xs text-red-400 mt-1 hidden"></p>
+                    <p id="error-city_secret_key" class="text-xs text-red-500 mt-1 hidden"></p>
                 </div>
 
             </div>
@@ -404,18 +404,28 @@
     </x-modal_form>
 
     {{-- Loading Modal --}}
+    <x-loading_modal id="loading-submit-modal" text="Submitting your ticket...." />
+
+    {{-- Disabled Key Modal --}}
     <div
-        id="loading-submit-modal"
+        id="disabled-key-modal"
+        data-modal
+        data-modal-static
         class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
     >
-        <div class="flex w-full max-w-xs flex-col items-center justify-center rounded-2xl bg-white px-8 py-10 shadow-xl">
-            <div class="mb-5 relative">
-                <div class="loading-radial"></div>
-                <div class="loading-logo-wrap">
-                    <img src="{{ asset('assets/images/biringan.png') }}" alt="Logo" class="loading-logo" />
-                </div>
+        <div class="flex w-full max-w-sm flex-col items-center rounded-2xl bg-white px-8 py-10 shadow-xl">
+            <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
+                <i class="ti ti-key-off text-4xl text-red-500"></i>
             </div>
-            <p class="loading-text text-sm font-medium text-gray-700 text-center">Submitting your ticket...</p>
+            <h3 class="text-base font-semibold text-gray-900 text-center mb-1">Secret Key Disabled</h3>
+            <p class="text-xs text-gray-500 text-center mb-5">Your secret key is disabled. Please contact the administrator.</p>
+            <button
+                type="button"
+                data-modal-close="disabled-key-modal"
+                class="inline-flex items-center justify-center gap-2 rounded-lg border border-transparent bg-gray-600 px-4 h-9 text-xs font-medium text-white hover:bg-gray-700 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-200 w-full"
+            >
+                Close
+            </button>
         </div>
     </div>
 

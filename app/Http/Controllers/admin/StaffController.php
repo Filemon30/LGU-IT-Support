@@ -81,7 +81,7 @@ class StaffController extends Controller
         $search = $request->input('search', '');
 
         $query = User::with(['role', 'information'])
-            ->where('status', 'Archived');
+            ->where('status', 'Soft Delete');
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -119,14 +119,14 @@ class StaffController extends Controller
         return response()->json(['success' => true, 'html' => $html, 'count' => $archived->count()]);
     }
 
-    public function staffArchives()
+    public function recycleBin()
     {
         $archived = User::with(['role', 'information'])
-            ->where('status', 'Archived')
+            ->where('status', 'Soft Delete')
             ->orderBy('updated_at', 'desc')
             ->get();
 
-        return view('admin.staff.staff_archives', compact('archived'));
+        return view('admin.staff.recycle_bin_staffs', compact('archived'));
     }
 
     public function validateStep(Request $request)
@@ -378,28 +378,28 @@ class StaffController extends Controller
 
         $user = User::findOrFail($request->input('user_id'));
         $oldStatus = $user->status;
-        $user->update(['status' => 'Archived']);
+        $user->update(['status' => 'Soft Delete']);
 
         $this->logTransaction(
             'Staff Status Updated',
             'User',
             $user->user_id,
-            'Archived staff: '.$user->staff_ref_num,
+            'Deleted staff: '.$user->staff_ref_num,
             ['status' => $oldStatus],
-            ['status' => 'Archived']
+            ['status' => 'Soft Delete']
         );
 
         if ($request->expectsJson()) {
 
             return response()->json([
                 'success' => true,
-                'message' => 'Staff archived successfully.',
+                'message' => 'Staff deleted successfully.',
             ]);
         }
 
         return redirect()
             ->route('admin.staff')
-            ->with('success', 'Staff archived successfully.');
+            ->with('success', 'Staff deleted successfully.');
     }
 
     public function unarchive(Request $request)
@@ -427,7 +427,7 @@ class StaffController extends Controller
             'Staff Status Updated',
             'User',
             $user->user_id,
-            'Unarchived staff: '.$user->staff_ref_num,
+            'Restored staff: '.$user->staff_ref_num,
             ['status' => $oldStatus],
             ['status' => 'Active']
         );
@@ -436,13 +436,13 @@ class StaffController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Staff unarchived successfully.',
+                'message' => 'Staff restored successfully.',
             ]);
         }
 
         return redirect()
-            ->route('admin.staff.staff_archives')
-            ->with('success', 'Staff unarchived successfully.');
+            ->route('admin.staff.recycle_bin')
+            ->with('success', 'Staff restored successfully.');
     }
 
     public function updatePassword(Request $request)

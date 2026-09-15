@@ -35,7 +35,7 @@ class SubmitRequestController extends Controller
             ->get();
 
         $issues = Issue::where('status', 'Active')
-            ->orderBy('issue_name')
+            ->orderBy('description')
             ->get();
 
         return view('submit_request', compact(
@@ -109,7 +109,6 @@ class SubmitRequestController extends Controller
             $barangay->barangay_name,
             'Barangay',
             $issue->category->category_name,
-            $issue->issue_name,
             $ticket->priority->priority_name ?? 'Medium',
             'Pending',
             $ticket->created_at->toDateTimeString()
@@ -186,7 +185,6 @@ class SubmitRequestController extends Controller
             $requesterName,
             'Office Division',
             $issue->category->category_name,
-            $issue->issue_name,
             $ticket->priority->priority_name ?? 'Medium',
             'Pending',
             $ticket->created_at->toDateTimeString()
@@ -219,10 +217,43 @@ class SubmitRequestController extends Controller
     {
         $issues = Issue::where('category_id', $categoryId)
             ->where('status', 'Active')
-            ->orderBy('issue_name')
-            ->get(['issue_id', 'issue_name']);
+            ->orderBy('description')
+            ->get(['issue_id', 'description']);
 
         return response()->json($issues);
+    }
+
+    /**
+     * Check if a secret key is disabled.
+     */
+    public function checkKeyStatus(Request $request)
+    {
+        $type = $request->input('type');
+        $secretKey = $request->input('secret_key');
+
+        if (!$type || !$secretKey) {
+            return response()->json(['status' => 'active']);
+        }
+
+        if ($type === 'barangay') {
+            $barangay = Barangay::find($request->input('barangay_id'));
+            if (!$barangay) {
+                return response()->json(['status' => 'active']);
+            }
+            if (strtolower($secretKey) !== strtolower($barangay->secret_key_hash)) {
+                return response()->json(['status' => 'active']);
+            }
+            return response()->json(['status' => $barangay->key_status ?? 'Active']);
+        } else {
+            $division = Division::find($request->input('division_id'));
+            if (!$division) {
+                return response()->json(['status' => 'active']);
+            }
+            if (strtolower($secretKey) !== strtolower($division->secret_key_hash)) {
+                return response()->json(['status' => 'active']);
+            }
+            return response()->json(['status' => $division->key_status ?? 'Active']);
+        }
     }
 
     /**

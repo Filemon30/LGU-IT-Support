@@ -8,10 +8,10 @@
     <script src="{{ asset('assets/js/staff.js') }}"></script>
 
     <input type="hidden" id="current-user-id" value="{{ session('user_id') }}">
-    <input type="hidden" id="archive-staff-id" value="{{ $user->user_id }}">
-    <input type="hidden" id="archive-staff-ref" value="{{ $user->staff_ref_num }}">
-    <input type="hidden" id="archive-staff-name" value="{{ $user->information->last_name }}, {{ $user->information->first_name }} {{ $user->information->middle_name ? $user->information->middle_name[0] . '.' : '' }} {{ $user->information->suffix }}">
-    <input type="hidden" id="archive-staff-status" value="{{ $user->status }}">
+    <input type="hidden" id="delete-staff-id" value="{{ $user->user_id }}">
+    <input type="hidden" id="delete-staff-ref" value="{{ $user->staff_ref_num }}">
+    <input type="hidden" id="delete-staff-name" value="{{ $user->information->last_name }}, {{ $user->information->first_name }} {{ $user->information->middle_name ? $user->information->middle_name[0] . '.' : '' }} {{ $user->information->suffix }}">
+    <input type="hidden" id="delete-staff-status" value="{{ $user->status }}">
 
 
     <div class="space-y-6">
@@ -110,12 +110,12 @@
 
                     <x-button
                         color="outline-red"
-                        icon="ti ti-archive"
+                        icon="ti ti-trash"
                         iconPosition="left"
                         type="button"
-                        onclick="if(document.getElementById('current-user-id').value === '{{ $user->user_id }}'){var m=document.getElementById('self-archive-modal');m.classList.remove('hidden');m.classList.add('flex');document.body.classList.add('overflow-hidden');}else{var m=document.getElementById('archive-confirmation-modal');m.classList.remove('hidden');m.classList.add('flex');document.body.classList.add('overflow-hidden');}"
+                        onclick="if(document.getElementById('current-user-id').value === '{{ $user->user_id }}'){var m=document.getElementById('self-delete-modal');m.classList.remove('hidden');m.classList.add('flex');document.body.classList.add('overflow-hidden');}else{var m=document.getElementById('delete-confirmation-modal');m.classList.remove('hidden');m.classList.add('flex');document.body.classList.add('overflow-hidden');}"
                     >
-                        Archive
+                        Delete
                     </x-button>
 
                 </div>
@@ -384,18 +384,18 @@
 
 </x-modal_form>
 
-{{--- Archive Confirmation ---}}
+{{--- Delete Confirmation ---}}
     <x-modal_form
-        id="archive-confirmation-modal"
-        title="Archive Staff"
-        icon="ti ti-archive"
+        id="delete-confirmation-modal"
+        title="Delete Staff"
+        icon="ti ti-trash"
         width="max-w-sm"
     >
         <div class="w-fit mx-auto space-y-5">
 
             {{-- Confirmation Message --}}
             <p class="text-sm text-gray-600 text-center">
-                Are you sure you want to archive this staff?
+                Are you sure you want to delete this staff?
             </p>
 
             {{-- Staff Information --}}
@@ -403,7 +403,7 @@
 
                 <div class="space-y-2">
 
-                    {{-- Full Name --}}
+                    {{-- ID No --}}
                     <div class="grid grid-cols-[100px_1fr] gap-2 items-start">
                         <span class="text-xs font-bold">
                             ID No:
@@ -446,7 +446,7 @@
                 <x-button
                     type="button"
                     color="outline-gray"
-                    data-modal-close="archive-confirmation-modal"
+                    data-modal-close="delete-confirmation-modal"
                 >
                    No, Cancel
                 </x-button>
@@ -454,9 +454,9 @@
                 <x-button
                     type="button"
                     color="outline-red"
-                    onclick="confirmArchivedStaff()"
+                    onclick="confirmDeleteStaff()"
                 >
-                    Yes, Archive
+                    Yes, Delete
                 </x-button>
 
             </div>
@@ -465,10 +465,10 @@
     </x-modal_form>
 
     {{-- Loading Modal --}}
-    <x-loading_modal id="archive-staff-loading" text="Archiving staff..." />
+    <x-loading_modal id="delete-staff-loading" text="Deleting staff..." />
 
     {{-- Success Modal --}}
-    <x-success_modal id="archive-staff-success" text="Staff added to archives successfully!" />
+    <x-success_modal id="delete-staff-success" text="Staff deleted successfully!" />
 
     {{-- Update Loading Modal --}}
     <x-loading_modal id="update-staff-loading" text="Updating staff..." />
@@ -579,9 +579,9 @@
         </form>
     </x-modal_form>
 
-    {{-- Self Archive Prevention Modal --}}
+    {{-- Self Delete Prevention Modal --}}
     <div
-        id="self-archive-modal"
+        id="self-delete-modal"
         data-modal
         data-modal-static
         class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
@@ -590,12 +590,12 @@
             <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
                 <i class="ti ti-alert-triangle text-4xl text-red-500"></i>
             </div>
-            <h3 class="text-base font-semibold text-gray-900 text-center mb-1">Cannot Archive Account</h3>
-            <p class="text-sm text-gray-500 text-center">You cannot archive your own account.</p>
+            <h3 class="text-base font-semibold text-gray-900 text-center mb-1">Cannot Delete Account</h3>
+            <p class="text-sm text-gray-500 text-center">You cannot delete your own account.</p>
             <x-button
                 type="button"
                 color="gray"
-                data-modal-close="self-archive-modal"
+                data-modal-close="self-delete-modal"
                 class="w-full mt-5"
             >
                 Okay

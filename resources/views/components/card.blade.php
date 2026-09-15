@@ -2,6 +2,7 @@
 'label' => null,
 'color' => 'white',
 'border' => true,
+'fill' => true,
 ])
 
 @php
@@ -19,9 +20,9 @@ $colors = [
     ],
 
     'd-blue' => [
-        'bg' => 'bg-[#020d1d]',
-        'border' => 'border-[#0f2745]',
-        'text' => 'text-white',
+        'bg' => 'bg-blue-50',
+        'border' => 'border-blue-200',
+        'text' => 'text-gray-800',
     ],
 
     'green' => [
@@ -65,7 +66,7 @@ $theme = $colors[$color] ?? $colors['white'];
 
 $classes = implode(' ', [
     'flex',
-    'h-full',
+    $fill ? 'h-full' : '',
     'flex-col',
     'gap-4',
     $theme['bg'],

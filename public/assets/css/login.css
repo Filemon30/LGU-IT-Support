@@ -5,42 +5,14 @@
 body {
     min-height: 100vh;
     margin: 0;
-
-    background: linear-gradient(
-        90deg,
-        #071f45,
-        #020d1d,
-        #071f45,
-        #020d1d,
-        #071f45
-    );
-
-    background-size: 300% 100%;
-    animation: gradientPass 10s linear infinite;
-
+    background: #fafafa;
     font-family: 'Poppins', sans-serif;
-    color: #fff;
+    color: #1f2937;
 }
 
 html {
     scroll-behavior: smooth;
 }
-
-
-/* ========================================
-   BACKGROUND ANIMATION
-   ======================================== */
-
-@keyframes gradientPass {
-    0% {
-        background-position: 0% 50%;
-    }
-
-    100% {
-        background-position: 100% 50%;
-    }
-}
-
 
 /* ========================================
    HEADER
@@ -50,68 +22,49 @@ header {
     position: sticky;
     top: 0;
     z-index: 100;
-
-    background-color: #06162E;
-
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-
-    backdrop-filter: blur(6px);
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 header img {
     width: 2.5rem;
     height: 2.5rem;
-
     border-radius: 0.7rem;
-
     object-fit: cover;
-
     border: 0;
 }
 
 header .text-lg {
     font-size: 1.6rem;
     line-height: 1;
-
     letter-spacing: -0.04em;
-
     font-weight: 700;
+    color: #111827;
 }
 
 header .text-xs {
     display: block;
-
-    color: rgba(255, 255, 255, 0.72);
-
+    color: #6b7280;
     letter-spacing: 0.13em;
-
     text-transform: uppercase;
-
     line-height: 1.2;
 }
 
-
 /* ========================================
-   ANIMATED DIVIDER
+   ANIMATED DIVIDER - now static
    ======================================== */
 
 .animated-divider {
-    height: 2.5px;
-
+    height: 2px;
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(63, 140, 255, 0.5),
+        #d1d5db,
         transparent
     );
-
     margin: 2rem auto;
-
     max-width: 600px;
-
-    animation: dividerPulse 3s ease-in-out infinite;
 }
-
 
 /* ========================================
    FLOATING INPUT
@@ -119,10 +72,8 @@ header .text-xs {
 
 .floating-input {
     position: relative;
-
     width: 100%;
 }
-
 
 /* ========================================
    INPUT
@@ -134,16 +85,13 @@ header .text-xs {
 
     padding: 0 2rem;
 
-    border: 1px solid var(--input-stroke);
-
+    border: 1px solid #d1d5db;
     border-radius: 0.75rem;
 
-    background-color: var(--input-bg);
-
-    color: #ffffff;
+    background-color: #ffffff;
+    color: #111827;
 
     font-family: 'Poppins', sans-serif;
-
     font-size: 0.85rem;
 
     outline: none;
@@ -160,7 +108,6 @@ header .text-xs {
         color 0.2s ease;
 }
 
-
 /* ========================================
    AUTOFILL
    ======================================== */
@@ -169,21 +116,19 @@ header .text-xs {
 .floating-input input:-webkit-autofill:hover,
 .floating-input input:-webkit-autofill:focus,
 .floating-input input:-webkit-autofill:active {
-
-    -webkit-text-fill-color: #ffffff;
+    -webkit-text-fill-color: #111827;
 
     -webkit-box-shadow:
-        0 0 0 1000px var(--input-bg) inset;
+        0 0 0 1000px #ffffff inset;
 
     box-shadow:
-        0 0 0 1000px var(--input-bg) inset;
+        0 0 0 1000px #ffffff inset;
 
-    border-color: var(--input-stroke);
+    border-color: #d1d5db;
 
     transition:
         background-color 9999s ease-in-out 0s;
 }
-
 
 /* ========================================
    LEFT / RIGHT ICON PADDING
@@ -202,14 +147,12 @@ header .text-xs {
     padding-right: 2.5rem;
 }
 
-
 /* ========================================
    PLACEHOLDER
    ======================================== */
 
 .floating-input input::placeholder {
-    color: rgba(255, 255, 255, 0.45);
-
+    color: #9ca3af;
     opacity: 1;
 
     transition: opacity 0.2s ease;
@@ -219,22 +162,20 @@ header .text-xs {
     opacity: 0;
 }
 
-
 /* ========================================
    INPUT FOCUS
    ======================================== */
 
 .floating-input input:focus {
-    border-color: var(--input-focus);
+    border-color: #2563eb;
 
     box-shadow:
-        0 0 0 1px var(--input-focus);
+        0 0 0 1px #2563eb;
 
-    background-color: var(--input-bg);
+    background-color: #ffffff;
 
-    color: #ffffff;
+    color: #111827;
 }
-
 
 /* ========================================
    FLOATING LABEL
@@ -250,9 +191,9 @@ header .text-xs {
 
     padding: 0 0.35rem;
 
-    background-color: var(--input-bg);
+    background-color: #ffffff;
 
-    color: var(--input-stroke);
+    color: #6b7280;
 
     font-family: 'Poppins', sans-serif;
 
@@ -273,31 +214,25 @@ header .text-xs {
         color 0.2s ease;
 }
 
-
 /* Label when focused */
 
 .floating-input input:focus + label {
     opacity: 1;
-
-    color: #ffffff;
+    color: #2563eb;
 }
-
 
 /* Label when input has value */
 
 .floating-input input:not(:placeholder-shown) + label {
     opacity: 1;
-
-    color: #ffffff;
+    color: #6b7280;
 }
-
 
 /* Label when focused + has value */
 
 .floating-input input:focus:not(:placeholder-shown) + label {
-    color: #ffffff;
+    color: #2563eb;
 }
-
 
 /* ========================================
    INPUT ICON
@@ -320,7 +255,7 @@ header .text-xs {
 
     z-index: 3;
 
-    color: var(--input-icon);
+    color: #9ca3af;
 
     font-size: 1rem;
 
@@ -331,13 +266,11 @@ header .text-xs {
     transition: color 0.2s ease;
 }
 
-
 /* Left icon */
 
 .floating-input .input-icon-left {
     left: 0.75rem;
 }
-
 
 /* Right icon */
 
@@ -345,23 +278,21 @@ header .text-xs {
     right: 0.75rem;
 }
 
-
 /* ========================================
    ICON FOCUS
    ======================================== */
 
 .floating-input input:focus ~ .input-icon {
-    color: var(--input-icon-focus);
+    color: #2563eb;
 }
 
 .floating-input input:not(:placeholder-shown) ~ .input-icon {
-    color: var(--input-icon);
+    color: #9ca3af;
 }
 
 .floating-input input:focus:not(:placeholder-shown) ~ .input-icon {
-    color: var(--input-icon-focus);
+    color: #2563eb;
 }
-
 
 /* ========================================
    DISABLED
@@ -369,163 +300,95 @@ header .text-xs {
 
 .floating-input input:disabled {
     cursor: not-allowed;
-
     opacity: 0.6;
-
-    background-color: var(--input-bg);
-
-    color: rgba(255, 255, 255, 0.5);
+    background-color: #f3f4f6;
+    color: #9ca3af;
 }
-
 
 /* ========================================
    READ ONLY
    ======================================== */
 
 .floating-input input:read-only {
-    background-color: var(--input-bg);
+    background-color: #f3f4f6;
 }
-
 
 /* ========================================
    ERROR STATE
    ======================================== */
 
-/* Red input border */
-
 .floating-input.input-error input {
     border-color: #f87171;
-
     box-shadow:
         0 0 0 1px rgba(248, 113, 113, 0.35);
 }
-
-
-/* Red border even when focused */
 
 .floating-input.input-error input:focus {
     border-color: #f87171;
-
     box-shadow:
         0 0 0 1px rgba(248, 113, 113, 0.35);
 }
-
-
-/* Red floating label */
 
 .floating-input.input-error input + label {
     color: #f87171;
 }
 
-
-/* Red floating label while focused */
-
 .floating-input.input-error input:focus + label {
     color: #f87171;
 }
-
-
-/* Red icons */
 
 .floating-input.input-error input ~ .input-icon {
     color: #f87171;
 }
 
-
 /* ========================================
    ERROR MESSAGE
    ======================================== */
 
-/*
-   Hidden by default.
-   JavaScript only adds .input-error after
-   the Login button is clicked.
-*/
-
 .floating-input .input-error-message {
     display: none;
-
     align-items: center;
-
     gap: 0.25rem;
-
     width: 100%;
-
     margin-top: 0.4rem;
-
     padding-left: 0.25rem;
-
     color: #f87171;
-
     font-family: 'Poppins', sans-serif;
-
     font-size: 0.7rem;
-
     font-weight: 400;
-
     line-height: 1.2;
 }
-
-
-/*
-   Show error message only when
-   .input-error exists
-*/
 
 .floating-input.input-error .input-error-message {
     display: flex;
 }
 
-
-/* Error icon */
-
 .floating-input .input-error-message > i {
     font-size: 0.85rem;
-
     flex-shrink: 0;
 }
-
-
-/* Error text */
 
 .floating-input .error-text {
     color: #f87171;
 }
 
-
 /* ========================================
    PASSWORD SHOW / HIDE
    ======================================== */
 
-/*
-   Password eye icon is hidden
-   until the user types.
-*/
-
 .floating-input.password-field .input-icon-right {
     cursor: pointer;
-
     opacity: 0;
-
     pointer-events: none;
-
     transition:
         opacity 0.2s ease,
         color 0.2s ease;
 }
 
-
-/*
-   Show password eye when
-   password has a value.
-*/
-
 .floating-input.password-field input:not(:placeholder-shown) ~ .input-icon-right {
     opacity: 1;
-
     pointer-events: auto;
 }
-
 
 /* ========================================
    LOGIN BUTTON
@@ -533,44 +396,25 @@ header .text-xs {
 
 .login-button {
     height: 2.6rem;
-
-    background: rgba(255, 255, 255, 0.08);
-
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-
+    background: linear-gradient(135deg, #3f8cff, #2c51ec);
+    color: #ffffff;
     font-family: 'Poppins', sans-serif;
-
     border: none;
-
     cursor: pointer;
-
     transition:
         background-color 0.2s ease,
         transform 0.15s ease,
         box-shadow 0.2s ease;
 }
 
-
-/* Login hover */
-
 .login-button:hover {
-    background: rgba(255, 255, 255, 0.12);
-
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.2),
-        0 8px 25px rgba(255, 255, 255, 0.15);
-
-    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(63, 140, 255, 0.4);
+    transform: translateY(-1px);
 }
-
-
-/* Login active */
 
 .login-button:active {
     transform: translateY(0);
 }
-
 
 /* ========================================
    SUBMIT REQUEST BUTTON
@@ -578,35 +422,17 @@ header .text-xs {
 
 .submit-button {
     height: 2.6rem;
-
-    background: linear-gradient(
-        135deg,
-        #3f8cff,
-        #2c51ec
-    );
-
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-
+    background: linear-gradient(135deg, #3f8cff, #2c51ec);
     font-family: 'Poppins', sans-serif;
-
     border: none;
-
     cursor: pointer;
-
     transition:
         background-color 0.2s ease,
         transform 0.15s ease,
         box-shadow 0.2s ease;
 }
 
-
-/* Submit hover */
-
 .submit-button:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 8px 20px rgba(63, 140, 255, 0.7),
-        0 0 20px rgba(82, 120, 255, 0.6);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(63, 140, 255, 0.4);
 }

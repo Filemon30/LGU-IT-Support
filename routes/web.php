@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\BarangayController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DivisionController;
 use App\Http\Controllers\Admin\OfficeController;
+use App\Http\Controllers\Admin\ServicesController;
 use App\Http\Controllers\Admin\StaffController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PageController;
@@ -26,6 +28,9 @@ Route::get('/track-request', [TrackRequestController::class, 'trackRequest'])
 Route::post('/track-request', [TrackRequestController::class, 'trackSubmit'])
     ->name('track.submit');
 
+Route::post('/api/track-ticket', [TrackRequestController::class, 'trackSubmit'])
+    ->name('track.api');
+
 Route::get('/submit-request', [SubmitRequestController::class, 'showSubmitRequestForm'])
     ->name('submit.request');
 
@@ -35,11 +40,14 @@ Route::post('/submit-request/barangay', [SubmitRequestController::class, 'submit
 Route::post('/submit-request/office', [SubmitRequestController::class, 'submitOffice'])
     ->name('submit.office');
 
-Route::get('/submit-request/divisions/{officeId}', [SubmitRequestController::class, 'getDivisionsByOffice'])
-    ->name('submit.divisions');
+    Route::get('/submit-request/divisions/{officeId}', [SubmitRequestController::class, 'getDivisionsByOffice'])
+        ->name('submit.divisions');
 
-Route::get('/submit-request/issues/{categoryId}', [SubmitRequestController::class, 'getIssuesByCategory'])
-    ->name('submit.issues');
+    Route::get('/submit-request/issues/{categoryId}', [SubmitRequestController::class, 'getIssuesByCategory'])
+        ->name('submit.issues');
+
+    Route::post('/submit-request/check-key-status', [SubmitRequestController::class, 'checkKeyStatus'])
+        ->name('submit.check_key_status');
 
 /*
 |--------------------------------------------------------------------------
@@ -86,9 +94,6 @@ Route::middleware('session.auth')->group(function () {
 
         });
 
-    Route::get('/knowledge', [PageController::class, 'knowledge'])
-        ->middleware('not.admin')
-        ->name('knowledge');
 
     Route::get('/notifications', [PageController::class, 'notifications'])
         ->middleware('not.admin')
@@ -120,7 +125,7 @@ Route::middleware('session.auth')->group(function () {
         ->middleware('admin')
         ->group(function () {
 
-            Route::get('/dashboard', [PageController::class, 'adminDashboard'])
+            Route::get('/dashboard', [DashboardController::class, 'index'])
                 ->name('dashboard');
 
             Route::prefix('tickets')
@@ -133,19 +138,24 @@ Route::middleware('session.auth')->group(function () {
                     Route::post('/assign', [TicketController::class, 'assign'])
                         ->name('assign');
 
+                    Route::post('/cancel', [TicketController::class, 'cancel'])
+                        ->name('cancel');
+
+                    Route::post('/soft-delete', [TicketController::class, 'softDelete'])
+                        ->name('soft-delete');
+
                     Route::post('/filter', [TicketController::class, 'filter'])
                         ->name('filter');
 
-                    Route::get('/dashboard', [PageController::class, 'adminTicketDashboard'])
+                    Route::get('/dashboard', [DashboardController::class, 'ticketDashboard'])
                         ->name('dashboard');
 
-                    Route::get('/poll', [PageController::class, 'pollNewTickets'])
+                    Route::get('/poll', [DashboardController::class, 'pollNewTickets'])
                         ->name('poll');
 
                 });
 
-            Route::get('/knowledge', [PageController::class, 'adminKnowledge'])
-                ->name('knowledge');
+
 
             Route::get('/notifications', [PageController::class, 'adminNotifications'])
                 ->name('notifications');
@@ -189,9 +199,9 @@ Route::middleware('session.auth')->group(function () {
             Route::get('/staff/staff_information',
                 [StaffController::class, 'staffInformation'])
                 ->name('staff.staff_information');
-            Route::get('/staff/staff_archives',
-                [StaffController::class, 'staffArchives'])
-                ->name('staff.staff_archives');
+            Route::get('/staff/recycle-bin',
+                [StaffController::class, 'recycleBin'])
+                ->name('staff.recycle_bin');
 
             Route::get('/barangays', [PageController::class, 'barangays'])
                 ->name('barangays');
@@ -223,8 +233,26 @@ Route::middleware('session.auth')->group(function () {
                 [DivisionController::class, 'update'])
                 ->name('offices.divisions.update');
 
-            Route::get('/services', [PageController::class, 'services'])
+            Route::get('/services', [ServicesController::class, 'index'])
                 ->name('services');
+
+            Route::get('/services/{categoryId}/issues', [ServicesController::class, 'issues'])
+                ->name('services.issues');
+
+            Route::get('/services/{categoryId}/recycle-bin', [ServicesController::class, 'recycleBin'])
+                ->name('services.recycle_bin');
+
+            Route::post('/services/{categoryId}/recycle-bin/{issueId}/restore', [ServicesController::class, 'restoreIssue'])
+                ->name('services.restore_issue');
+
+            Route::post('/services/store-category', [ServicesController::class, 'storeCategory'])
+                ->name('services.store-category');
+
+            Route::post('/services/{categoryId}/store-issue', [ServicesController::class, 'storeIssue'])
+                ->name('services.store-issue');
+
+            Route::post('/services/{categoryId}/issues/{issueId}/delete', [ServicesController::class, 'deleteIssue'])
+                ->name('services.delete-issue');
 
             Route::get('/reports', [PageController::class, 'reports'])
                 ->name('reports');

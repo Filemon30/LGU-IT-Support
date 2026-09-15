@@ -2,6 +2,7 @@
     'columns' => [],
     'actions' => false,
     'maxHeight' => '400px',
+    'minWidth' => '700px',
 ])
 
 <div
@@ -9,14 +10,14 @@
         'class' => '
             w-full
             max-w-full
-            overflow-hidden
+            overflow-x-auto
             rounded-lg
             bg-transparent
         ',
     ]) }}
 >
     <div class="overflow-y-auto" style="max-height: {{ $maxHeight }};">
-        <table class="w-full min-w-[700px] text-left text-sm">
+        <table class="w-full text-left text-sm" @if($minWidth !== '0') style="min-width: {{ $minWidth }}" @else style="table-layout: fixed" @endif>
 
             <thead class="sticky top-0 bg-white z-10">
                 @isset($header)
@@ -30,7 +31,7 @@
                         @endforeach
 
                         @if ($actions)
-                            <th class="w-1 whitespace-nowrap px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-500">
+                            <th style="width: 100px" class="whitespace-nowrap px-4 py-3 text-xs font-bold uppercase tracking-wide text-gray-500">
                                 Actions
                             </th>
                         @endif

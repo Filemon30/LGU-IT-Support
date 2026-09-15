@@ -22,7 +22,6 @@ class Issue extends Model
     protected $fillable = [
         'category_id',
         'issue_ref_num',
-        'issue_name',
         'description',
         'default_priority_level_id',
         'status',

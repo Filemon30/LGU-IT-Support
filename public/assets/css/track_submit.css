@@ -1,12 +1,10 @@
 body {
     min-height: 100vh;
     margin: 0;
-    background: #020d1d;
-    background-size: 300% 100%;
+    background: #fafafa;
     font-family: 'Poppins', sans-serif;
-    color: #fff;
+    color: #1f2937;
 }
-
 
 .track-container {
     max-width: 600px;
@@ -15,8 +13,8 @@ body {
 }
 
 .track-card {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(63, 140, 255, 0.15);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
     border-radius: 12px;
     padding: 2rem;
     text-align: center;
@@ -26,27 +24,26 @@ body {
     width: 80px;
     height: 80px;
     border-radius: 12px;
-    background: rgba(63, 140, 255, 0.1);
-    border: 2px solid rgba(63, 140, 255, 0.3);
+    background: #eff6ff;
+    border: 2px solid #bfdbfe;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #3f8cff;
+    color: #2563eb;
     font-size: 2rem;
     margin: 0 auto 1.5rem;
-    box-shadow: 0 0 20px rgba(63, 140, 255, 0.3);
 }
 
 .track-title {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #ffffff;
+    color: #111827;
     margin: 0 0 0.5rem;
 }
 
 .track-subtitle {
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: #6b7280;
     margin: 0 0 2rem;
 }
 
@@ -69,19 +66,19 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .track-submit-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(63, 140, 255, 0.7), 0 0 20px rgba(82, 120, 255, 0.6);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(63, 140, 255, 0.4);
 }
 
 .back-link {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: #6b7280;
     text-decoration: none;
     font-size: 0.9rem;
     margin-bottom: 1.5rem;
@@ -89,14 +86,14 @@ body {
 }
 
 .back-link:hover {
-    color: #ffffff;
+    color: #111827;
 }
 
 .result-card {
     margin-top: 1.5rem;
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(63, 140, 255, 0.15);
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
     border-radius: 12px;
     text-align: left;
 }
@@ -105,7 +102,7 @@ body {
     display: flex;
     justify-content: space-between;
     padding: 0.5rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid #f3f4f6;
 }
 
 .result-row:last-child {
@@ -113,12 +110,12 @@ body {
 }
 
 .result-label {
-    color: rgba(255, 255, 255, 0.6);
+    color: #6b7280;
     font-size: 0.85rem;
 }
 
 .result-value {
-    color: #ffffff;
+    color: #111827;
     font-size: 0.85rem;
     font-weight: 500;
 }
@@ -133,23 +130,23 @@ body {
 }
 
 .status-open {
-    background: rgba(34, 197, 94, 0.2);
-    color: #22c55e;
+    background: #dcfce7;
+    color: #16a34a;
 }
 
 .status-progress {
-    background: rgba(234, 179, 8, 0.2);
-    color: #eab308;
+    background: #fef9c3;
+    color: #ca8a04;
 }
 
 .status-resolved {
-    background: rgba(59, 130, 246, 0.2);
-    color: #3b82f6;
+    background: #dbeafe;
+    color: #2563eb;
 }
 
 .status-closed {
-    background: rgba(156, 163, 175, 0.2);
-    color: #9ca3af;
+    background: #f3f4f6;
+    color: #6b7280;
 }
 
 .input-error-message {
@@ -157,17 +154,12 @@ body {
 }
 
 .floating-input label {
-    color: #ffffff !important;
+    color: #6b7280 !important;
 }
 
 @keyframes radial-spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-}
-
-@keyframes radial-pulse {
-    0%, 100% { opacity: 0.4; }
-    50% { opacity: 1; }
 }
 
 .loading-radial {
@@ -200,8 +192,8 @@ body {
     inset: 0;
     border-radius: 50%;
     border: 4px solid transparent;
-    border-top-color: #635BFF;
-    border-right-color: #635BFF;
+    border-top-color: #2563eb;
+    border-right-color: #2563eb;
 }
 
 .loading-radial::after {
@@ -210,12 +202,11 @@ body {
     inset: 6px;
     border-radius: 50%;
     border: 4px solid transparent;
-    border-bottom-color: #a5a3ff;
-    border-left-color: #a5a3ff;
+    border-bottom-color: #93c5fd;
+    border-left-color: #93c5fd;
     animation: radial-spin 0.8s linear infinite reverse;
 }
 
 .loading-text {
-    animation: radial-pulse 1.5s ease-in-out infinite;
+    color: #374151;
 }
-

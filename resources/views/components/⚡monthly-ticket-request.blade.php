@@ -38,10 +38,12 @@ new class extends Component
         $hwId = Category::where('category_name', 'Hardware')->value('category_id');
         $swId = Category::where('category_name', 'Software')->value('category_id');
         $netId = Category::where('category_name', 'Network')->value('category_id');
+        $knownIds = array_filter([$hwId, $swId, $netId]);
 
         $hardware = [];
         $software = [];
         $network = [];
+        $others = [];
         $totals = [];
 
         for ($i = 1; $i <= 12; $i++) {
@@ -49,6 +51,7 @@ new class extends Component
                 $hardware[] = 0;
                 $software[] = 0;
                 $network[] = 0;
+                $others[] = 0;
                 $totals[] = 0;
                 continue;
             }
@@ -75,10 +78,20 @@ new class extends Component
                     ->count()
                 : 0;
 
+            $o = $knownIds
+                ? Ticket::whereHas('issue.category', fn ($q) => $q->whereNotIn('category_id', $knownIds))
+                    ->whereYear('created_at', $this->year)
+                    ->whereMonth('created_at', $i)
+                    ->count()
+                : Ticket::whereYear('created_at', $this->year)
+                    ->whereMonth('created_at', $i)
+                    ->count();
+
             $hardware[] = $h;
             $software[] = $s;
             $network[] = $n;
-            $totals[] = $h + $s + $n;
+            $others[] = $o;
+            $totals[] = $h + $s + $n + $o;
         }
 
         return [
@@ -87,6 +100,7 @@ new class extends Component
             'hardware' => $hardware,
             'software' => $software,
             'network' => $network,
+            'others' => $others,
             'totals' => $totals,
         ];
     }
@@ -237,9 +251,10 @@ new class extends Component
                     chart.destroy();
                 }
 
-                const orange = '#071f45';
+                const orange = '#fb923c';
                 const blue   = '#1E4079';
-                const green  = '#1FC2C4';
+                const green  = '#22c55e';
+                const gray   = '#9ca3af';
 
                 chart = new Chart(
                     canvas.getContext('2d'),
@@ -286,6 +301,19 @@ new class extends Component
                                     pointRadius: 3,
                                     pointHoverRadius: 5,
                                     pointBackgroundColor: green,
+                                    pointBorderColor: '#ffffff',
+                                    pointBorderWidth: 2,
+                                },
+                                {
+                                    label: 'Others',
+                                    data: payload.others || [],
+                                    borderColor: gray,
+                                    backgroundColor: 'transparent',
+                                    tension: 0.35,
+                                    borderWidth: 2,
+                                    pointRadius: 3,
+                                    pointHoverRadius: 5,
+                                    pointBackgroundColor: gray,
                                     pointBorderColor: '#ffffff',
                                     pointBorderWidth: 2,
                                 },
@@ -477,6 +505,19 @@ new class extends Component
              */
             updateResetVisibility();
             drawChart();
+
+            /**
+             * Reverb real-time update.
+             */
+            if (window.Echo) {
+                window.Echo.channel('tickets')
+                    .listen('.new-ticket', (e) => {
+                        $wire.$refresh().then(() => {
+                        drawChart();
+                    });
+
+                    });
+            }
         </script>
     @endscript
 
