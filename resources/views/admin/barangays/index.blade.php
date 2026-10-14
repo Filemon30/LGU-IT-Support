@@ -384,5 +384,22 @@
 
     {{-- Update Success Modal --}}
     <x-success_modal id="update-barangay-success" text="Barangay updated successfully!" />
-    
+
+    <script>
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            var searchVal = params.get('search');
+            if (searchVal) {
+                var searchInput = document.querySelector('[name="search"]');
+                if (searchInput) {
+                    searchInput.value = searchVal;
+                    searchBarangay();
+                    params.delete('search');
+                    var newUrl = params.toString() ? '?' + params.toString() : window.location.pathname;
+                    window.history.replaceState({}, '', newUrl);
+                }
+            }
+        })();
+    </script>
+
 @endsection

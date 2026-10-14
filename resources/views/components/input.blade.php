@@ -13,8 +13,8 @@
 
     // Colors
     'backgroundColor' => '#0f172a',
-    'strokeColor' => null,
-    'focusColor' => '#635BFF',
+    'strokeColor' => 'null',
+    'focusColor' => '#071d45',
 
     'iconColor' => '#64748b',
     'iconFocusColor' => null,

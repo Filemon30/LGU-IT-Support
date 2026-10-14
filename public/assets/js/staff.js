@@ -434,8 +434,8 @@ function submitAddStaff() {
                         <a href="${staffUrl}" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="View Staff">
                             <i class="ti ti-eye text-xs text-white"></i>
                         </a>
-                        <button type="button" data-modal-open="archive-confirmation-modal" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-red-600 hover:bg-red-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="Archive Staff">
-                            <i class="ti ti-archive text-xs text-white"></i>
+                        <button type="button" data-modal-open="delete-confirmation-modal" data-id="${staff.user_id}" data-ref="${staff.staff_ref_num}" data-name="${staff.full_name}" data-status="${staff.status}" class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-red-600 hover:bg-red-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="Archive Staff">
+                            <i class="ti ti-trash text-xs text-white"></i>
                         </button>
                     </div>
                 </td>
@@ -726,14 +726,32 @@ function submitUpdateStaff() {
         }
 
         if (body.success) {
+            loadingModal.classList.add('hidden');
+            loadingModal.classList.remove('flex');
+
+            if (updateType === 'status') {
+                const newStatus = body.staff ? body.staff.status : status;
+                const badge = document.getElementById('staff-status-badge');
+                if (badge) {
+                    const color = newStatus === 'Active' ? 'green' : 'red';
+                    const icon = newStatus === 'Active' ? 'ti ti-circle-check' : 'ti ti-circle-x';
+                    badge.innerHTML = '<span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba(' + (newStatus === 'Active' ? '34, 197, 94' : '239, 68, 68') + ', 0.10); color: ' + (newStatus === 'Active' ? '#4ade80' : '#f87171') + '; border-color: rgba(' + (newStatus === 'Active' ? '34, 197, 94' : '239, 68, 68') + ', 0.30);"><i class="' + icon + ' text-[0.7rem]"></i><span class="text-center ml-2 inline-flex">' + newStatus + '</span></span>';
+                }
+                const statusInput = document.getElementById('archive-staff-status');
+                if (statusInput) statusInput.value = newStatus;
+            }
+
             const successModal = document.getElementById('update-staff-success');
             successModal.classList.remove('hidden');
             successModal.classList.add('flex');
 
+            form.reset();
+            document.getElementById('password-fields').classList.add('hidden');
+            document.getElementById('status-fields').classList.add('hidden');
+
             setTimeout(() => {
                 successModal.classList.add('hidden');
                 successModal.classList.remove('flex');
-                window.location.reload();
             }, 2000);
         } else {
             alert(body.message || 'Failed to update staff.');

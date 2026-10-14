@@ -7,11 +7,15 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\Issue;
 use App\Models\Ticket;
+use App\Traits\LogsTransactions;
+use App\Traits\SendsNotifications;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class ServicesController extends Controller
 {
+    use LogsTransactions, SendsNotifications;
+
     /**
      * Display services listing.
      */
@@ -105,6 +109,15 @@ class ServicesController extends Controller
             'status' => 'Active',
         ]);
 
+        $this->logTransaction(
+            'New Category Added',
+            'Category',
+            $category->category_id,
+            'Added new category: '.$category->category_name
+        );
+
+        $this->notifyAllAdmins('New Service Category', 'Category '.$category->category_name.' has been added', session('user_id'), route('admin.services'));
+
         return response()->json([
             'success' => true,
             'message' => 'Category added successfully.',
@@ -118,12 +131,14 @@ class ServicesController extends Controller
      */
     public function storeIssue(Request $request, $categoryId)
     {
+        $category = Category::findOrFail($categoryId);
+
         $validated = $request->validate([
             'description' => [
                 'required',
                 'string',
                 'max:255',
-                \Illuminate\Validation\Rule::unique('issues')->where(function ($query) use ($categoryId) {
+                Rule::unique('issues')->where(function ($query) use ($categoryId) {
                     return $query->where('category_id', $categoryId);
                 }),
             ],
@@ -132,11 +147,20 @@ class ServicesController extends Controller
 
         $issue = Issue::create([
             'category_id' => $categoryId,
-            'issue_ref_num' => 'ISS-' . strtoupper(uniqid()),
+            'issue_ref_num' => 'ISS-'.strtoupper(uniqid()),
             'description' => $validated['description'],
             'default_priority_level_id' => $validated['default_priority_level_id'],
             'status' => 'Active',
         ]);
+
+        $this->logTransaction(
+            'New Issue Added',
+            'Issue',
+            $issue->issue_id,
+            'Added new issue: '.$issue->description.' under category '.$category->category_name
+        );
+
+        $this->notifyAllAdmins('New Issue Added', 'Issue '.$issue->description.' under category '.$category->category_name, session('user_id'), route('admin.services'));
 
         return response()->json([
             'success' => true,
@@ -156,6 +180,17 @@ class ServicesController extends Controller
 
         $issue->update(['status' => 'Soft Delete']);
 
+        $this->logTransaction(
+            'Deleted Issue',
+            'Issue',
+            $issue->issue_id,
+            'Deleted issue: '.$issue->description,
+            ['status' => 'Active'],
+            ['status' => 'Soft Delete']
+        );
+
+        $this->notifyAllAdmins('Issue Deleted', 'Issue '.$issue->description.' has been deleted', session('user_id'), route('admin.services'));
+
         return response()->json([
             'success' => true,
             'message' => 'Issue deleted successfully.',
@@ -173,6 +208,17 @@ class ServicesController extends Controller
             ->firstOrFail();
 
         $issue->update(['status' => 'Active']);
+
+        $this->logTransaction(
+            'Updated Issue',
+            'Issue',
+            $issue->issue_id,
+            'Restored issue: '.$issue->description,
+            ['status' => 'Soft Delete'],
+            ['status' => 'Active']
+        );
+
+        $this->notifyAllAdmins('Issue Restored', 'Issue '.$issue->description.' has been restored', session('user_id'), route('admin.services'));
 
         return response()->json([
             'success' => true,

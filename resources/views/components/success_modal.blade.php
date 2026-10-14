@@ -6,23 +6,40 @@
 
 <style>
     @keyframes success-scale {
-        0% { transform: scale(0); opacity: 0; }
-        50% { transform: scale(1.2); }
-        100% { transform: scale(1); opacity: 1; }
+        0% {
+            transform: scale(0);
+            opacity: 0;
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
     }
 
     @keyframes success-checkmark {
-        0% { stroke-dashoffset: 100; }
-        100% { stroke-dashoffset: 0; }
+        0% {
+            stroke-dashoffset: 100;
+        }
+        100% {
+            stroke-dashoffset: 0;
+        }
     }
 
     @keyframes success-bounce {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-6px); }
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-6px);
+        }
     }
 
     .success-icon-wrapper {
-        animation: success-scale 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        animation: success-scale 0.5s
+            cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
     .success-icon {
@@ -45,16 +62,16 @@
     id="{{ $id }}"
     data-modal
     data-modal-static
-    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50"
 >
-    <div
-        class="flex w-full max-w-xs flex-col items-center justify-center
-               rounded-2xl bg-white px-8 py-10 shadow-xl"
-    >
+    <div class="flex flex-col items-center justify-center">
 
         {{-- Success Icon --}}
         <div class="success-icon-wrapper mb-5">
-            <div class="success-icon relative flex h-16 w-16 items-center justify-center rounded-full bg-green-50">
+            <div
+                class="success-icon relative flex h-16 w-16
+                       items-center justify-center rounded-full bg-green-50"
+            >
                 <i class="{{ $icon }} text-4xl text-green-500"></i>
 
                 {{-- Decorative Ring --}}
@@ -77,7 +94,7 @@
         </div>
 
         {{-- Changeable Text --}}
-        <p class="success-text text-sm font-medium text-gray-700 text-center">
+        <p class="success-text text-sm font-medium text-white text-center">
             {{ $text }}
         </p>
 

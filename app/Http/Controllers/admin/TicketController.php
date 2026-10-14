@@ -8,10 +8,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Ticket;
 use App\Models\TicketStatusHistory;
 use App\Models\User;
+use App\Traits\LogsTransactions;
+use App\Traits\SendsNotifications;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
+    use LogsTransactions, SendsNotifications;
+
     public function index()
     {
         $tickets = Ticket::with(['requester.barangay', 'requester.division', 'issue.category', 'priority', 'assignee.information'])
@@ -43,7 +47,7 @@ class TicketController extends Controller
         ]);
 
         $assignee = User::with('information')->find($request->assigned_to);
-        $assignedName = $assignee->information->first_name . ' ' . $assignee->information->last_name;
+        $assignedName = $assignee->information->first_name.' '.$assignee->information->last_name;
 
         event(new TicketAssigned(
             $ticket->ticket_id,
@@ -51,6 +55,15 @@ class TicketController extends Controller
             $assignedName,
             'Confirmed'
         ));
+
+        $this->logTransaction(
+            'Re-assigned Ticket',
+            'Ticket',
+            $ticket->ticket_id,
+            'Assigned ticket '.$ticket->ticket_ref_num.' to '.$assignedName
+        );
+
+        $this->notifyAllAdmins('Ticket Assigned', 'Ticket '.$ticket->ticket_ref_num.' assigned to '.$assignedName, session('user_id'), route('admin.tickets.index', ['search' => $ticket->ticket_ref_num]));
 
         return response()->json([
             'success' => true,
@@ -81,6 +94,24 @@ class TicketController extends Controller
             'remarks' => $request->cancellation_reason,
         ]);
 
+        $this->logTransaction(
+            'Ticket Updated',
+            'Ticket',
+            $ticket->ticket_id,
+            'Cancelled ticket '.$ticket->ticket_ref_num,
+            ['ticket_status' => $oldStatus],
+            ['ticket_status' => 'Cancelled']
+        );
+
+        $this->notifyAllAdmins('Ticket Cancelled', 'Ticket '.$ticket->ticket_ref_num.' cancelled', session('user_id'), route('admin.tickets.index', ['search' => $ticket->ticket_ref_num]));
+
+        broadcast(new \App\Events\TicketCancelled(
+            $ticket->ticket_id,
+            $ticket->ticket_ref_num,
+            $oldStatus,
+            $ticket->issue->category->category_name ?? ''
+        ));
+
         return response()->json([
             'success' => true,
             'message' => 'Ticket cancelled successfully.',
@@ -100,7 +131,7 @@ class TicketController extends Controller
             ->whereIn('ticket_id', $ticketIds)
             ->get();
 
-        $nonDeletable = $tickets->filter(fn($t) => !in_array($t->ticket_status, ['Resolved', 'Cancelled']));
+        $nonDeletable = $tickets->filter(fn ($t) => ! in_array($t->ticket_status, ['Resolved', 'Cancelled']));
         if ($nonDeletable->isNotEmpty()) {
             return response()->json([
                 'success' => false,
@@ -129,11 +160,22 @@ class TicketController extends Controller
                 $oldStatuses[$ticket->ticket_id] ?? 'Pending',
                 $ticket->issue->category->category_name ?? ''
             ));
+
+            $this->logTransaction(
+                'Ticket Updated',
+                'Ticket',
+                $ticket->ticket_id,
+                'Deleted ticket '.$ticket->ticket_ref_num,
+                ['ticket_status' => $oldStatuses[$ticket->ticket_id] ?? 'Pending'],
+                ['ticket_status' => 'Soft Delete']
+            );
         }
+
+        $this->notifyAllAdmins('Tickets Deleted', count($ticketIds).' ticket(s) deleted by admin', session('user_id'), route('admin.tickets.index'));
 
         return response()->json([
             'success' => true,
-            'message' => count($ticketIds) . ' ticket(s) deleted successfully.',
+            'message' => count($ticketIds).' ticket(s) deleted successfully.',
         ]);
     }
 
@@ -180,7 +222,7 @@ class TicketController extends Controller
         $html = '';
 
         foreach ($tickets as $ticket) {
-            $priorityColor = match(strtolower($ticket->priority->priority_name ?? '')) {
+            $priorityColor = match (strtolower($ticket->priority->priority_name ?? '')) {
                 'critical' => 'red',
                 'high' => 'orange',
                 'medium' => 'yellow',
@@ -188,7 +230,7 @@ class TicketController extends Controller
                 default => 'gray',
             };
 
-            $priorityIcon = match(strtolower($ticket->priority->priority_name ?? '')) {
+            $priorityIcon = match (strtolower($ticket->priority->priority_name ?? '')) {
                 'critical' => 'ti ti-alert-circle',
                 'high' => 'ti ti-circle-arrow-up',
                 'medium' => 'ti ti-circle-half',
@@ -196,7 +238,7 @@ class TicketController extends Controller
                 default => 'ti ti-help-circle',
             };
 
-            $statusColor = match($ticket->ticket_status) {
+            $statusColor = match ($ticket->ticket_status) {
                 'Pending' => 'orange',
                 'Confirmed' => 'green',
                 'On Progress' => 'yellow',
@@ -205,7 +247,7 @@ class TicketController extends Controller
                 default => 'gray',
             };
 
-            $statusIcon = match($ticket->ticket_status) {
+            $statusIcon = match ($ticket->ticket_status) {
                 'Pending' => 'ti ti-clock',
                 'Confirmed' => 'ti ti-circle-check',
                 'On Progress' => 'ti ti-loader',
@@ -216,21 +258,21 @@ class TicketController extends Controller
 
             $isAssigned = $ticket->assigned_to !== null;
             $requesterName = $ticket->requester->requester_type === 'Barangay'
-                ? 'Barangay - ' . ($ticket->requester->barangay->barangay_name ?? '-')
-                : 'Office (' . ($ticket->requester->division->office->office_name ?? '-') . ') - ' . ($ticket->requester->division->division_name ?? '-');
+                ? 'Barangay - '.($ticket->requester->barangay->barangay_name ?? '-')
+                : 'Office ('.($ticket->requester->division->office->office_name ?? '-').') - '.($ticket->requester->division->division_name ?? '-');
             $assignedName = $isAssigned
-                ? $ticket->assignee->information->first_name . ' ' . $ticket->assignee->information->last_name
+                ? $ticket->assignee->information->first_name.' '.$ticket->assignee->information->last_name
                 : 'Unassigned';
             $date = $ticket->created_at->setTimezone('Asia/Manila')->format('m/d/Y h:i A');
 
-            $priorityRgb = match($priorityColor) {
+            $priorityRgb = match ($priorityColor) {
                 'red' => '239, 68, 68',
                 'orange' => '249, 115, 22',
                 'yellow' => '234, 179, 8',
                 'green' => '34, 197, 94',
                 default => '107, 114, 128',
             };
-            $priorityHex = match($priorityColor) {
+            $priorityHex = match ($priorityColor) {
                 'red' => '#f87171',
                 'orange' => '#fb923c',
                 'yellow' => '#facc15',
@@ -238,7 +280,7 @@ class TicketController extends Controller
                 default => '#9ca3af',
             };
 
-            $statusRgb = match($statusColor) {
+            $statusRgb = match ($statusColor) {
                 'orange' => '249, 115, 22',
                 'green' => '34, 197, 94',
                 'yellow' => '234, 179, 8',
@@ -246,7 +288,7 @@ class TicketController extends Controller
                 'red' => '239, 68, 68',
                 default => '107, 114, 128',
             };
-            $statusHex = match($statusColor) {
+            $statusHex = match ($statusColor) {
                 'orange' => '#fb923c',
                 'green' => '#4ade80',
                 'yellow' => '#facc15',
@@ -256,10 +298,10 @@ class TicketController extends Controller
             };
 
             $html .= '<tr class="border-b border-gray-100 transition-colors hover:bg-gray-50">';
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . e($ticket->ticket_ref_num) . '</td>';
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . e($requesterName) . '</td>';
-            $html .= '<td class="whitespace-nowrap px-4 py-3"><span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba(' . $priorityRgb . ', 0.10); color: ' . $priorityHex . '; border-color: rgba(' . $priorityRgb . ', 0.30);"><i class="' . $priorityIcon . ' text-[0.7rem]"></i><span class="text-[0.7rem]">' . e($ticket->priority->priority_name ?? '-') . '</span></span></td>';
-            $html .= '<td class="whitespace-nowrap px-4 py-3"><span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba(' . $statusRgb . ', 0.10); color: ' . $statusHex . '; border-color: rgba(' . $statusRgb . ', 0.30);"><i class="' . $statusIcon . ' text-[0.7rem]"></i><span class="text-[0.7rem]">' . e($ticket->ticket_status) . '</span></span></td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.e($ticket->ticket_ref_num).'</td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.e($requesterName).'</td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3"><span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba('.$priorityRgb.', 0.10); color: '.$priorityHex.'; border-color: rgba('.$priorityRgb.', 0.30);"><i class="'.$priorityIcon.' text-[0.7rem]"></i><span class="text-[0.7rem]">'.e($ticket->priority->priority_name ?? '-').'</span></span></td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3"><span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba('.$statusRgb.', 0.10); color: '.$statusHex.'; border-color: rgba('.$statusRgb.', 0.30);"><i class="'.$statusIcon.' text-[0.7rem]"></i><span class="text-[0.7rem]">'.e($ticket->ticket_status).'</span></span></td>';
 
             if ($isAssigned) {
                 $html .= '<td class="whitespace-nowrap px-4 py-3"><span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba(34, 197, 94, 0.10); color: #4ade80; border-color: rgba(34, 197, 94, 0.30);"><i class="ti ti-user text-[0.7rem]"></i><span class="text-[0.7rem]">Assigned</span></span></td>';
@@ -267,11 +309,11 @@ class TicketController extends Controller
                 $html .= '<td class="whitespace-nowrap px-4 py-3"><span class="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold whitespace-nowrap" style="background-color: rgba(107, 114, 128, 0.10); color: #9ca3af; border-color: rgba(107, 114, 128, 0.30);"><i class="ti ti-user-off text-[0.7rem]"></i><span class="text-[0.7rem]">Unassigned</span></span></td>';
             }
 
-            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">' . e($date) . '</td>';
+            $html .= '<td class="whitespace-nowrap px-4 py-3 text-gray-900">'.e($date).'</td>';
             $html .= '<td class="px-4 py-3"><div class="flex items-center gap-1.5">';
-            $html .= '<input type="checkbox" class="ticket-checkbox h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" data-ticket-id="' . $ticket->ticket_id . '" onchange="updateSelectedCount()" style="display: none;" />';
-            $html .= '<button type="button" class="ticket-action-btn inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="Update Ticket" data-modal-open="update-ticket-modal" data-ticket-id="' . $ticket->ticket_id . '" data-ticket-ref="' . e($ticket->ticket_ref_num) . '" data-requester="' . e($requesterName) . '" data-priority="' . e($ticket->priority->priority_name ?? '-') . '" data-status="' . e($ticket->ticket_status) . '" data-description="' . e($ticket->description ?? '-') . '" data-assigned="' . e($assignedName) . '" data-assigned-id="' . ($ticket->assigned_to ?? '') . '" data-date="' . e($date) . '"><i class="ti ti-refresh text-xs text-white"></i></button>';
-            $html .= '<button type="button" class="ticket-action-btn inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-red-500 hover:bg-red-600 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="Delete Ticket" onclick="deleteSingleTicket(' . $ticket->ticket_id . ')"><i class="ti ti-trash text-xs text-white"></i></button>';
+            $html .= '<input type="checkbox" class="ticket-checkbox h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer" data-ticket-id="'.$ticket->ticket_id.'" onchange="updateSelectedCount()" style="display: none;" />';
+            $html .= '<button type="button" class="ticket-action-btn inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-blue-600 hover:bg-blue-700 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="Update Ticket" data-modal-open="update-ticket-modal" data-ticket-id="'.$ticket->ticket_id.'" data-ticket-ref="'.e($ticket->ticket_ref_num).'" data-requester="'.e($requesterName).'" data-priority="'.e($ticket->priority->priority_name ?? '-').'" data-status="'.e($ticket->ticket_status).'" data-description="'.e($ticket->description ?? '-').'" data-assigned="'.e($assignedName).'" data-assigned-id="'.($ticket->assigned_to ?? '').'" data-date="'.e($date).'"><i class="ti ti-refresh text-xs text-white"></i></button>';
+            $html .= '<button type="button" class="ticket-action-btn inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-red-500 hover:bg-red-600 hover:shadow-sm active:scale-95 transition-all duration-200 ease-in-out" title="Delete Ticket" onclick="deleteSingleTicket('.$ticket->ticket_id.')"><i class="ti ti-trash text-xs text-white"></i></button>';
             $html .= '</div></td>';
             $html .= '</tr>';
         }

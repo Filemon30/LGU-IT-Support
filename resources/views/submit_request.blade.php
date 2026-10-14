@@ -16,7 +16,7 @@
             </a>
         </div>
 
-        <div class="flex items-center justify-center w-15 h-15 mx-auto mt-2 rounded-xl bg-blue-50 text-blue-600">
+        <div class="flex items-center justify-center w-15 h-15 mx-auto mt-2 rounded-xl bg-[#e0ebfd] text-[#071d45]">
             <i class="ti ti-send text-3xl"></i>
         </div>
 
@@ -65,10 +65,10 @@
                 {{-- Barangay --}}
                 <div>
                     <x-dropdown
+                        :options="$barangays->pluck('barangay_name', 'barangay_id')->toArray()"
                         name="barangay"
                         placeholder="Select Barangay"
                         label="Barangay"
-                        :options="$barangays->pluck('barangay_name', 'barangay_id')->toArray()"
                         backgroundColor="#ffffff"
                         borderColor="#d1d5db"
                         focusColor="#2563eb"
@@ -86,7 +86,7 @@
                         name="brgy_category"
                         placeholder="Select Category"
                         label="Category"
-                        :options="$categories->pluck('category_name', 'category_id')->toArray()"
+                        :options="$categories->pluck('category_name', 'category_id')->toArray()" 
                         backgroundColor="#ffffff"
                         borderColor="#d1d5db"
                         focusColor="#2563eb"
@@ -173,13 +173,13 @@
                 {{-- Departments/Offices --}}
                 <div>
                     <x-dropdown
+                        :options="$offices->pluck('office_name', 'office_id')->toArray()"
                         name="department_office"
                         placeholder="Select Department/Office"
                         label="Departments/Offices"
-                        :options="$offices->pluck('office_name', 'office_id')->toArray()"
                         backgroundColor="#ffffff"
                         borderColor="#d1d5db"
-                        focusColor="#2563eb"
+                        focusColor="#071d45"
                         textColor="#111827"
                         placeholderColor="#9ca3af"
                         hoverColor="#f9fafb"
@@ -197,7 +197,7 @@
                         :options="[]"
                         backgroundColor="#ffffff"
                         borderColor="#d1d5db"
-                        focusColor="#2563eb"
+                        focusColor="#071d45"
                         textColor="#111827"
                         placeholderColor="#9ca3af"
                         hoverColor="#f9fafb"
@@ -209,10 +209,10 @@
                 {{-- Category --}}
                 <div>
                     <x-dropdown
+                        :options="$categories->pluck('category_name', 'category_id')->toArray()"
                         name="city_category"
                         placeholder="Select Category"
                         label="Category"
-                        :options="$categories->pluck('category_name', 'category_id')->toArray()"
                         backgroundColor="#ffffff"
                         borderColor="#d1d5db"
                         focusColor="#2563eb"
@@ -296,6 +296,7 @@
                 <i class="ti ti-send"></i>
             </button>
         </div>
+
     </main>
 
 

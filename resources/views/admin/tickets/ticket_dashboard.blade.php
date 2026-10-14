@@ -13,13 +13,58 @@
 </head>
 <body class="bg-gray-100 min-h-screen">
 
-    {{-- Header --}}
-    <div class="bg-white py-4 shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 flex items-center gap-3">
-            <img src="{{ asset('assets/images/biringan.png') }}" alt="Logo" class="h-8 w-8">
-            <h1 class="text-lg font-bold text-gray-900">Realtime Ticket Monitoring</h1>
+    
+    {{-- HEADER --}}
+{{-- HEADER --}}
+<header class="sticky top-0 z-30 w-full border-b border-gray-200 bg-white shadow-sm">
+
+    <div
+        class="mx-auto w-full"
+        style="max-width: min(1200px, calc(100% - 2rem));"
+    >
+
+        <div class="flex w-full items-center justify-between gap-3 py-3">
+
+            {{-- LEFT: LOGO AND TITLE --}}
+            <div class="flex min-w-0 items-center gap-2 sm:gap-3">
+
+                <img
+                    src="{{ asset('assets/images/biringan.png') }}"
+                    alt="City of Biringan Logo"
+                    class="h-10 w-10 shrink-0 object-contain sm:h-12 sm:w-12"
+                >
+
+                <h1 class="truncate text-base font-bold text-gray-900 sm:text-lg">
+                    Realtime Ticket Monitoring
+                </h1>
+
+            </div>
+
+            {{-- RIGHT: DATE AND TIME --}}
+            <div class="ml-auto flex shrink-0 flex-col items-end justify-center text-right">
+
+                <p
+                    id="current-time"
+                    class="whitespace-nowrap text-base font-bold leading-tight text-gray-900 sm:text-lg"
+                >
+                    --:--:-- --
+                </p>
+
+                <p
+                    id="current-date"
+                    class="mt-1 whitespace-nowrap text-xs text-gray-500 sm:text-sm"
+                >
+                    Loading date...
+                </p>
+
+            </div>
+
         </div>
+
     </div>
+
+</header>
+
 
     <div class="max-w-7xl mx-auto px-4 py-6 space-y-6">
 
@@ -291,6 +336,16 @@
             else if (status === 'Resolved') decrementEl(prefix + '-resolved');
         }
 
+        function decrementTotalAndCategory(data) {
+            decrementEl('total-tickets');
+
+            var prefix = getCategoryPrefix(data.category_name);
+            if (prefix) {
+                decrementEl(prefix + '-total');
+                decrementStatusForCategory(prefix, data.old_status);
+            }
+        }
+
 
         /*
         |--------------------------------------------------------------------------
@@ -498,6 +553,29 @@
             updateDashboardCounters(data);
         }
 
+        function updateDateTime() {
+            const now = new Date();
+
+            document.getElementById('current-time').textContent =
+                now.toLocaleTimeString('en-PH', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                });
+
+            document.getElementById('current-date').textContent =
+                now.toLocaleDateString('en-PH', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+        }
+
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
 
         /*
         |--------------------------------------------------------------------------
@@ -518,19 +596,11 @@
                             decrementEl('unassigned-count');
                         }
                     })
+                    .listen('.ticket-cancelled', (e) => {
+                        decrementTotalAndCategory(e);
+                    })
                     .listen('.ticket-soft-deleted', (e) => {
-                        decrementEl('total-tickets');
-
-                        if (e.old_status === 'Pending') decrementEl('pending-count');
-                        else if (e.old_status === 'Confirmed') decrementEl('confirmed-count');
-                        else if (e.old_status === 'On Progress') decrementEl('in-progress-count');
-                        else if (e.old_status === 'Resolved') decrementEl('resolved-count');
-
-                        var prefix = getCategoryPrefix(e.category_name);
-                        if (prefix) {
-                            decrementEl(prefix + '-total');
-                            decrementStatusForCategory(prefix, e.old_status);
-                        }
+                        decrementTotalAndCategory(e);
                     });
             }
         });

@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AdminTransaction;
 use App\Models\Barangay;
+use App\Traits\LogsTransactions;
+use App\Traits\SendsNotifications;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class BarangayController extends Controller
 {
+    use LogsTransactions, SendsNotifications;
+
     public function store(Request $request)
     {
         try {
@@ -58,6 +61,8 @@ class BarangayController extends Controller
             $result->barangay_id,
             'Added new barangay: '.$result->barangay_name
         );
+
+        $this->notifyAllAdmins('New Barangay Added', 'Barangay '.$result->barangay_name.' has been added', session('user_id'), route('admin.barangays', ['search' => $result->barangay_name]));
 
         if ($request->expectsJson()) {
 
@@ -180,6 +185,8 @@ class BarangayController extends Controller
             ['barangay_name' => $barangay->barangay_name, 'key_status' => $barangay->key_status]
         );
 
+        $this->notifyAllAdmins('Barangay Updated', 'Barangay '.$barangay->barangay_name.' key status: '.$barangay->key_status, session('user_id'), route('admin.barangays', ['search' => $barangay->barangay_name]));
+
         if ($request->expectsJson()) {
 
             return response()->json([
@@ -197,21 +204,5 @@ class BarangayController extends Controller
         return redirect()
             ->route('admin.barangays')
             ->with('success', 'Barangay updated successfully.');
-    }
-
-    private function logTransaction($actionType, $entityType, $entityId, $description = null, $oldValues = null, $newValues = null)
-    {
-        $refNum = str_pad(random_int(1, 9999999999), 10, '0', STR_PAD_LEFT);
-
-        AdminTransaction::create([
-            'admin_transaction_ref' => $refNum,
-            'handled_by' => session('user_id'),
-            'action_type' => $actionType,
-            'entity_type' => $entityType,
-            'entity_id' => $entityId,
-            'description' => $description,
-            'old_values' => $oldValues,
-            'new_values' => $newValues,
-        ]);
     }
 }

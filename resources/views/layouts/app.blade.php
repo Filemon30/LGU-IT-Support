@@ -285,19 +285,6 @@
 
 
 
-            {{-- Notifications --}}
-
-            <x-side_nav_btn
-                icon="ti ti-bell"
-                label="Notifications"
-                href="{{ $isAdmin ? route('admin.notifications') : route('notifications') }}"
-                data-sidebar-btn
-                data-ajax-nav
-                data-sidebar-link
-                :active="$isAdmin ? request()->routeIs('admin.notifications') : request()->routeIs('notifications')"
-            />
-
-
             {{-- Reports --}}
 
             @if ($isAdmin)
@@ -393,7 +380,7 @@
             class="
                 sticky
                 top-0
-                z-10
+                z-30
                 flex
                 h-16
                 shrink-0
@@ -467,347 +454,96 @@
 
                 @php
 
-                    $notifications = [
+                    $notifications = \App\Models\Notification::where('user_id', session('user_id'))
+                        ->orderBy('created_at', 'desc')
+                        ->get();
 
-                        [
-                            'unread' => true,
-                            'icon' => 'ti ti-ticket',
-                            'color' => 'text-blue-600 bg-blue-50',
-                            'title' => 'New ticket submitted',
-                            'body' => 'Printer not working at Barangay Hall.',
-                            'time' => '5m ago',
-                        ],
+                    $unreadCount = \App\Models\Notification::where('user_id', session('user_id'))
+                        ->where('notification_status', 'Unread')
+                        ->count();
 
-                        [
-                            'unread' => true,
-                            'icon' => 'ti ti-circle-check',
-                            'color' => 'text-green-600 bg-green-50',
-                            'title' => 'Ticket #1042 resolved',
-                            'body' => 'Wi-Fi access point replaced.',
-                            'time' => '1h ago',
-                        ],
-
-                        [
-                            'unread' => true,
-                            'icon' => 'ti ti-message',
-                            'color' => 'text-amber-600 bg-amber-50',
-                            'title' => 'New comment',
-                            'body' => 'Admin commented on ticket #1039.',
-                            'time' => '3h ago',
-                        ],
-
-                        [
-                            'unread' => false,
-                            'icon' => 'ti ti-user-plus',
-                            'color' => 'text-purple-600 bg-purple-50',
-                            'title' => 'New staff account',
-                            'body' => 'IT Staff account was created.',
-                            'time' => '1d ago',
-                        ],
-
-                        [
-                            'unread' => false,
-                            'icon' => 'ti ti-refresh',
-                            'color' => 'text-gray-600 bg-gray-100',
-                            'title' => 'Ticket #1035 updated',
-                            'body' => 'Status changed to In Progress.',
-                            'time' => '2d ago',
-                        ],
-
-                    ];
-
-                    $unreadCount = count(
-                        array_filter(
-                            $notifications,
-                            fn ($notification) =>
-                                $notification['unread']
-                        )
-                    );
+                    $newCount = \App\Models\Notification::where('user_id', session('user_id'))
+                        ->where('notification_status', 'Unread')
+                        ->where('created_at', '>=', now()->subHours(24))
+                        ->count();
 
                 @endphp
 
 
-                <details class="group relative">
+                <button
+                    type="button"
+                    id="notif-bell-btn"
+                    title="Notifications"
+                    class="
+                        relative
+                        flex
+                        h-9
+                        w-9
+                        cursor-pointer
+                        select-none
+                        items-center
+                        justify-center
+                        rounded-full
+                        text-gray-600
+                        transition-colors
+                        hover:bg-gray-100
+                        hover:text-gray-900
+                    "
+                >
 
-                    <summary
-                        title="Notifications"
-                        class="
-                            relative
-                            flex
-                            h-9
-                            w-9
-                            cursor-pointer
-                            select-none
-                            list-none
-                            items-center
-                            justify-center
-                            rounded-full
-                            text-gray-600
-                            transition-colors
-                            hover:bg-gray-100
-                            hover:text-gray-900
-                            [&::-webkit-details-marker]:hidden
-                        "
-                    >
+                    <i class="ti ti-bell text-xl"></i>
 
-                        <i class="ti ti-bell text-xl"></i>
+                    @if ($unreadCount > 0)
 
-                        @if ($unreadCount > 0)
-
-                            <span
-                                class="
-                                    absolute
-                                    -right-0.5
-                                    -top-0.5
-                                    flex
-                                    h-4
-                                    min-w-4
-                                    items-center
-                                    justify-center
-                                    rounded-full
-                                    bg-red-500
-                                    px-1
-                                    text-[10px]
-                                    font-bold
-                                    leading-none
-                                    text-white
-                                "
-                            >
-                                {{ $unreadCount }}
-                            </span>
-
-                        @endif
-
-                    </summary>
-
-
-                    <div
-                        class="
-                            fixed
-                            left-1/2
-                            top-16
-                            z-20
-                            w-[calc(100vw-2rem)]
-                            max-w-sm
-                            -translate-x-1/2
-                            rounded-lg
-                            border
-                            border-gray-200
-                            bg-white
-                            shadow-lg
-                            sm:absolute
-                            sm:left-auto
-                            sm:right-0
-                            sm:top-full
-                            sm:w-80
-                            sm:max-w-none
-                            sm:translate-x-0
-                        "
-                    >
-
-                        <div
+                        <span
+                            id="notif-unread-badge"
                             class="
+                                absolute
+                                -right-0.5
+                                -top-0.5
                                 flex
-                                h-11
-                                items-center
-                                justify-between
-                                rounded-t-lg
-                                border-b
-                                border-gray-200
-                                px-4
-                            "
-                        >
-
-                            <div class="flex items-center gap-2">
-
-                                <span
-                                    class="
-                                        text-sm
-                                        font-bold
-                                        text-gray-900
-                                    "
-                                >
-                                    Notifications
-                                </span>
-
-                                <span
-                                    class="
-                                        rounded-full
-                                        bg-red-50
-                                        px-1.5
-                                        py-0.5
-                                        text-[10px]
-                                        font-bold
-                                        text-red-600
-                                    "
-                                >
-                                    {{ $unreadCount }} new
-                                </span>
-
-                            </div>
-
-                            <button
-                                type="button"
-                                class="
-                                    text-xs
-                                    font-medium
-                                    text-[#071f45]
-                                    hover:underline
-                                "
-                            >
-                                Mark all as read
-                            </button>
-
-                        </div>
-
-
-                        <div
-                            class="
-                                max-h-[55vh]
-                                overflow-y-auto
-                                sm:max-h-72
-                            "
-                        >
-
-                            @foreach ($notifications as $notification)
-
-                                <a
-                                    href="#"
-                                    class="
-                                        flex
-                                        items-start
-                                        gap-3
-                                        px-4
-                                        py-3
-                                        transition-colors
-                                        {{ $notification['unread']
-                                            ? 'bg-[#eef4ff] hover:bg-[#e3edff]'
-                                            : 'hover:bg-gray-50' }}
-                                    "
-                                >
-
-                                    <span
-                                        class="
-                                            flex
-                                            h-8
-                                            w-8
-                                            shrink-0
-                                            items-center
-                                            justify-center
-                                            rounded-full
-                                            {{ $notification['color'] }}
-                                        "
-                                    >
-                                        <i
-                                            class="{{ $notification['icon'] }} text-base"
-                                        ></i>
-                                    </span>
-
-
-                                    <span
-                                        class="
-                                            flex
-                                            min-w-0
-                                            flex-col
-                                        "
-                                    >
-
-                                        <span
-                                            class="
-                                                flex
-                                                items-center
-                                                gap-1.5
-                                            "
-                                        >
-
-                                            <span
-                                                class="
-                                                    truncate
-                                                    text-sm
-                                                    text-gray-900
-                                                    {{ $notification['unread']
-                                                        ? 'font-bold'
-                                                        : 'font-semibold' }}
-                                                "
-                                            >
-                                                {{ $notification['title'] }}
-                                            </span>
-
-                                            @if ($notification['unread'])
-
-                                                <span
-                                                    class="
-                                                        h-1.5
-                                                        w-1.5
-                                                        shrink-0
-                                                        rounded-full
-                                                        bg-blue-500
-                                                    "
-                                                ></span>
-
-                                            @endif
-
-                                        </span>
-
-
-                                        <span
-                                            class="
-                                                mt-0.5
-                                                line-clamp-2
-                                                text-xs
-                                                text-gray-500
-                                            "
-                                        >
-                                            {{ $notification['body'] }}
-                                        </span>
-
-
-                                        <span
-                                            class="
-                                                mt-1
-                                                text-[10px]
-                                                uppercase
-                                                tracking-wide
-                                                text-gray-400
-                                            "
-                                        >
-                                            {{ $notification['time'] }}
-                                        </span>
-
-                                    </span>
-
-                                </a>
-
-                            @endforeach
-
-                        </div>
-
-
-                        <a
-                            href="{{ $isAdmin ? route('admin.notifications') : route('notifications') }}"
-                            data-ajax-nav
-                            class="
-                                flex
-                                h-10
+                                h-4
+                                min-w-4
                                 items-center
                                 justify-center
-                                gap-2
-                                rounded-b-lg
-                                border-t
-                                border-gray-200
-                                text-sm
-                                font-medium
-                                text-[#071f45]
-                                transition-colors
-                                hover:bg-gray-50
+                                rounded-full
+                                bg-red-500
+                                px-1
+                                text-[10px]
+                                font-bold
+                                leading-none
+                                text-white
                             "
                         >
-                            View all notifications
-                        </a>
+                            {{ $unreadCount }}
+                        </span>
 
-                    </div>
+                    @else
 
-                </details>
+                        <span
+                            id="notif-unread-badge"
+                            class="
+                                absolute
+                                -right-0.5
+                                -top-0.5
+                                hidden
+                                h-4
+                                min-w-4
+                                items-center
+                                justify-center
+                                rounded-full
+                                bg-red-500
+                                px-1
+                                text-[10px]
+                                font-bold
+                                leading-none
+                                text-white
+                            "
+                        ></span>
+
+                    @endif
+
+                </button>
 
 
                 <div class="h-6 w-px bg-gray-200"></div>
@@ -902,7 +638,7 @@
                             absolute
                             right-0
                             top-full
-                            z-20
+                            z-40
                             w-48
                             rounded-lg
                             border
@@ -1006,47 +742,52 @@
         }
     });
 
-    // Toast Container
+    // Toast Container — positioned top-right below header (h-16) so it never overlaps the user dropdown
     var toastContainer = document.createElement('div');
     toastContainer.id = 'toast-container';
-    toastContainer.className = 'fixed top-4 right-4 z-[9999] flex flex-col gap-3 pointer-events-none';
+    toastContainer.className = 'fixed right-4 z-[9999] flex flex-col gap-3 pointer-events-none';
+    toastContainer.style.top = '72px';
     document.body.appendChild(toastContainer);
-
-    // Render hidden alert templates using the Blade component
-    var alertTemplates = {};
-    document.querySelectorAll('[data-alert-template]').forEach(function(el) {
-        alertTemplates[el.dataset.alertTemplate] = el.outerHTML;
-        el.remove();
-    });
 
     function showToast(title, message, type) {
         type = type || 'info';
-        var html = alertTemplates[type] || alertTemplates.info;
-        if (!html) return;
 
-        var wrapper = document.createElement('div');
-        wrapper.innerHTML = html;
-        var toast = wrapper.firstElementChild;
+        var iconBgColors = {
+            info: 'bg-blue-100',
+            success: 'bg-green-100',
+            warning: 'bg-amber-100',
+            error: 'bg-red-100',
+        };
+        var iconTextColors = {
+            info: 'text-blue-600',
+            success: 'text-green-600',
+            warning: 'text-amber-600',
+            error: 'text-red-600',
+        };
+        var iconBg = iconBgColors[type] || iconBgColors.info;
+        var iconColor = iconTextColors[type] || iconTextColors.info;
 
-        toast.classList.add('pointer-events-auto', 'shadow-lg', 'max-w-sm', 'w-full');
+        var toast = document.createElement('div');
+        toast.className = 'pointer-events-auto shadow-lg w-80 rounded-lg border border-gray-200 bg-white px-5 py-5 relative';
         toast.style.transform = 'translateX(120%)';
         toast.style.opacity = '0';
         toast.style.transition = 'all 0.3s ease-out';
 
-        var titleEl = toast.querySelector('h5');
-        if (titleEl) titleEl.textContent = title;
+        toast.innerHTML =
+            '<button class="absolute top-2 right-2 text-gray-400 hover:text-gray-600 transition-colors toast-close">' +
+                '<i class="ti ti-x text-sm"></i>' +
+            '</button>' +
+            '<div class="flex items-center gap-3">' +
+                '<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full ' + iconBg + '">' +
+                    '<i class="ti ti-bell text-xl ' + iconColor + '"></i>' +
+                '</span>' +
+                '<div class="flex-1 min-w-0 pr-4">' +
+                    '<h5 class="text-sm font-semibold text-gray-900">' + title + '</h5>' +
+                    '<p class="text-xs text-gray-600 mt-0.5 line-clamp-2">' + message + '</p>' +
+                '</div>' +
+            '</div>';
 
-        var descEl = toast.querySelector('p');
-        if (descEl) {
-            descEl.textContent = message;
-            descEl.classList.add('line-clamp-2');
-        }
-
-        var closeBtn = document.createElement('button');
-        closeBtn.className = 'shrink-0 text-gray-400 hover:text-gray-600 transition-colors';
-        closeBtn.innerHTML = '<i class="ti ti-x text-sm"></i>';
-        closeBtn.onclick = function() { toast.remove(); };
-        toast.appendChild(closeBtn);
+        toast.querySelector('.toast-close').onclick = function() { toast.remove(); };
 
         toastContainer.appendChild(toast);
 
@@ -1062,13 +803,113 @@
         }, 5000);
     }
 
+    // Click notification → mark as read, then navigate
+    document.addEventListener('click', function(e) {
+        var link = e.target.closest('.notif-link');
+        if (!link) return;
+
+        e.preventDefault();
+
+        var notifId = link.dataset.notifId;
+        var notifUrl = link.getAttribute('href');
+        var csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        var markReadUrl = '{{ $isAdmin ? route("admin.notifications.markAsRead", ":id") : route("notifications.markAsRead", ":id") }}'.replace(':id', notifId);
+
+        fetch(markReadUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        }).then(function() {
+            window.location.href = notifUrl;
+        }).catch(function() {
+            window.location.href = notifUrl;
+        });
+    });
+
+    // Real-time notification listener via Reverb
+    (function() {
+        function bindEcho() {
+            if (typeof window.Echo === 'undefined') return false;
+
+            window.Echo.channel('notifications')
+                .listen('.notification-created', function(e) {
+                    var badge = document.getElementById('notif-unread-badge');
+                    if (badge) {
+                        badge.style.display = 'flex';
+                        var current = parseInt(badge.textContent) || 0;
+                        badge.textContent = current + 1;
+                    }
+
+                    var newCountEl = document.getElementById('notif-new-count');
+                    if (newCountEl) {
+                        var parts = newCountEl.textContent.match(/(\d+)/);
+                        var currentCount = parts ? parseInt(parts[1]) : 0;
+                        newCountEl.textContent = (currentCount + 1) + ' new';
+                    }
+
+                    var unreadCountEl = document.getElementById('notif-unread-count');
+                    if (unreadCountEl) {
+                        var parts2 = unreadCountEl.textContent.match(/(\d+)/);
+                        var currentUnread = parts2 ? parseInt(parts2[1]) : 0;
+                        unreadCountEl.textContent = (currentUnread + 1) + ' unread';
+                    }
+
+                    var list = document.querySelector('#notif-sidebar .flex-1.overflow-y-auto');
+                    if (list) {
+                        var emptyState = list.querySelector('.px-5.py-12');
+                        if (emptyState) emptyState.remove();
+
+                        var title = e.notification_title || e.notification_message || 'New Notification';
+                        var message = e.notification_message || '';
+                        var targetUrl = e.target_url || '#';
+                        var timeAgo = 'just now';
+
+                        var item = document.createElement('a');
+                        item.href = targetUrl;
+                        item.className = 'notif-link block border-b border-gray-100 px-5 py-3.5 transition-colors bg-[#eef4ff] hover:bg-[#e3edff]';
+                        item.innerHTML =
+                            '<div class="flex items-center gap-2">' +
+                                '<span class="text-sm font-bold text-gray-900">' + escapeHtml(title) + '</span>' +
+                                '<span class="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500 notif-dot-unread"></span>' +
+                            '</div>' +
+                            (message ? '<div class="mt-1 text-xs text-gray-500 line-clamp-2">' + escapeHtml(message) + '</div>' : '') +
+                            '<div class="mt-1 text-[11px] text-gray-400">' + timeAgo + '</div>';
+
+                        list.insertBefore(item, list.firstChild);
+                    }
+                });
+            return true;
+        }
+
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.appendChild(document.createTextNode(text));
+            return div.innerHTML;
+        }
+
+        if (!bindEcho()) {
+            var tries = 0;
+            var timer = setInterval(function() {
+                tries++;
+                if (bindEcho() || tries > 50) clearInterval(timer);
+            }, 200);
+        }
+    })();
+
     // Echo New Ticket Listener
     (function() {
+        var currentUserId = {{ session('user_id', 0) }};
+
         function bindEcho() {
             if (typeof window.Echo === 'undefined') return false;
 
             window.Echo.channel('tickets')
                 .listen('.new-ticket', function(e) {
+                    if (e.submitted_by && e.submitted_by == currentUserId) return;
+
                     var requester = e.requester_type === 'Barangay'
                         ? 'Barangay - ' + (e.requester_name || '-')
                         : 'Office - ' + (e.requester_name || '-');
@@ -1088,13 +929,247 @@
     })();
 </script>
 
-{{-- Hidden Alert Notification Templates --}}
-<div style="display:none">
-    <x-alert-notification data-alert-template="info" type="info" title=" " description=" " />
-    <x-alert-notification data-alert-template="success" type="success" title=" " description=" " />
-    <x-alert-notification data-alert-template="warning" type="warning" title=" " description=" " />
-    <x-alert-notification data-alert-template="error" type="error" title=" " description=" " />
+{{-- Notification Sidebar --}}
+<div id="notif-sidebar-overlay" class="fixed inset-0 z-50 hidden bg-black/40 transition-opacity duration-300" style="opacity:0;"></div>
+
+<div
+    id="notif-sidebar"
+    class="fixed top-0 right-0 z-50 flex h-full w-full max-w-md flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out"
+    style="transform: translateX(100%);"
+>
+    <div class="flex h-14 items-center justify-between border-b border-gray-200 px-5">
+        <div class="flex items-center gap-2">
+            <span class="text-base font-bold text-gray-900">Notifications</span>
+            <span
+                id="notif-new-count"
+                class="rounded-full bg-blue-50 px-1.5 py-0.5 text-[10px] font-bold text-blue-600"
+            >
+                {{ $newCount }} new
+            </span>
+            <span
+                id="notif-unread-count"
+                class="rounded-full bg-red-50 px-1.5 py-0.5 text-[10px] font-bold text-red-600"
+            >
+                {{ $unreadCount }} unread
+            </span>
+        </div>
+        <div class="flex items-center gap-3">
+            <button
+                type="button"
+                id="mark-all-read-btn"
+                class="text-xs font-medium text-[#071f45] hover:underline"
+            >
+                Mark all as read
+            </button>
+            <button
+                type="button"
+                id="notif-sidebar-close"
+                class="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            >
+                <i class="ti ti-x text-lg"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto">
+        @foreach ($notifications as $notification)
+            <div
+                data-notif-id="{{ $notification->notification_id }}"
+                class="
+                    notif-item
+                    block
+                    border-b
+                    border-gray-100
+                    px-5
+                    py-3.5
+                    transition-colors
+                    {{ $notification->notification_status === 'Unread'
+                        ? 'bg-[#eef4ff] hover:bg-[#e3edff]'
+                        : 'hover:bg-gray-50' }}
+                "
+            >
+                <a
+                    href="{{ $notification->target_url ?: '#' }}"
+                    class="notif-link block"
+                    data-notif-id="{{ $notification->notification_id }}"
+                >
+                    <div class="flex items-center gap-2">
+                        <span
+                            class="
+                                text-sm
+                                text-gray-900
+                                {{ $notification->notification_status === 'Unread' ? 'font-bold' : 'font-semibold' }}
+                            "
+                        >
+                            {{ $notification->notification_title ?: Str::limit($notification->notification_message, 60) }}
+                        </span>
+                        @if ($notification->notification_status === 'Unread')
+                            <span class="notif-dot-unread h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500"></span>
+                        @endif
+                    </div>
+                    @if ($notification->notification_message)
+                        <div class="mt-1 text-xs text-gray-500 line-clamp-2">
+                            {{ Str::limit($notification->notification_message, 80) }}
+                        </div>
+                    @endif
+                </a>
+                <div class="mt-1.5 flex items-center justify-between">
+                    <span class="text-[11px] text-gray-400">
+                        {{ $notification->created_at->diffForHumans() }}
+                    </span>
+                    @if ($notification->notification_status === 'Unread')
+                        <button
+                            type="button"
+                            class="mark-read-btn text-[11px] font-medium text-[#071f45] hover:underline"
+                            data-notif-id="{{ $notification->notification_id }}"
+                        >
+                            Mark as read
+                        </button>
+                    @endif
+                </div>
+            </div>
+        @endforeach
+
+        @if ($notifications->isEmpty())
+            <div class="px-5 py-12 text-center">
+                <i class="ti ti-bell-off text-4xl text-gray-300"></i>
+                <p class="mt-3 text-sm text-gray-500">No notifications yet.</p>
+            </div>
+        @endif
+    </div>
 </div>
 
+<script>
+(function() {
+    var sidebar = document.getElementById('notif-sidebar');
+    var overlay = document.getElementById('notif-sidebar-overlay');
+    var bellBtn = document.getElementById('notif-bell-btn');
+    var closeBtn = document.getElementById('notif-sidebar-close');
+
+    function openSidebar() {
+        overlay.classList.remove('hidden');
+        requestAnimationFrame(function() {
+            overlay.style.opacity = '1';
+            sidebar.style.transform = 'translateX(0)';
+        });
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+        overlay.style.opacity = '0';
+        sidebar.style.transform = 'translateX(100%)';
+        document.body.style.overflow = '';
+        setTimeout(function() { overlay.classList.add('hidden'); }, 300);
+    }
+
+    bellBtn.addEventListener('click', openSidebar);
+    closeBtn.addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+
+    var markAllBtn = document.getElementById('mark-all-read-btn');
+    if (markAllBtn) {
+        markAllBtn.addEventListener('click', function() {
+            fetch('{{ $isAdmin ? route("admin.notifications.markAllAsRead") : route("notifications.markAllAsRead") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    document.querySelectorAll('.notif-dot-unread').forEach(function(dot) {
+                        dot.classList.remove('bg-blue-500');
+                        dot.classList.add('bg-gray-300');
+                        dot.classList.remove('notif-dot-unread');
+                    });
+                    document.querySelectorAll('.notif-link').forEach(function(link) {
+                        link.classList.remove('bg-[#eef4ff]');
+                        link.classList.add('hover:bg-gray-50');
+                    });
+                    var badge = document.getElementById('notif-unread-badge');
+                    if (badge) badge.style.display = 'none';
+                    var countSpan = document.getElementById('notif-new-count');
+                    if (countSpan) countSpan.textContent = '0 new';
+                    var unreadSpan = document.getElementById('notif-unread-count');
+                    if (unreadSpan) unreadSpan.textContent = '0 unread';
+                    markAllBtn.disabled = true;
+                    markAllBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                }
+            });
+        });
+    }
+
+    document.addEventListener('click', function(e) {
+        var btn = e.target.closest('.mark-read-btn');
+        if (!btn) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        var notifId = btn.dataset.notifId;
+        var notifItem = btn.closest('.notif-item');
+
+        fetch('{{ $isAdmin ? route("admin.notifications.markAsRead", ":id") : route("notifications.markAsRead", ":id") }}'.replace(':id', notifId), {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            if (data.success) {
+                if (notifItem) {
+                    notifItem.classList.remove('bg-[#eef4ff]', 'hover:bg-[#e3edff]');
+                    notifItem.classList.add('hover:bg-gray-50');
+                    var dot = notifItem.querySelector('.notif-dot-unread');
+                    if (dot) {
+                        dot.classList.remove('bg-blue-500');
+                        dot.classList.add('bg-gray-300');
+                        dot.classList.remove('notif-dot-unread');
+                    }
+                    var title = notifItem.querySelector('.text-sm');
+                    if (title) {
+                        title.classList.remove('font-bold');
+                        title.classList.add('font-semibold');
+                    }
+                    btn.remove();
+                }
+                var badge = document.getElementById('notif-unread-badge');
+                if (badge) {
+                    var current = parseInt(badge.textContent) || 0;
+                    if (current > 1) {
+                        badge.textContent = current - 1;
+                    } else {
+                        badge.style.display = 'none';
+                    }
+                }
+                var unreadSpan = document.getElementById('notif-unread-count');
+                if (unreadSpan) {
+                    var parts = unreadSpan.textContent.match(/(\d+)/);
+                    var currentUnread = parts ? parseInt(parts[1]) : 0;
+                    if (currentUnread > 1) {
+                        unreadSpan.textContent = (currentUnread - 1) + ' unread';
+                    } else {
+                        unreadSpan.textContent = '0 unread';
+                    }
+                }
+            }
+        });
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
+            closeSidebar();
+        }
+    });
+})();
+</script>
+
 </body>
+
 </html>

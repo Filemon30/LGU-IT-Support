@@ -17,7 +17,7 @@
             </a>
         </div>
 
-        <div class="flex items-center justify-center w-15 h-15 mx-auto mt-2 rounded-xl bg-blue-50 text-blue-600">
+        <div class="flex items-center justify-center w-15 h-15 mx-auto mt-2 rounded-xl bg-[#e0ebfd] text-[#071d45]">
             <i class="ti ti-git-pull-request text-3xl"></i>
         </div>
 
@@ -31,7 +31,7 @@
 
             <a
                 href="{{ route('submit.request') }}"
-                class="text-xs font-semibold text-blue-600 ml-2"
+                class="text-xs font-semibold text-[#071d45] ml-2"
             >
                 Click Here.
             </a>
@@ -48,8 +48,8 @@
                         name="ref"
                         leftIcon="ti ti-ticket"
                         backgroundColor="#ffffff"
-                        focusColor="#2563eb"
-                        iconFocusColor="#2563eb"
+                        focusColor="#071F45"
+                        iconFocusColor="#071F45"
                     />
                     <button
                         type="button"
@@ -62,7 +62,7 @@
                 </div>
 
                 <x-button
-                    color="blue"
+                    color="d-blue"
                     type="submit"
                     class="h-10"
                 >

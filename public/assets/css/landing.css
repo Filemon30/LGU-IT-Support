@@ -52,6 +52,7 @@ header .text-xs {
     border-radius: 0;
     background: transparent;
     transition: color 0.2s ease;
+    
 }
 
 .nav-link:hover {
@@ -59,7 +60,7 @@ header .text-xs {
 }
 
 .nav-link.active {
-    color: #2563eb;
+    color: #071F45;
     font-weight: 600;
 }
 
@@ -70,7 +71,7 @@ header .text-xs {
     right: 0;
     bottom: -0.35rem;
     height: 2px;
-    background: #2563eb;
+    background: #071F45;
     border-radius: 999px;
 }
 
@@ -189,9 +190,9 @@ header .text-xs {
 
 /* Primary CTA - Submit Ticket */
 .cta-button.submit {
-    background: #2563EB;
+    background: #071F45;
     color: #FFFFFF;
-    border: 1px solid #2563EB;
+    border: 1px solid #071F45;
 }
 
 .cta-button.submit i {
@@ -199,13 +200,13 @@ header .text-xs {
 }
 
 .cta-button.submit:hover {
-    background: #1D4ED8;
-    border-color: #1D4ED8;
+    background: #0b2f6a;
+    border-color: #0b2f6a;
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 
 .cta-button.submit:focus-visible {
-    outline: 2px solid #2563EB;
+    outline: 2px solid #071F45;
     outline-offset: 2px;
 }
 
@@ -227,19 +228,19 @@ header .text-xs {
 }
 
 .cta-button:not(.submit):not(.secondary):focus-visible {
-    outline: 2px solid #2563EB;
+    outline: 2px solid #071F45;
     outline-offset: 2px;
 }
 
 /* Tertiary CTA - Login */
 .cta-button.secondary {
     background: #EFF6FF;
-    color: #2563EB;
+    color: #071F45;
     border: 1px solid #BFDBFE;
 }
 
 .cta-button.secondary i {
-    color: #2563EB;
+    color: #071F45;
 }
 
 .cta-button.secondary:hover {
@@ -248,7 +249,7 @@ header .text-xs {
 }
 
 .cta-button.secondary:focus-visible {
-    outline: 2px solid #2563EB;
+    outline: 2px solid #071F45;
     outline-offset: 2px;
 }
 
@@ -279,9 +280,9 @@ header .text-xs {
 
 /* Primary Header - Submit Ticket */
 .header-btn-submit {
-    background: #2563EB;
+    background: #071F45;
     color: #FFFFFF;
-    border: 1px solid #2563EB;
+    border: 1px solid #071F45;
 }
 
 .header-btn-submit i {
@@ -289,8 +290,8 @@ header .text-xs {
 }
 
 .header-btn-submit:hover {
-    background: #1D4ED8;
-    border-color: #1D4ED8;
+    background: #0b2f6a;
+    border-color: #0b2f6a;
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 
@@ -314,12 +315,12 @@ header .text-xs {
 /* Tertiary Header - Login */
 .header-btn-primary {
     background: #EFF6FF;
-    color: #2563EB;
+    color: #071F45;
     border: 1px solid #BFDBFE;
 }
 
 .header-btn-primary i {
-    color: #2563EB;
+    color: #071F45
 }
 
 .header-btn-primary:hover {
@@ -531,7 +532,7 @@ header .text-xs {
     transform: translateX(-50%);
     width: 2px;
     height: 100%;
-    background: linear-gradient(180deg, #bfdbfe, #e5e7eb);
+    background: linear-gradient(180deg, #071F45, #071F45);
     top: 0;
     z-index: 0;
 }
@@ -560,11 +561,11 @@ header .text-xs {
     height: 60px;
     border-radius: 10px;
     background: #ffffff;
-    border: 2px solid #2563eb;
+    border: 2px solid #071F45;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #2563eb;
+    color: #071F45;
     font-size: 1.5rem;
     flex-shrink: 0;
     z-index: 2;
@@ -575,12 +576,12 @@ header .text-xs {
 .timeline-step:nth-child(2) .timeline-icon,
 .timeline-step:nth-child(4) .timeline-icon {
     background: #ffffff;
-    border-color: #2563eb;
+    border-color: #071F45;
 }
 
 .timeline-icon:hover {
     transform: scale(1.05);
-    background: #eff6ff;
+    background: #e8edf5;
 }
 
 .timeline-step::after {
@@ -589,7 +590,7 @@ header .text-xs {
     width: 14px;
     height: 14px;
     border-radius: 50%;
-    background: #2563eb;
+    background: #071F45;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -605,8 +606,8 @@ header .text-xs {
     transform: translateY(-50%);
     background: repeating-linear-gradient(
         90deg,
-        #93c5fd,
-        #93c5fd 4px,
+        #071F45,
+        #071F45 4px,
         transparent 4px,
         transparent 8px
     );
@@ -1096,7 +1097,7 @@ header .text-xs {
     transform: translateX(-50%);
     width: 200px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, #d1d5db, transparent);
+    background: linear-gradient(90deg, transparent, #071F45, transparent);
 }
 
 .footer-grid {
@@ -1160,7 +1161,7 @@ header .text-xs {
 .footer-heading {
     font-size: 0.8rem;
     font-weight: 600;
-    color: #2563eb;
+    color: #071F45;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     margin: 0 0 1.25rem 0;
@@ -1175,7 +1176,7 @@ header .text-xs {
     bottom: 0;
     width: 24px;
     height: 2px;
-    background: #2563eb;
+    background: #071F45;
     border-radius: 2px;
 }
 
@@ -1205,7 +1206,7 @@ header .text-xs {
     content: '';
     width: 0;
     height: 1px;
-    background: #2563eb;
+    background: #071F45;
     transition: width 0.2s ease;
     flex-shrink: 0;
 }
@@ -1241,7 +1242,7 @@ header .text-xs {
 
 .footer-contact i {
     font-size: 1rem;
-    color: #2563eb;
+    color: #071F45;
     flex-shrink: 0;
     width: 1.75rem;
     height: 1.75rem;
@@ -1249,14 +1250,14 @@ header .text-xs {
     align-items: center;
     justify-content: center;
     border-radius: 6px;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
+    background: #e8edf5;
+    border: 1px solid #071F45;
     transition: all 0.2s ease;
 }
 
 .footer-contact li:hover i {
-    background: #dbeafe;
-    border-color: #93c5fd;
+    background: #dce3ef;
+    border-color: #071F45;
 }
 
 .footer-bottom {

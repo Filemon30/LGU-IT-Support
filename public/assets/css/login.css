@@ -1,438 +1,592 @@
-/* ========================================
-   BODY
-   ======================================== */
-
-body {
+.signin-page {
+    width: 100%;
     min-height: 100vh;
-    margin: 0;
-    background: #fafafa;
-    font-family: 'Poppins', sans-serif;
-    color: #1f2937;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-/* ========================================
-   HEADER
-   ======================================== */
-
-header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background-color: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-header img {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: 0.7rem;
-    object-fit: cover;
-    border: 0;
-}
-
-header .text-lg {
-    font-size: 1.6rem;
-    line-height: 1;
-    letter-spacing: -0.04em;
-    font-weight: 700;
-    color: #111827;
-}
-
-header .text-xs {
-    display: block;
-    color: #6b7280;
-    letter-spacing: 0.13em;
-    text-transform: uppercase;
-    line-height: 1.2;
-}
-
-/* ========================================
-   ANIMATED DIVIDER - now static
-   ======================================== */
-
-.animated-divider {
-    height: 2px;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        #d1d5db,
-        transparent
-    );
-    margin: 2rem auto;
-    max-width: 600px;
-}
-
-/* ========================================
-   FLOATING INPUT
-   ======================================== */
-
-.floating-input {
-    position: relative;
-    width: 100%;
-}
-
-/* ========================================
-   INPUT
-   ======================================== */
-
-.floating-input input {
-    width: 100%;
-    height: 2.6rem;
-
-    padding: 0 2rem;
-
-    border: 1px solid #d1d5db;
-    border-radius: 0.75rem;
-
-    background-color: #ffffff;
-    color: #111827;
-
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.85rem;
-
-    outline: none;
-
-    appearance: none;
-    -webkit-appearance: none;
-
-    box-sizing: border-box;
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        background-color 0.2s ease,
-        color 0.2s ease;
-}
-
-/* ========================================
-   AUTOFILL
-   ======================================== */
-
-.floating-input input:-webkit-autofill,
-.floating-input input:-webkit-autofill:hover,
-.floating-input input:-webkit-autofill:focus,
-.floating-input input:-webkit-autofill:active {
-    -webkit-text-fill-color: #111827;
-
-    -webkit-box-shadow:
-        0 0 0 1000px #ffffff inset;
-
-    box-shadow:
-        0 0 0 1000px #ffffff inset;
-
-    border-color: #d1d5db;
-
-    transition:
-        background-color 9999s ease-in-out 0s;
-}
-
-/* ========================================
-   LEFT / RIGHT ICON PADDING
-   ======================================== */
-
-.floating-input.has-left-icon input {
-    padding-left: 2.5rem;
-}
-
-.floating-input.has-right-icon input {
-    padding-right: 2.5rem;
-}
-
-.floating-input.has-left-icon.has-right-icon input {
-    padding-left: 2.5rem;
-    padding-right: 2.5rem;
-}
-
-/* ========================================
-   PLACEHOLDER
-   ======================================== */
-
-.floating-input input::placeholder {
-    color: #9ca3af;
-    opacity: 1;
-
-    transition: opacity 0.2s ease;
-}
-
-.floating-input input:focus::placeholder {
-    opacity: 0;
-}
-
-/* ========================================
-   INPUT FOCUS
-   ======================================== */
-
-.floating-input input:focus {
-    border-color: #2563eb;
-
-    box-shadow:
-        0 0 0 1px #2563eb;
-
-    background-color: #ffffff;
-
-    color: #111827;
-}
-
-/* ========================================
-   FLOATING LABEL
-   ======================================== */
-
-.floating-input label {
-    position: absolute;
-
-    left: 0.75rem;
-    top: 0;
-
-    transform: translateY(-50%);
-
-    padding: 0 0.35rem;
-
-    background-color: #ffffff;
-
-    color: #6b7280;
-
-    font-family: 'Poppins', sans-serif;
-
-    font-size: 0.72rem;
-
-    font-weight: 200;
-
-    line-height: 1;
-
-    pointer-events: none;
-
-    z-index: 4;
-
-    opacity: 0;
-
-    transition:
-        opacity 0.2s ease,
-        color 0.2s ease;
-}
-
-/* Label when focused */
-
-.floating-input input:focus + label {
-    opacity: 1;
-    color: #2563eb;
-}
-
-/* Label when input has value */
-
-.floating-input input:not(:placeholder-shown) + label {
-    opacity: 1;
-    color: #6b7280;
-}
-
-/* Label when focused + has value */
-
-.floating-input input:focus:not(:placeholder-shown) + label {
-    color: #2563eb;
-}
-
-/* ========================================
-   INPUT ICON
-   ======================================== */
-
-.floating-input .input-icon {
-    position: absolute;
-
-    top: 1.3rem;
-
-    transform: translateY(-50%);
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
-    width: 1.25rem;
-    height: 1.25rem;
+    padding: 30px 16px;
 
-    z-index: 3;
+    box-sizing: border-box;
+}
+
+.signin-container {
+    width: 100%;
+    max-width: 900px;
+    min-height: 540px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 24px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.08),
+        0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =========================
+    LEFT SIDE
+========================= */
+
+.signin-left {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: flex-end;
+
+    padding: 40px;
+    padding-bottom: 45px;
+
+    background-image:
+        linear-gradient(
+            to top,
+            #071F45 0%,
+            rgba(7, 31, 69, 0.90) 25%,
+            rgba(7, 31, 69, 0.50) 50%,
+            rgba(7, 31, 69, 0.15) 75%,
+            transparent 100%
+        ),
+        url('/assets/images/city-hall.png');
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    overflow: hidden;
+}
+
+
+
+/* =========================
+    LEFT DECORATION
+========================= */
+
+.signin-left::after {
+    content: "";
+
+    position: absolute;
+
+    width: 350px;
+    height: 350px;
+
+    bottom: -180px;
+    right: -150px;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    border-radius: 50%;
+
+    z-index: 1;
+
+    pointer-events: none;
+}
+
+
+/* =========================
+    LEFT CONTENT
+========================= */
+
+.signin-left-content {
+    position: relative;
+    z-index: 2;
+
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+
+    /*
+     * Keeps the content away from the left edge.
+     */
+    padding-left: 20px;
+    padding-right: 10px;
+
+    box-sizing: border-box;
+}
+
+.signin-left-image {
+    width: 100%;
+    max-width: 330px;
+
+    margin-bottom: 25px;
+
+    object-fit: contain;
+}
+
+.signin-left-title {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 1.5rem;
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+.signin-left-description {
+    max-width: 340px;
+
+    margin: 10px 0 0;
+
+    color: rgba(255, 255, 255, 0.90);
+
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+
+/* =========================
+    RIGHT SIDE
+========================= */
+
+.signin-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 45px 50px;
+
+    background: #ffffff;
+}
+
+.signin-form-wrapper {
+    width: 100%;
+    max-width: 340px;
+}
+
+
+/* =========================
+    LOGO
+========================= */
+
+.signin-logo {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 18px;
+
+    background: #e0ebfd;
+
+    border: 1px solid #aac9fa;
+
+    border-radius: 14px;
+}
+
+.signin-logo img {
+    width: 36px;
+    height: 36px;
+
+    object-fit: contain;
+}
+
+
+/* =========================
+    HEADER
+========================= */
+
+.signin-heading {
+    margin: 0;
+
+    color: #1f2937;
+
+    font-size: 24px;
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+.signin-subheading {
+    margin: 6px 0 25px;
 
     color: #9ca3af;
 
-    font-size: 1rem;
+    font-size: 12px;
 
-    line-height: 1;
+    line-height: 1.6;
+}
+
+
+/* =========================
+    FORM
+========================= */
+
+.signin-field {
+    margin-bottom: 17px;
+}
+
+.signin-label {
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #4b5563;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.signin-input-wrapper {
+    position: relative;
+}
+
+.signin-input-icon {
+    position: absolute;
+
+    top: 50%;
+    left: 13px;
+
+    transform: translateY(-50%);
+
+    color: #9ca3af;
+
+    font-size: 16px;
 
     pointer-events: none;
+}
+
+.signin-input {
+    width: 100%;
+    height: 44px;
+
+    box-sizing: border-box;
+
+    padding: 0 13px 0 40px;
+
+    background: #ffffff;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 10px;
+
+    color: #374151;
+
+    font-size: 12px;
+
+    outline: none;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.signin-input:hover {
+    border-color: #b3cdf8;
+}
+
+.signin-input:focus {
+    border-color: #132d57;
+
+    box-shadow:
+        0 0 0 3px rgba(38, 29, 168, 0.1);
+}
+
+.signin-input::placeholder {
+    color: #9ca3af;
+}
+
+.signin-input.is-invalid {
+    border-color: #ef4444;
+
+    box-shadow:
+        0 0 0 3px rgba(239, 68, 68, 0.10);
+}
+
+.signin-input.is-invalid:focus {
+    border-color: #071F45;
+
+    box-shadow:
+        0 0 0 3px rgba(29, 168, 85, 0.10);
+}
+
+
+/* =========================
+    ERROR MESSAGE
+========================= */
+
+.signin-error {
+    display: none;
+
+    align-items: center;
+    gap: 5px;
+
+    margin-top: 6px;
+
+    color: #ef4444;
+
+    font-size: 11px;
+}
+
+.signin-error.visible {
+    display: flex;
+}
+
+.signin-error i {
+    font-size: 13px;
+
+    flex-shrink: 0;
+}
+
+
+/* =========================
+    FORGOT PASSWORD
+========================= */
+
+.forgot-password-wrapper {
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: -7px;
+    margin-bottom: 22px;
+}
+
+.forgot-password {
+    color: #071F45;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+    cursor: pointer;
+}
+
+.forgot-password:hover {
+    color: #071F45;
+
+    text-decoration: underline;
+}
+
+
+/* =========================
+    SIGN IN BUTTON
+========================= */
+
+.signin-button {
+    width: 100%;
+    height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    background: #071F45;
+
+    border: 1px solid #071F45;
+
+    border-radius: 10px;
+
+    color: #ffffff;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 0 0 3px rgba(29, 168, 85, 0.10);
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.signin-button:hover {
+    background: #071F45;
+
+    border-color: #071F45;
+
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 6px 14px rgba(29, 168, 85, 0.22);
+}
+
+.signin-button:active {
+    transform: translateY(0);
+}
+
+.signin-button.is-loading {
+    pointer-events: none;
+
+    opacity: 0.85;
+}
+
+.signin-btn-dots {
+    display: inline-flex;
+
+    gap: 4px;
+}
+
+.signin-btn-dots.hidden {
+    display: none;
+}
+
+.signin-btn-icon.hidden {
+    display: none;
+}
+
+.signin-btn-dots span {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    animation: signinBounce 1.2s ease-in-out infinite;
+}
+
+.signin-btn-dots span:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.signin-btn-dots span:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+@keyframes signinBounce {
+    0%,
+    60%,
+    100% {
+        transform: translateY(0);
+    }
+
+    30% {
+        transform: translateY(-5px);
+    }
+}
+
+
+/* =========================
+    SIGN UP
+========================= */
+
+.signup-footer {
+    margin-top: 23px;
+
+    text-align: center;
+
+    color: #9ca3af;
+
+    font-size: 11px;
+}
+
+.signup-link {
+    color: #071F45;
+
+    font-weight: 700;
+
+    text-decoration: none;
 
     transition: color 0.2s ease;
 }
 
-/* Left icon */
+.signup-link:hover {
+    color: #0b3f92;
 
-.floating-input .input-icon-left {
-    left: 0.75rem;
+    text-decoration: underline;
 }
 
-/* Right icon */
 
-.floating-input .input-icon-right {
-    right: 0.75rem;
+/* =========================
+    RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+    .signin-page {
+        padding: 20px 12px;
+    }
+
+    .signin-container {
+        max-width: 460px;
+
+        grid-template-columns: 1fr;
+
+        min-height: auto;
+
+        border-radius: 20px;
+    }
+
+    .signin-left {
+        min-height: 300px;
+
+        padding: 30px 25px;
+
+        /*
+         * On mobile, center the image again.
+         */
+        background-position: center center;
+    }
+
+    .signin-left-content {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .signin-left-image {
+        max-width: 220px;
+
+        margin-bottom: 15px;
+    }
+
+    .signin-left-title {
+        font-size: 20px;
+    }
+
+    .signin-left-description {
+        font-size: 11px;
+    }
+
+    .signin-right {
+        padding: 35px 28px;
+    }
 }
 
-/* ========================================
-   ICON FOCUS
-   ======================================== */
 
-.floating-input input:focus ~ .input-icon {
-    color: #2563eb;
-}
+@media (max-width: 400px) {
 
-.floating-input input:not(:placeholder-shown) ~ .input-icon {
-    color: #9ca3af;
-}
+    .signin-left {
+        min-height: 270px;
 
-.floating-input input:focus:not(:placeholder-shown) ~ .input-icon {
-    color: #2563eb;
-}
+        padding: 25px 20px;
 
-/* ========================================
-   DISABLED
-   ======================================== */
+        background-position: center center;
+    }
 
-.floating-input input:disabled {
-    cursor: not-allowed;
-    opacity: 0.6;
-    background-color: #f3f4f6;
-    color: #9ca3af;
-}
+    .signin-left-image {
+        max-width: 190px;
+    }
 
-/* ========================================
-   READ ONLY
-   ======================================== */
+    .signin-right {
+        padding: 30px 20px;
+    }
 
-.floating-input input:read-only {
-    background-color: #f3f4f6;
-}
-
-/* ========================================
-   ERROR STATE
-   ======================================== */
-
-.floating-input.input-error input {
-    border-color: #f87171;
-    box-shadow:
-        0 0 0 1px rgba(248, 113, 113, 0.35);
-}
-
-.floating-input.input-error input:focus {
-    border-color: #f87171;
-    box-shadow:
-        0 0 0 1px rgba(248, 113, 113, 0.35);
-}
-
-.floating-input.input-error input + label {
-    color: #f87171;
-}
-
-.floating-input.input-error input:focus + label {
-    color: #f87171;
-}
-
-.floating-input.input-error input ~ .input-icon {
-    color: #f87171;
-}
-
-/* ========================================
-   ERROR MESSAGE
-   ======================================== */
-
-.floating-input .input-error-message {
-    display: none;
-    align-items: center;
-    gap: 0.25rem;
-    width: 100%;
-    margin-top: 0.4rem;
-    padding-left: 0.25rem;
-    color: #f87171;
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 400;
-    line-height: 1.2;
-}
-
-.floating-input.input-error .input-error-message {
-    display: flex;
-}
-
-.floating-input .input-error-message > i {
-    font-size: 0.85rem;
-    flex-shrink: 0;
-}
-
-.floating-input .error-text {
-    color: #f87171;
-}
-
-/* ========================================
-   PASSWORD SHOW / HIDE
-   ======================================== */
-
-.floating-input.password-field .input-icon-right {
-    cursor: pointer;
-    opacity: 0;
-    pointer-events: none;
-    transition:
-        opacity 0.2s ease,
-        color 0.2s ease;
-}
-
-.floating-input.password-field input:not(:placeholder-shown) ~ .input-icon-right {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* ========================================
-   LOGIN BUTTON
-   ======================================== */
-
-.login-button {
-    height: 2.6rem;
-    background: linear-gradient(135deg, #3f8cff, #2c51ec);
-    color: #ffffff;
-    font-family: 'Poppins', sans-serif;
-    border: none;
-    cursor: pointer;
-    transition:
-        background-color 0.2s ease,
-        transform 0.15s ease,
-        box-shadow 0.2s ease;
-}
-
-.login-button:hover {
-    box-shadow: 0 4px 12px rgba(63, 140, 255, 0.4);
-    transform: translateY(-1px);
-}
-
-.login-button:active {
-    transform: translateY(0);
-}
-
-/* ========================================
-   SUBMIT REQUEST BUTTON
-   ======================================== */
-
-.submit-button {
-    height: 2.6rem;
-    background: linear-gradient(135deg, #3f8cff, #2c51ec);
-    font-family: 'Poppins', sans-serif;
-    border: none;
-    cursor: pointer;
-    transition:
-        background-color 0.2s ease,
-        transform 0.15s ease,
-        box-shadow 0.2s ease;
-}
-
-.submit-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(63, 140, 255, 0.4);
+    .signin-heading {
+        font-size: 22px;
+    }
 }

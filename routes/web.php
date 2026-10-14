@@ -6,11 +6,14 @@ use App\Http\Controllers\Admin\DivisionController;
 use App\Http\Controllers\Admin\OfficeController;
 use App\Http\Controllers\Admin\ServicesController;
 use App\Http\Controllers\Admin\StaffController;
+use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SubmitRequestController;
 use App\Http\Controllers\TrackRequestController;
-use App\Http\Controllers\Admin\TicketController;
+
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,14 +43,14 @@ Route::post('/submit-request/barangay', [SubmitRequestController::class, 'submit
 Route::post('/submit-request/office', [SubmitRequestController::class, 'submitOffice'])
     ->name('submit.office');
 
-    Route::get('/submit-request/divisions/{officeId}', [SubmitRequestController::class, 'getDivisionsByOffice'])
-        ->name('submit.divisions');
+Route::get('/submit-request/divisions/{officeId}', [SubmitRequestController::class, 'getDivisionsByOffice'])
+    ->name('submit.divisions');
 
-    Route::get('/submit-request/issues/{categoryId}', [SubmitRequestController::class, 'getIssuesByCategory'])
-        ->name('submit.issues');
+Route::get('/submit-request/issues/{categoryId}', [SubmitRequestController::class, 'getIssuesByCategory'])
+    ->name('submit.issues');
 
-    Route::post('/submit-request/check-key-status', [SubmitRequestController::class, 'checkKeyStatus'])
-        ->name('submit.check_key_status');
+Route::post('/submit-request/check-key-status', [SubmitRequestController::class, 'checkKeyStatus'])
+    ->name('submit.check_key_status');
 
 /*
 |--------------------------------------------------------------------------
@@ -94,10 +97,17 @@ Route::middleware('session.auth')->group(function () {
 
         });
 
-
-    Route::get('/notifications', [PageController::class, 'notifications'])
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])
         ->middleware('not.admin')
-        ->name('notifications');
+        ->name('notifications.markAsRead');
+
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
+        ->middleware('not.admin')
+        ->name('notifications.markAllAsRead');
+
+    Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])
+        ->middleware('not.admin')
+        ->name('notifications.unreadCount');
 
     Route::get('/profile', [PageController::class, 'profile'])
         ->middleware('not.admin')
@@ -155,10 +165,14 @@ Route::middleware('session.auth')->group(function () {
 
                 });
 
+            Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])
+                ->name('notifications.markAsRead');
 
+            Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
+                ->name('notifications.markAllAsRead');
 
-            Route::get('/notifications', [PageController::class, 'adminNotifications'])
-                ->name('notifications');
+            Route::get('/notifications/unread-count', [NotificationController::class, 'getUnreadCount'])
+                ->name('notifications.unreadCount');
 
             Route::get('/profile', [PageController::class, 'adminProfile'])
                 ->name('profile');

@@ -61,17 +61,19 @@
 
                             <div class="flex items-center gap-3">
                                 <x-icon_container icon="{{ $category['icon'] }}" color="{{ $category['color'] }}" />
-                                <span class="text-lg font-semibold">{{ $category['name'] }}</span>
-                                <div class="flex flex-col gap-1">
-                                    <x-badge
-                                    icon="ti ti-ticket"
-                                    color="{{ $category['color'] }}"
-                                    label="{{ $category['issues_count'] }} Issues"
-                                    />
+                                <div class="grid grid-cols-1 gap-1">
+                                    <span class="text-lg font-semibold">{{ $category['name'] }}</span>
+                                    <div class="flex flex-col gap-1">
+                                        <x-badge
+                                        icon="ti ti-ticket"
+                                        color="{{ $category['color'] }}"
+                                        label="{{ $category['issues_count'] }} Issues"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             @if(!empty($category['description']))
-                                <span class="text-xs text-gray-500 mt-2">{{ $category['description'] }}</span>
+                                <p class="text-xs text-gray-500 mt-5">{{ $category['description'] }}</p>
                             @endif
 
                         </x-card>

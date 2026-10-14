@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AdminTransaction;
 use App\Models\Division;
 use App\Models\Office;
+use App\Traits\LogsTransactions;
+use App\Traits\SendsNotifications;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class OfficeController extends Controller
 {
+    use LogsTransactions, SendsNotifications;
+
     public function officeDivisions(Office $office)
     {
         $divisions = Division::where('office_id', $office->office_id)
@@ -61,6 +64,8 @@ class OfficeController extends Controller
             $result->office_id,
             'Added new office: '.$result->office_name
         );
+
+        $this->notifyAllAdmins('New Office Added', 'Office '.$result->office_name.' has been added', session('user_id'), route('admin.offices', ['search' => $result->office_name]));
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -160,21 +165,5 @@ class OfficeController extends Controller
         }
 
         return 'OFF-'.str_pad($nextNum, 5, '0', STR_PAD_LEFT);
-    }
-
-    private function logTransaction($actionType, $entityType, $entityId, $description = null, $oldValues = null, $newValues = null)
-    {
-        $refNum = str_pad(random_int(1, 9999999999), 10, '0', STR_PAD_LEFT);
-
-        AdminTransaction::create([
-            'admin_transaction_ref' => $refNum,
-            'handled_by' => session('user_id'),
-            'action_type' => $actionType,
-            'entity_type' => $entityType,
-            'entity_id' => $entityId,
-            'description' => $description,
-            'old_values' => $oldValues,
-            'new_values' => $newValues,
-        ]);
     }
 }

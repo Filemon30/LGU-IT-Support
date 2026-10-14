@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\AdminTransaction;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserAccount;
 use App\Models\UserInformation;
+use App\Traits\LogsTransactions;
+use App\Traits\SendsNotifications;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -15,6 +16,8 @@ use Illuminate\Validation\ValidationException;
 
 class StaffController extends Controller
 {
+    use LogsTransactions, SendsNotifications;
+
     public function staffInformation(Request $request)
     {
         $user = User::with(['role', 'information', 'account'])
@@ -326,6 +329,8 @@ class StaffController extends Controller
             'Added new staff: '.$result->staff_ref_num
         );
 
+        $this->notifyAllAdmins('New Staff Added', 'Staff '.$result->staff_ref_num.' has been added', session('user_id'), route('admin.staff', ['search' => $result->staff_ref_num]));
+
         if ($request->expectsJson()) {
 
             $user = User::with(['role', 'information'])->find($result->user_id);
@@ -389,6 +394,8 @@ class StaffController extends Controller
             ['status' => 'Soft Delete']
         );
 
+        $this->notifyAllAdmins('Staff Deleted', 'Staff '.$user->staff_ref_num.' has been deleted', session('user_id'), route('admin.staff.recycle_bin', ['search' => $user->staff_ref_num]));
+
         if ($request->expectsJson()) {
 
             return response()->json([
@@ -431,6 +438,8 @@ class StaffController extends Controller
             ['status' => $oldStatus],
             ['status' => 'Active']
         );
+
+        $this->notifyAllAdmins('Staff Restored', 'Staff '.$user->staff_ref_num.' has been restored', session('user_id'), route('admin.staff', ['search' => $user->staff_ref_num]));
 
         if ($request->expectsJson()) {
 
@@ -478,6 +487,8 @@ class StaffController extends Controller
             $user->user_id,
             'Updated password for staff: '.$user->staff_ref_num
         );
+
+        $this->notifyAllAdmins('Password Updated', 'Password updated for staff '.$user->staff_ref_num, session('user_id'), route('admin.staff', ['search' => $user->staff_ref_num]));
 
         if ($request->expectsJson()) {
 
@@ -527,32 +538,22 @@ class StaffController extends Controller
             ['status' => $newStatus]
         );
 
+        $this->notifyAllAdmins('Status Updated', 'Staff '.$user->staff_ref_num.' status changed from '.$oldStatus.' to '.$newStatus, session('user_id'), route('admin.staff', ['search' => $user->staff_ref_num]));
+
         if ($request->expectsJson()) {
 
             return response()->json([
                 'success' => true,
                 'message' => 'Status updated successfully.',
+                'staff' => [
+                    'user_id' => $user->user_id,
+                    'status' => $newStatus,
+                ],
             ]);
         }
 
         return redirect()
             ->route('admin.staff')
             ->with('success', 'Status updated successfully.');
-    }
-
-    private function logTransaction($actionType, $entityType, $entityId, $description = null, $oldValues = null, $newValues = null)
-    {
-        $refNum = str_pad(random_int(1, 9999999999), 10, '0', STR_PAD_LEFT);
-
-        AdminTransaction::create([
-            'admin_transaction_ref' => $refNum,
-            'handled_by' => session('user_id'),
-            'action_type' => $actionType,
-            'entity_type' => $entityType,
-            'entity_id' => $entityId,
-            'description' => $description,
-            'old_values' => $oldValues,
-            'new_values' => $newValues,
-        ]);
     }
 }
