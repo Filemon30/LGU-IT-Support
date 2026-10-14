@@ -12,6 +12,7 @@
     <input type="hidden" id="delete-staff-ref" value="{{ $user->staff_ref_num }}">
     <input type="hidden" id="delete-staff-name" value="{{ $user->information->last_name }}, {{ $user->information->first_name }} {{ $user->information->middle_name ? $user->information->middle_name[0] . '.' : '' }} {{ $user->information->suffix }}">
     <input type="hidden" id="delete-staff-status" value="{{ $user->status }}">
+    <input type="hidden" id="archive-staff-status" value="{{ $user->status }}">
 
 
     <div class="space-y-6">
@@ -38,12 +39,14 @@
                         Account Status:
                     </h1>
 
-                    <x-badge
-                        color="{{ $user->status === 'Active' ? 'green' : 'red' }}"
-                        class="text-center ml-2 inline-flex"
-                    >
-                        {{ $user->status }}
-                    </x-badge>
+                    <span id="staff-status-badge">
+                        <x-badge
+                            color="{{ $user->status === 'Active' ? 'green' : 'red' }}"
+                            class="text-center ml-2 inline-flex"
+                        >
+                            {{ $user->status }}
+                        </x-badge>
+                    </span>
                     
                 </div>
             </div>

@@ -44,7 +44,7 @@
 
         <div class="flex items-center gap-2 justify-self-end self-center">
             <div class="header-buttons hidden md:flex items-center gap-2" style="display: none;">
-                <a href="{{ route('track.request') }}" class="header-btn header-btn-secondary">
+                <!-- <a href="{{ route('track.request') }}" class="header-btn header-btn-secondary">
                     <span> Track Ticket </span>
                     <i class="ti ti-search"></i>
                 </a>
@@ -55,6 +55,20 @@
                 </a>
 
                 <a href="{{ route('login') }}" class="header-btn header-btn-primary">
+                    <span> Login </span>
+                    <i class="ti ti-login"></i>
+                </a> -->
+                <a href="#" class="header-btn header-btn-secondary">
+                    <span> Track Ticket </span>
+                    <i class="ti ti-search"></i>
+                </a>
+
+                <a href="#" class="header-btn header-btn-submit">
+                    <span> Submit Ticket </span>
+                    <i class="ti ti-send"></i>
+                </a>
+
+                <a href="#" class="header-btn header-btn-primary">
                     <span> Login </span>
                     <i class="ti ti-login"></i>
                 </a>

@@ -5,11 +5,14 @@
     'width' => 'max-w-2xl',
 ])
 
+
 <div
     id="{{ $id }}"
     data-modal
     {{ $attributes }}
-    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4 background: rgba(17, 24, 39, 0.45);
+        backdrop-filter: blur(5px);"
+
 >
     <div
         class="flex w-full {{ $width }} max-h-[calc(100vh-1.5rem)] sm:max-h-[calc(100vh-2rem)]

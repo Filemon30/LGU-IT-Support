@@ -47,13 +47,6 @@ class PageController extends Controller
     }
 
 
-    /**
-     * Client notifications.
-     */
-    public function notifications()
-    {
-        return $this->ajaxView('clients.notifications.index');
-    }
 
     /**
      * Client profile.
@@ -100,17 +93,6 @@ class PageController extends Controller
        return $this->ajaxView('admin.tickets.dashboard');
     }
 
-    
-
-
-
-    /**
-     * Admin notifications.
-     */
-    public function adminNotifications()
-    {
-        return $this->ajaxView('admin.notifications.index');
-    }
 
     /**
      * Admin profile.

@@ -353,7 +353,6 @@
                         else if (e.old_status === 'Confirmed') decrementEl('stat-confirmed');
                         else if (e.old_status === 'On Progress') decrementEl('stat-in-progress');
                         else if (e.old_status === 'Cancelled') decrementEl('stat-cancelled');
-
                         var row = document.getElementById('recent-row-' + e.ticket_ref_num);
                         if (row) row.remove();
                     });

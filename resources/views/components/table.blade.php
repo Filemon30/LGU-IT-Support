@@ -19,7 +19,7 @@
     <div class="overflow-y-auto" style="max-height: {{ $maxHeight }};">
         <table class="w-full text-left text-sm" @if($minWidth !== '0') style="min-width: {{ $minWidth }}" @else style="table-layout: fixed" @endif>
 
-            <thead class="sticky top-0 bg-white z-10">
+            <thead class="sticky top-0 bg-white z-10 bg-blue-200">
                 @isset($header)
                     {{ $header }}
                 @else

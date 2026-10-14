@@ -10,10 +10,13 @@ use App\Models\Issue;
 use App\Models\Office;
 use App\Models\Requester;
 use App\Models\Ticket;
+use App\Traits\SendsNotifications;
 use Illuminate\Http\Request;
 
 class SubmitRequestController extends Controller
 {
+    use SendsNotifications;
+
     /**
      * Show the submit request form.
      */
@@ -114,6 +117,8 @@ class SubmitRequestController extends Controller
             $ticket->created_at->toDateTimeString()
         ));
 
+        $this->notifyAllAdmins('New Ticket Submitted', 'Ticket '.$ticket->ticket_ref_num.' from Barangay - '.$barangay->barangay_name, null, route('admin.tickets.index', ['search' => $ticket->ticket_ref_num]));
+
         return response()->json([
             'success' => true,
             'message' => 'Ticket submitted successfully!',
@@ -190,6 +195,8 @@ class SubmitRequestController extends Controller
             $ticket->created_at->toDateTimeString()
         ));
 
+        $this->notifyAllAdmins('New Ticket Submitted', 'Ticket '.$ticket->ticket_ref_num.' from Office - '.$requesterName, null, route('admin.tickets.index', ['search' => $ticket->ticket_ref_num]));
+
         return response()->json([
             'success' => true,
             'message' => 'Ticket submitted successfully!',
@@ -231,27 +238,29 @@ class SubmitRequestController extends Controller
         $type = $request->input('type');
         $secretKey = $request->input('secret_key');
 
-        if (!$type || !$secretKey) {
+        if (! $type || ! $secretKey) {
             return response()->json(['status' => 'active']);
         }
 
         if ($type === 'barangay') {
             $barangay = Barangay::find($request->input('barangay_id'));
-            if (!$barangay) {
+            if (! $barangay) {
                 return response()->json(['status' => 'active']);
             }
             if (strtolower($secretKey) !== strtolower($barangay->secret_key_hash)) {
                 return response()->json(['status' => 'active']);
             }
+
             return response()->json(['status' => $barangay->key_status ?? 'Active']);
         } else {
             $division = Division::find($request->input('division_id'));
-            if (!$division) {
+            if (! $division) {
                 return response()->json(['status' => 'active']);
             }
             if (strtolower($secretKey) !== strtolower($division->secret_key_hash)) {
                 return response()->json(['status' => 'active']);
             }
+
             return response()->json(['status' => $division->key_status ?? 'Active']);
         }
     }

@@ -19,7 +19,8 @@ class NewTicketSubmitted implements ShouldBroadcastNow
         public string $categoryName,
         public string $priorityName,
         public string $ticketStatus,
-        public string $createdAt
+        public string $createdAt,
+        public ?int $submittedBy = null,
     ) {}
 
     public function broadcastOn(): array
@@ -44,6 +45,7 @@ class NewTicketSubmitted implements ShouldBroadcastNow
             'priority_name' => $this->priorityName,
             'ticket_status' => $this->ticketStatus,
             'created_at' => $this->createdAt,
+            'submitted_by' => $this->submittedBy,
         ];
     }
 }

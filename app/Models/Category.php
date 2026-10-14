@@ -42,6 +42,11 @@ class Category extends Model
         return $this->hasMany(Issue::class, 'category_id', 'category_id');
     }
 
+    public function service(): BelongsTo
+    {
+        return $this->belongsTo(Service::class, 'service_id', 'service_id');
+    }
+
     public function knowledgeBase(): HasMany
     {
         return $this->hasMany(KnowledgeBase::class, 'category_id', 'category_id');

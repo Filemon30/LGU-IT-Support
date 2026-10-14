@@ -5,13 +5,21 @@
 
 <style>
     @keyframes radial-spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
     }
 
     @keyframes radial-pulse {
-        0%, 100% { opacity: 0.4; }
-        50% { opacity: 1; }
+        0%, 100% {
+            opacity: 0.4;
+        }
+        50% {
+            opacity: 1;
+        }
     }
 
     .loading-radial {
@@ -68,16 +76,14 @@
     id="{{ $id }}"
     data-modal
     data-modal-static
-    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 p-3 sm:p-4"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50"
 >
-    <div
-        class="flex w-full max-w-xs flex-col items-center justify-center
-               rounded-2xl bg-white px-8 py-10 shadow-xl"
-    >
+    <div class="flex flex-col items-center justify-center">
 
         {{-- Radial Spinner --}}
         <div class="relative mb-5">
             <div class="loading-radial"></div>
+
             <div class="loading-logo-wrap">
                 <img
                     src="{{ asset('assets/images/biringan.png') }}"
@@ -88,7 +94,7 @@
         </div>
 
         {{-- Changeable Text --}}
-        <p class="loading-text text-sm font-medium text-gray-700 text-center">
+        <p class="loading-text text-sm font-medium text-white text-center">
             {{ $text }}
         </p>
 

@@ -182,7 +182,7 @@ class DashboardController extends Controller
      */
     public function ticketDashboard()
     {
-        $totalTickets = Ticket::where('ticket_status', '!=', 'Soft Delete')->count();
+        $totalTickets = Ticket::whereNotIn('ticket_status', ['Cancelled', 'Soft Delete'])->count();
 
         $pendingCount = Ticket::where('ticket_status', 'Pending')->count();
         $confirmedCount = Ticket::where('ticket_status', 'Confirmed')->count();
@@ -192,7 +192,7 @@ class DashboardController extends Controller
             ->whereNotIn('ticket_status', ['Cancelled', 'Resolved', 'Soft Delete'])
             ->count();
 
-        $priorityCounts = Ticket::where('ticket_status', '!=', 'Soft Delete')
+        $priorityCounts = Ticket::whereNotIn('ticket_status', ['Cancelled', 'Soft Delete'])
             ->select('priority_level_id', DB::raw('count(*) as total'))
             ->groupBy('priority_level_id')
             ->pluck('total', 'priority_level_id');
@@ -213,7 +213,7 @@ class DashboardController extends Controller
             };
         }
 
-        $categoryCounts = Ticket::where('ticket_status', '!=', 'Soft Delete')
+        $categoryCounts = Ticket::whereNotIn('ticket_status', ['Cancelled', 'Soft Delete'])
             ->join('issues', 'tickets.issue_id', '=', 'issues.issue_id')
             ->join('categories', 'issues.category_id', '=', 'categories.category_id')
             ->select('categories.category_name', DB::raw('count(*) as total'))
@@ -225,7 +225,7 @@ class DashboardController extends Controller
         $netTotal = $categoryCounts['Network'] ?? 0;
         $othersTotal = $categoryCounts['Others'] ?? 0;
 
-        $hardwareStatuses = Ticket::where('ticket_status', '!=', 'Soft Delete')
+        $hardwareStatuses = Ticket::whereNotIn('ticket_status', ['Cancelled', 'Soft Delete'])
             ->join('issues', 'tickets.issue_id', '=', 'issues.issue_id')
             ->join('categories', 'issues.category_id', '=', 'categories.category_id')
             ->where('categories.category_name', 'Hardware')
@@ -233,7 +233,7 @@ class DashboardController extends Controller
             ->groupBy('ticket_status')
             ->pluck('total', 'ticket_status');
 
-        $softwareStatuses = Ticket::where('ticket_status', '!=', 'Soft Delete')
+        $softwareStatuses = Ticket::whereNotIn('ticket_status', ['Cancelled', 'Soft Delete'])
             ->join('issues', 'tickets.issue_id', '=', 'issues.issue_id')
             ->join('categories', 'issues.category_id', '=', 'categories.category_id')
             ->where('categories.category_name', 'Software')
@@ -241,7 +241,7 @@ class DashboardController extends Controller
             ->groupBy('ticket_status')
             ->pluck('total', 'ticket_status');
 
-        $networkStatuses = Ticket::where('ticket_status', '!=', 'Soft Delete')
+        $networkStatuses = Ticket::whereNotIn('ticket_status', ['Cancelled', 'Soft Delete'])
             ->join('issues', 'tickets.issue_id', '=', 'issues.issue_id')
             ->join('categories', 'issues.category_id', '=', 'categories.category_id')
             ->where('categories.category_name', 'Network')
@@ -249,7 +249,7 @@ class DashboardController extends Controller
             ->groupBy('ticket_status')
             ->pluck('total', 'ticket_status');
 
-        $othersStatuses = Ticket::where('ticket_status', '!=', 'Soft Delete')
+        $othersStatuses = Ticket::whereNotIn('ticket_status', ['Cancelled', 'Soft Delete'])
             ->join('issues', 'tickets.issue_id', '=', 'issues.issue_id')
             ->join('categories', 'issues.category_id', '=', 'categories.category_id')
             ->where('categories.category_name', 'Others')
